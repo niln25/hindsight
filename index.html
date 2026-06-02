@@ -311,8 +311,7 @@ s2.innerHTML=`
 <div style="font-size:14.5px;color:var(--mut);margin-top:5px">Tap the answer you gave. We mark it against the key.</div>
 <div class="prog"><i id="p2"></i></div>
 <div class="mcq-outer"><div class="mcq-grid" id="mcqGrid"></div></div>
-<div class="foot">
-  <button class="link" id="auto2">Demo: autofill a sample attempt</button>
+<div class="foot" style="justify-content:flex-end">
   <button class="btn primary" id="go2" style="padding:11px 22px;font-size:15px">Continue to Section II</button>
 </div>`;
 app.appendChild(s2);
@@ -323,7 +322,6 @@ c.innerHTML=`<div class="top"><span class="qn">Q${q.n}</span><span class="modtag
 grid.appendChild(c);});
 function mcqProg(){p2.style.width=(Object.keys(state.mcq).length/20*100)+'%';}
 grid.onclick=e=>{const b=e.target.closest('.opt');if(!b)return;const wrap=b.parentElement;state.mcq[+wrap.dataset.q]=b.dataset.o;[...wrap.children].forEach(x=>x.classList.toggle('sel',x===b));mcqProg();};
-s2.querySelector('#auto2').onclick=()=>{MCQ.forEach(q=>{const giv=SAMPLE_MCQ[q.n]||q.correct;state.mcq[q.n]=giv;const wrap=grid.querySelector(`[data-q="${q.n}"]`);[...wrap.children].forEach(x=>x.classList.toggle('sel',x.dataset.o===giv));});mcqProg();};
 s2.querySelector('#go2').onclick=()=>show('s3',2);
 
 /* ── SECTION II — MARKING ── */
@@ -345,8 +343,7 @@ s3.innerHTML=`
     </table>
   </div>
 </div>
-<div class="foot">
-  <button class="link" id="auto3">Demo: autofill a sample attempt</button>
+<div class="foot" style="justify-content:flex-end">
   <button class="btn primary" id="go3" style="padding:11px 22px;font-size:15px">See my diagnostic</button>
 </div>`;
 app.appendChild(s3);
@@ -373,7 +370,6 @@ body.onclick=e=>{const b=e.target.closest('.gpm button');if(!b)return;setMode(+b
 body.addEventListener('input',e=>{const id=e.target.dataset.pin?+e.target.dataset.pin:e.target.dataset.err?+e.target.dataset.err:null;if(!id||!state.sec[id])return;
 if(e.target.dataset.pin){let v=Math.max(0,Math.min(SEC.find(s=>s.id===id).marks,+e.target.value||0));state.sec[id].val=v;}
 if(e.target.dataset.err)state.sec[id].err=e.target.value;});
-s3.querySelector('#auto3').onclick=()=>{Object.entries(SAMPLE_SEC).forEach(([id,v])=>{id=+id;setMode(id,v[0]);const tr=body.querySelector(`tr[data-id="${id}"]`);if(v[0]==='partial'){const pin=tr.querySelector('[data-pin]');pin.value=v[1];state.sec[id].val=v[1];}if(v[2]){const sel=tr.querySelector('[data-err]');sel.value=v[2];state.sec[id].err=v[2];}});secProg();};
 s3.querySelector('#go3').onclick=()=>{
   s4.innerHTML='<div class="diag-loading"><div class="hs-spin"></div><div class="spin-label">Analysing your result…</div></div>';
   show('s4',3);
