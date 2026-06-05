@@ -38,6 +38,15 @@
 .prog>i{display:block;height:100%;width:0;background:var(--g);border-radius:3px;transition:width .35s ease}
 
 /* ── HOME SCREEN ── */
+.prof-row{display:flex;gap:6px;align-items:stretch;}
+.prof-seg{transition:flex 0.3s ease;border-radius:9px;overflow:hidden;height:40px;}
+.prof-seg.active{flex:5;background:var(--card);border:0.5px solid #9ab88a;display:flex;align-items:center;padding:0 12px;gap:6px;}
+.prof-seg.done{flex:1;background:#e8e4d8;cursor:pointer;min-width:20px;}
+.prof-seg.pending{flex:1;background:var(--ln);opacity:0.5;min-width:20px;}
+.prof-seg input{border:none;background:transparent;outline:none;font-size:14px;color:var(--ink);font-family:inherit;width:100%;}
+.prof-seg input::placeholder{color:var(--mut);opacity:0.7;}
+.prof-enter{font-size:13px;color:var(--mut);opacity:0.25;transition:opacity .15s;flex-shrink:0;pointer-events:none;}
+.prof-lbl{font-size:13px;color:var(--mut);margin-bottom:7px;}
 .ticker-wrap{position:relative;height:28px;overflow:hidden;margin-top:4px}
 .ticker-item{position:absolute;top:0;width:100%;font-size:17px;color:var(--ink);display:flex;align-items:center;gap:9px;line-height:1.55;transform:translateY(100%);transition:transform .42s cubic-bezier(.4,0,.2,1);font-weight:400}
 .ticker-item.t-on{transform:translateY(0)}
@@ -728,8 +737,16 @@ s1.innerHTML=`
     <h1 class="h-serif" style="font-size:52px;margin:20px 0 16px">James Ruse 2024<br>Chemistry Trial</h1>
     <div style="font-size:20px;color:var(--mut);max-width:420px;line-height:1.5">Mark it once, see exactly what to study before your next paper.</div>
     <div style="font-size:15.5px;color:var(--mut);margin:15px 0 24px">Section I + II &nbsp;·&nbsp; 100 marks &nbsp;·&nbsp; Modules 5–8</div>
-    <div><button class="btn primary" id="go1">Start your review</button></div>
-    <div style="margin-top:28px;padding-top:18px;border-top:0.5px solid var(--ln)">
+    <div><button class="btn primary" id="go1" style="opacity:0.35;cursor:not-allowed;pointer-events:none;">Start your review</button></div>
+    <div style="margin-top:20px;">
+      <div class="prof-lbl" id="profLbl">Name</div>
+      <div class="prof-row">
+        <div class="prof-seg active" id="ps0"><input id="pi0" type="text" placeholder="Your name" onkeydown="if(event.key==='Enter')profNext(0)" oninput="profHint(0)" /><span class="prof-enter" id="ph0">↵</span></div>
+        <div class="prof-seg pending" id="ps1"></div>
+        <div class="prof-seg pending" id="ps2"></div>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding-top:16px;border-top:0.5px solid var(--ln)">
       <div class="ticker-wrap" id="tickerWrap">
         <div class="ticker-item">Emily from James Ruse just reviewed Chemistry 2024</div>
         <div class="ticker-item">Liam from Sydney Boys just reviewed Chemistry 2024</div>
@@ -764,6 +781,78 @@ s1.innerHTML=`
 app.appendChild(s1);
 s1.querySelector('#go1').onclick=()=>show('s2',1);
 
+(function(){
+  const steps=[
+    {l:'Name',p:'Your name',t:'text',k:'name'},
+    {l:'School',p:'Your school',t:'text',k:'school'},
+    {l:'Email',p:'Email',t:'email',k:'email'}
+  ];
+  const vals={};
+
+  function profNext(idx){
+    const inp=document.getElementById('pi'+idx);
+    if(!inp||!inp.value.trim())return;
+    vals[steps[idx].k]=inp.value.trim();
+    const seg=document.getElementById('ps'+idx);
+    seg.className='prof-seg done';
+    seg.innerHTML='';
+    seg.onclick=()=>profRestart(idx);
+    const next=idx+1;
+    if(next<3){
+      const ns=document.getElementById('ps'+next);
+      ns.className='prof-seg active';
+      ns.innerHTML='<input id="pi'+next+'" type="'+steps[next].t+'" placeholder="'+steps[next].p+'" onkeydown="if(event.key===\'Enter\')profNext('+next+')" oninput="profHint('+next+')" /><span class="prof-enter" id="ph'+next+'">↵</span>';
+      document.getElementById('profLbl').textContent=steps[next].l;
+      document.getElementById('pi'+next).focus();
+    } else {
+      document.getElementById('profLbl').textContent='';
+      localStorage.setItem('hinsightProfile',JSON.stringify(vals));
+      const btn=document.getElementById('go1');
+      btn.style.opacity='1';
+      btn.style.cursor='pointer';
+      btn.style.pointerEvents='auto';
+    }
+  }
+
+  function profRestart(idx){
+    for(let i=idx;i<3;i++){
+      delete vals[steps[i].k];
+      const s=document.getElementById('ps'+i);
+      if(i===idx){
+        s.className='prof-seg active';
+        s.innerHTML='<input id="pi'+i+'" type="'+steps[i].t+'" placeholder="'+steps[i].p+'" onkeydown="if(event.key===\'Enter\')profNext('+i+')" />';
+        s.onclick=null;
+        document.getElementById('profLbl').textContent=steps[i].l;
+        document.getElementById('pi'+i).focus();
+      } else {
+        s.className='prof-seg pending';
+        s.innerHTML='';
+        s.onclick=null;
+      }
+    }
+    const btn=document.getElementById('go1');
+    btn.style.opacity='0.35';
+    btn.style.cursor='not-allowed';
+    btn.style.pointerEvents='none';
+  }
+
+  window.profNext=profNext;
+
+  // Show ↵ hint always (subtle), brighter when typing
+  window.profHint=function(idx){
+    const inp=document.getElementById('pi'+idx);
+    const hint=document.getElementById('ph'+idx);
+    if(hint){
+      hint.style.opacity=inp.value.trim().length>0?'0.6':'0.25';
+    }
+  };
+
+  // Show ↵ on load for first field
+  const firstHint=document.getElementById('ph0');
+  if(firstHint) firstHint.style.opacity='0.25';
+})();
+
+/* ── Ticker ── */
 (function(){
   const items=s1.querySelectorAll('.ticker-item');
   let ci=0;
