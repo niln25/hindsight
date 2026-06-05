@@ -288,6 +288,23 @@ const DP={
   '8.6':{short:'Spectroscopy (NMR, MS, IR)',full:'Investigate the processes used to analyse the structure of simple organic compounds addressed in the course, including but not limited to: proton and carbon-13 NMR, mass spectrometry and infrared spectroscopy.'},
 };
 // Real JR 2024 answer key. Q16 accepted both B and D (disputed).
+/* ════════════════════════════════════════════════════
+   PAPER DATA — replace this block for each new paper
+   Everything below this section is generic and stays.
+════════════════════════════════════════════════════ */
+
+const PAPER_META={
+  school:      'James Ruse Agricultural High School',
+  schoolShort: 'James Ruse',
+  year:        '2024',
+  type:        'Trial',
+  subject:     'Chemistry',
+  totalMarks:  100,
+  mcqMarks:    20,
+  secMarks:    80,
+  modules:     '5–8',
+};
+
 const MCQ=[
   ['Mod7','B'], // Q1  structural isomers C₃H₆BrCl
   ['Mod8','A'], // Q2  AAS — which component changes
@@ -387,6 +404,7 @@ const REVIEW_FB={
   '34||Time — ran out overall':"This 9-mark spectroscopic 'justify' was left blank because time ran out — it's the single biggest recoverable block on the paper. Budget ~16 minutes for it up front and practise reading MS, IR and NMR data fast so a question this size never gets stranded.",
   '35||Time — ran out overall':"You began this multi-step titration but ran out of time before finishing the calculation chain — the partial credit shows the method was sound. Drill multi-step titration stoichiometry against a timer so the full sequence runs faster and you reach the final answer."
 };
+/* ── PAPER-SPECIFIC FEEDBACK (optional — delete these 3 objects for a new paper to use generic feedback only) ── */
 // THEORY_FB — per-question feedback for "Did not know theory" errors only.
 // All other error types are handled by the generic ACTION object.
 // 23 entries (Section II sub-parts; 28a and 28b excluded — pure plotting/reading, not theory).
@@ -545,6 +563,11 @@ const TERMINOLOGY_FB = {
 
 // VERB_FB — feedback for "Did not address verb" error type.
 // Keyed by NESA directive verb (exact string match to question schema verb field).
+/* ════════════════════════════════════════════════════
+   GENERIC ENGINE — do not edit below this line
+   (verb cards, scoring logic, diagnostic, UI)
+════════════════════════════════════════════════════ */
+
 // Each entry has three fields: nesa, commonMistake, inPractice.
 // Displayed as a structured card in the diagnostic review panel.
 
@@ -733,10 +756,10 @@ s1.style.paddingTop='28px';
 s1.innerHTML=`
 <div class="home2">
   <div class="home-l">
-    <div class="pill">Chemistry trial · pre-loaded</div>
-    <h1 class="h-serif" style="font-size:52px;margin:20px 0 16px">James Ruse 2024<br>Chemistry Trial</h1>
+    <div class="pill">${PAPER_META.subject} trial · pre-loaded</div>
+    <h1 class="h-serif" style="font-size:52px;margin:20px 0 16px">${PAPER_META.schoolShort} ${PAPER_META.year}<br>${PAPER_META.subject} ${PAPER_META.type}</h1>
     <div style="font-size:20px;color:var(--mut);max-width:420px;line-height:1.5">Mark it once, see exactly what to study before your next paper.</div>
-    <div style="font-size:15.5px;color:var(--mut);margin:15px 0 24px">Section I + II &nbsp;·&nbsp; 100 marks &nbsp;·&nbsp; Modules 5–8</div>
+    <div style="font-size:15.5px;color:var(--mut);margin:15px 0 24px">Section I + II &nbsp;·&nbsp; ${PAPER_META.totalMarks} marks &nbsp;·&nbsp; Modules ${PAPER_META.modules}</div>
     <div><button class="btn primary" id="go1" style="opacity:0.35;cursor:not-allowed;pointer-events:none;">Start your review</button></div>
     <div style="margin-top:20px;">
       <div class="prof-lbl" id="profLbl">Name</div>
@@ -779,6 +802,7 @@ s1.innerHTML=`
   </div>
 </div>`;
 app.appendChild(s1);
+document.title=`Hindsight — ${PAPER_META.schoolShort} ${PAPER_META.year} ${PAPER_META.subject} ${PAPER_META.type}`;
 s1.querySelector('#go1').onclick=()=>show('s2',1);
 
 (function(){
