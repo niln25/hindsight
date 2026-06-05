@@ -3,1185 +3,218 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hindsight — James Ruse 2024 Chemistry Trial</title>
+<title>Hindsight — Chemistry Trial Papers</title>
 <style>html,body{margin:0;padding:0;height:100%}</style>
 <style>
 @import url('https://cdn.jsdelivr.net/npm/@fontsource/dm-serif-display@5.0.19/index.css');
 @import url('https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5.0.19/400.css');
 @import url('https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5.0.19/500.css');
-.hs-app{--g:#2D5016;--g7:#3d6a22;--g50:#eef3e8;--ink:#1d211a;--mut:#74796d;--ln:#e6e3d8;--paper:#faf9f5;--card:#fff;--amber:#a96a12;--amber50:#f7eedb;--red:#9a3520;--red50:#f7e9e4;font-family:'DM Sans',system-ui,sans-serif;color:var(--ink);background:var(--paper);border:0.5px solid var(--ln);border-radius:16px;overflow:hidden;line-height:1.55;height:100vh;display:flex;flex-direction:column}
-.hs-app *{box-sizing:border-box}
-.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
-.hs-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:0.5px solid var(--ln);background:var(--card);flex-shrink:0}
-.hs-wm{font-family:'DM Serif Display',Georgia,serif;font-size:23px;color:var(--g);letter-spacing:-.01em}
-.hs-nav-right{display:flex;align-items:center;gap:10px}
-.step-lbl{font-size:14px;color:var(--ink);font-weight:600}
-.step{display:flex;align-items:center;gap:7px}
-.dot{height:8px;width:8px;border-radius:20px;background:transparent;border:1.4px solid #c8ccc0;transition:all .35s}
-.dot.done{background:var(--g);border-color:var(--g)}
-.dot.active{width:26px;background:var(--g);border-color:var(--g)}
-#screens{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
-.scr{display:none;padding:28px 32px 22px;flex:1;flex-direction:column;min-height:0;overflow:hidden}
-.scr.on{display:flex;animation:fade .4s ease}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.h-serif{font-family:'DM Serif Display',Georgia,serif;font-weight:400;letter-spacing:-.01em;line-height:1.12}
-.pill{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;padding:5px 13px;border-radius:20px;background:var(--g50);color:var(--g);font-weight:500;align-self:flex-start}
-.modtag{font-size:12px;font-weight:500;padding:2px 8px;border-radius:5px;background:var(--g50);color:var(--g7);white-space:nowrap}
-.btn{font-family:inherit;font-size:15px;font-weight:500;border:0.5px solid var(--ln);background:var(--card);color:var(--ink);padding:9px 16px;border-radius:9px;cursor:pointer;transition:all .15s}
-.btn:hover{background:var(--g50);border-color:#cfd6c4}
-.btn.primary{background:var(--g);color:#fff;border-color:var(--g);padding:13px 26px;font-size:16px}
-.btn.primary:hover{background:var(--g7)}
-.link{background:none;border:none;color:var(--mut);font-size:13px;cursor:pointer;font-family:inherit;text-decoration:underline;text-underline-offset:2px;padding:0}
-.link:hover{color:var(--g)}
-.s-head{display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-shrink:0}
-.prog{height:3px;background:#eceadf;border-radius:3px;margin:12px 0 10px;overflow:hidden;flex-shrink:0}
-.prog>i{display:block;height:100%;width:0;background:var(--g);border-radius:3px;transition:width .35s ease}
+*{box-sizing:border-box;margin:0;padding:0}
+.app{font-family:'DM Sans',system-ui,sans-serif;color:#1d211a;background:#faf9f5;min-height:100vh;--g:#2D5016;--g7:#3d6a22;--g50:#eef3e8;--ink:#1d211a;--mut:#74796d;--ln:#e6e3d8;--paper:#faf9f5;--card:#fff}
+.serif{font-family:'DM Serif Display',Georgia,serif;font-weight:400;letter-spacing:-.01em}
 
-/* ── HOME SCREEN ── */
-.prof-row{display:flex;gap:6px;align-items:stretch;}
-.prof-seg{transition:flex 0.3s ease;border-radius:9px;overflow:hidden;height:40px;}
-.prof-seg.active{flex:5;background:var(--card);border:0.5px solid #9ab88a;display:flex;align-items:center;padding:0 12px;gap:6px;}
-.prof-seg.done{flex:1;background:#e8e4d8;cursor:pointer;min-width:20px;}
-.prof-seg.pending{flex:1;background:var(--ln);opacity:0.5;min-width:20px;}
-.prof-seg input{border:none;background:transparent;outline:none;font-size:14px;color:var(--ink);font-family:inherit;width:100%;}
-.prof-seg input::placeholder{color:var(--mut);opacity:0.7;}
-.prof-enter{font-size:13px;color:var(--mut);opacity:0.25;transition:opacity .15s;flex-shrink:0;pointer-events:none;}
-.prof-lbl{font-size:13px;color:var(--mut);margin-bottom:7px;}
-.ticker-wrap{position:relative;height:28px;overflow:hidden;margin-top:4px}
-.ticker-item{position:absolute;top:0;width:100%;font-size:17px;color:var(--ink);display:flex;align-items:center;gap:9px;line-height:1.55;transform:translateY(100%);transition:transform .42s cubic-bezier(.4,0,.2,1);font-weight:400}
-.ticker-item.t-on{transform:translateY(0)}
-.ticker-item.t-prev{transform:translateY(-100%)}
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 40px;border-bottom:0.5px solid var(--ln);background:var(--card);position:sticky;top:0;z-index:10}
+.wm{font-family:'DM Serif Display',Georgia,serif;font-size:23px;color:var(--g);letter-spacing:-.01em;text-decoration:none}
+.nav-right{font-size:13px;color:var(--mut)}
 
-/* ── MCQ (Section I) — 4 cols, centred block ── */
-.mcq-outer{flex:1;display:flex;align-items:center;justify-content:center;width:100%;min-height:0}
-.mcq-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;width:100%;max-width:1220px;margin:0 auto;padding:14px 0}
-.mcq-cell{border:0.5px solid var(--ln);border-radius:10px;padding:22px 12px;background:var(--card);display:flex;flex-direction:column;justify-content:center}
-.mcq-cell .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.mcq-cell .qn{font-size:13.5px;font-weight:500}
-.opts{display:flex;gap:4px}
-.opt{flex:1;font-family:inherit;font-size:13px;font-weight:500;border:0.5px solid var(--ln);background:#fff;color:var(--mut);border-radius:6px;padding:6px 0;cursor:pointer;transition:all .12s}
-.opt:hover{border-color:var(--g);color:var(--g)}
-.opt.sel{background:var(--g);border-color:var(--g);color:#fff}
-.opt.wrong{background:var(--red);border-color:var(--red);color:#fff;font-weight:700}
-.opt.correct-ans{background:var(--g50);border-color:var(--g);color:var(--g);font-weight:700;position:relative}
-.opt.correct-ans::after{content:"✓";font-size:9px;position:absolute;top:2px;right:3px;opacity:0.7}
+/* GREETING */
+.greet-bar{padding:32px 40px 28px;border-bottom:0.5px solid var(--ln)}
+.greet-title{font-family:'DM Serif Display',Georgia,serif;font-size:52px;color:var(--ink);margin-top:16px;letter-spacing:-.02em;line-height:1.1}
+.insight{background:var(--card);border:0.5px solid var(--ln);border-radius:11px;padding:13px 16px;display:flex;align-items:center;gap:12px;max-width:560px}
+.mod-badge{width:36px;height:36px;border-radius:8px;background:#f7eedb;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#a96a12;flex-shrink:0}
+.insight-txt{font-size:13.5px;color:var(--ink);line-height:1.5}
+.insight-txt span{color:var(--mut);font-size:12px;display:block;margin-top:2px}
 
-/* ── Section II — centred, compact ── */
-.sec-outer{flex:1;min-height:0;overflow-y:auto;width:100%;display:flex;flex-direction:column}
-.sec-wrap{width:100%;max-width:1060px;margin:auto}
-.sec-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13.5px}
-.sec-table col.c-q{width:34%}.sec-table col.c-m{width:12%}.sec-table col.c-v{width:11%}.sec-table col.c-k{width:7%}.sec-table col.c-a{width:36%}
-.sec-table th{text-align:left;font-weight:600;color:var(--ink);font-size:13.5px;padding:0 8px 10px;border-bottom:0.5px solid var(--ln)}
-.sec-table td{padding:11px 6px;border-bottom:0.5px solid var(--ln);vertical-align:middle}
-.qcell .ql{font-weight:500;font-size:13.5px;display:inline}
-.qcell .qt{font-size:11.5px;color:var(--mut);margin-left:6px;display:inline}
-.gpm{display:inline-flex;border:0.5px solid var(--ln);border-radius:8px;overflow:hidden}
-.gpm button{font-family:inherit;font-size:12px;font-weight:500;border:none;background:#fff;color:var(--mut);padding:5px 8px;cursor:pointer;border-right:0.5px solid var(--ln);transition:all .12s}
-.gpm button:last-child{border-right:none}
-.gpm button:hover{background:#f3f5ee}
-.gpm button.on-f{background:var(--g);color:#fff}
-.gpm button.on-p{background:var(--amber);color:#fff}
-.gpm button.on-z{background:var(--red);color:#fff}
-.pin{width:44px;font-family:inherit;font-size:13px;text-align:center;border:0.5px solid var(--ln);border-radius:6px;padding:4px;margin-left:8px}
-.errsel{font-family:inherit;font-size:12px;border:0.5px solid var(--ln);border-radius:6px;padding:5px 8px;color:var(--ink);background:#fff;width:100%;max-width:280px;margin-top:5px}
-.foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:10px;flex-shrink:0}
+/* SECTIONS */
+.section{padding:28px 40px}
+.section.alt{background:#edeae0}
+.section+.section{border-top:0.5px solid var(--ln)}
+.section.alt+.section{border-top:none}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:18px}
+.sec-title{font-family:'DM Serif Display',Georgia,serif;font-size:20px;color:var(--ink);letter-spacing:-.01em}
+.sec-sub{font-size:12px;color:var(--mut)}
 
-/* ── Diagnostic ── */
-.scorewrap{text-align:center;padding:6px 0 4px;flex-shrink:0}
-.score{font-family:'DM Serif Display',Georgia,serif;font-size:72px;line-height:1;color:var(--g)}
-.score small{font-size:29px;color:var(--mut)}
-.psent{font-size:18px;color:var(--ink);max-width:580px;margin:14px auto 2px;line-height:1.5;font-weight:500}
-.psent b{color:var(--g)}
-.sub-h{font-size:13px;font-weight:700;color:var(--ink);letter-spacing:.06em;text-transform:uppercase;margin:24px 0 12px;display:flex;align-items:center;gap:10px}
-.sub-h::after{content:"";flex:1;height:0.5px;background:var(--ln)}
-.mod-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px}
-.mod-card{border:0.5px solid var(--ln);border-radius:11px;padding:13px 14px;background:var(--card);border-left-width:3px;transition:transform .2s,box-shadow .2s}
-.mod-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,0.08)}
-.mod-card .mn{font-size:14px;font-weight:600}
-.mod-card .ms{font-size:12px;color:var(--mut);margin:2px 0 10px}
-.mod-card .row{display:flex;align-items:baseline;justify-content:space-between}
-.mod-card .pct{font-size:24px;font-weight:600}
-.mod-card .lab{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;color:#fff}
-.bar{height:6px;border-radius:6px;background:#eceadf;margin-top:10px;overflow:hidden}
-.bar>i{display:block;height:100%;width:0;border-radius:6px;transition:width .9s ease}
-.err-row{display:flex;align-items:center;gap:11px;margin-bottom:9px;font-size:14px}
-.err-row .nm{width:250px;flex-shrink:0}
-.err-row .eb{flex:1;height:8px;background:#eceadf;border-radius:8px;overflow:hidden}
-.err-row .eb>i{display:block;height:100%;width:0;background:var(--amber);border-radius:8px;transition:width .9s ease}
-.err-row .ev{font-size:12.5px;color:var(--mut);width:100px;text-align:right;flex-shrink:0}
-.prio{display:flex;border:0.5px solid var(--ln);border-radius:11px;background:var(--card);margin-bottom:8px}
-.prio-left{width:34%;flex-shrink:0;padding:11px 14px;border-right:0.5px solid var(--ln);display:flex;flex-direction:column;gap:3px}
-.prio-top-row{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1px}
-.prio-num{font-family:'DM Serif Display',Georgia,serif;font-size:42px;line-height:1}
-.prio-emoji{font-size:18px;line-height:1;margin-top:3px}
-.prio-err{font-size:12.5px;color:var(--mut);line-height:1.3}
-.prio-marks{font-size:12.5px;color:var(--ink)}
-.prio-marks b{font-weight:700}
-.prio-right{flex:1;padding:12px 20px;display:flex;align-items:center}
-.prio-action{font-size:14.5px;color:var(--ink);line-height:1.55}
-.receipt{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;color:var(--g7);background:var(--g50);border-radius:9px;padding:8px 14px;margin-bottom:16px;font-weight:500;align-self:flex-start;flex-shrink:0}
-.rec-insight{font-size:16.5px;font-weight:500;color:var(--ink);line-height:1.45;margin-bottom:14px}
-.rec-row{display:flex;gap:13px}
-.rec-card{border:0.5px solid var(--ln);border-radius:11px;padding:16px 17px;background:var(--card);flex:1;transition:background .22s,transform .2s,box-shadow .2s,border-color .2s}
-.rec-card:hover{background:#1a2d4a;transform:translateY(-4px);box-shadow:0 8px 24px rgba(26,45,74,0.18);border-color:#1a2d4a}
-.rec-card .rec-title{font-size:15.5px;font-weight:600;color:var(--ink);margin-bottom:7px;transition:color .22s}
-.rec-card:hover .rec-title{color:#fff}
-.rec-card .rec-body{font-size:14px;color:var(--mut);line-height:1.5;transition:color .22s}
-.rec-card:hover .rec-body{color:#a8bdd4}
-.soon{font-size:13.5px;color:var(--mut);margin-top:14px}
-.diag-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:14px}
-.hs-spin{width:22px;height:22px;border:2.5px solid var(--ln);border-top-color:var(--g);border-radius:50%;animation:hs-spin .75s linear infinite}
-@keyframes hs-spin{to{transform:rotate(360deg)}}
-.spin-label{font-size:14px;color:var(--mut)}
-.action-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:4px}
-.action-card{display:flex;gap:14px;border:0.5px solid var(--ln);border-radius:11px;padding:13px 15px;background:var(--card);align-items:flex-start}
-.action-emoji{font-size:20px;line-height:1;flex-shrink:0;padding-top:3px}
-.action-title{font-size:14.5px;font-weight:600;color:var(--ink);margin-bottom:5px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.action-mark-tag{font-size:12px;color:var(--amber);font-weight:500}
-.action-text{font-size:13.5px;color:var(--mut);line-height:1.45}
+/* GRIDS */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 
-/* ── HOME two-column + live preview ── */
-.home2{display:flex;gap:44px;flex:1;align-items:center;justify-content:center;width:100%;max-width:1180px;margin:0 auto;min-height:0}
-.home-l{flex:1 1 0;max-width:540px}
-.home-r{flex:0 0 452px;display:flex;align-items:center}
-.preview{position:relative;width:100%;background:var(--card);border:0.5px solid var(--ln);border-radius:18px;padding:22px 22px 20px;box-shadow:0 10px 34px rgba(45,80,22,.07)}
-.pv-tag{position:absolute;top:15px;right:17px;font-size:10.5px;color:#9aa093;letter-spacing:.07em;text-transform:uppercase;font-weight:600}
-.pv-score{font-family:'DM Serif Display',Georgia,serif;font-size:56px;line-height:1;color:var(--g)}
-.pv-score small{font-size:23px;color:var(--mut)}
-.pv-sub{font-size:14.5px;color:var(--mut);line-height:1.45;margin:7px 0 0;max-width:330px}
-.pv-sub b{color:var(--g);font-weight:600}
-.pv-tray{margin:15px 0 4px;border:0.5px solid var(--ln);border-radius:11px;background:#fbfaf6;padding:10px 13px;display:flex;align-items:center;gap:12px}
-.pv-tiles{display:flex;flex-wrap:wrap;gap:4px;flex:1;align-content:center;min-height:22px}
-.pv-tile{width:9px;height:9px;border-radius:2.5px;background:var(--amber);opacity:0;transform:translateY(-46px) rotate(-12deg)}
-.pv-tile.drop{animation:tiledrop .5s cubic-bezier(.34,1.4,.5,1) forwards}
-@keyframes tiledrop{0%{opacity:0;transform:translateY(-46px) rotate(-12deg)}55%{opacity:1}100%{opacity:1;transform:translateY(0) rotate(0)}}
-.pv-tray-lab{font-size:12.5px;color:var(--ink);font-weight:500;white-space:nowrap;flex-shrink:0}
-.pv-tray-lab b{font-family:'DM Serif Display',Georgia,serif;color:var(--amber);font-size:18px;font-weight:400;margin-right:2px}
-.pv-h{font-size:11px;font-weight:700;color:var(--ink);letter-spacing:.07em;text-transform:uppercase;margin:16px 0 9px}
-.pv-mods{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.pv-mc{border:0.5px solid var(--ln);border-radius:9px;padding:9px 11px;border-left-width:3px;border-left-style:solid}
-.pv-mc .mn{font-size:12.5px;font-weight:600;color:var(--ink)}
-.pv-mc .mp{font-family:'DM Serif Display',Georgia,serif;font-size:21px;line-height:1.1;margin-top:1px}
-.pv-mc .pvbar{height:5px;border-radius:5px;background:#eceadf;margin-top:7px;overflow:hidden}
-.pv-mc .pvbar>i{display:block;height:100%;width:0;border-radius:5px;transition:width .85s cubic-bezier(.4,0,.2,1)}
-.pv-prio{display:flex;gap:12px;border:0.5px solid var(--ln);border-radius:10px;padding:11px 13px;background:#fbfaf6;align-items:flex-start;min-height:62px}
-.pv-prio-num{font-family:'DM Serif Display',Georgia,serif;font-size:26px;color:var(--g);line-height:1;flex-shrink:0;width:18px}
-.pv-prio-t{font-size:13.5px;font-weight:600;color:var(--ink);min-height:17px}
-.pv-prio-b{font-size:12.5px;color:var(--mut);line-height:1.4;margin-top:3px;min-height:16px}
-.pv-cursor{display:inline-block;width:1px;height:13px;vertical-align:-2px;background:var(--g);margin-left:1px;animation:pvblink .7s steps(1) infinite}
-@keyframes pvblink{50%{opacity:0}}
-/* ── Priority card interactive (spotlight) ── */
-.prio{cursor:pointer;transition:border-color .18s,box-shadow .18s,background .18s,transform .2s}
-.prio:hover{border-color:#c4cbb9;transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,0.08)}
-.prio.prio-active{border-color:var(--pc);box-shadow:0 0 0 2.5px var(--pc),0 6px 16px rgba(0,0,0,0.08);transform:translateY(-3px)}
-.prio.prio-active .prio-left{border-right-color:var(--pc)}
+/* PAPER CARDS */
+.card{background:var(--card);border:0.5px solid var(--ln);border-radius:12px;overflow:hidden;cursor:pointer;transition:border-color .15s,transform .15s}
+.card:hover{border-color:#a8c4d8;transform:translateY(-5px);background:#eef4f8}
+.card-band{display:flex;height:14px;width:100%;}
+.card-band-seg{height:100%;}
+.card-body{padding:16px 18px 18px;}
+.card-type{font-size:10px;font-weight:500;color:var(--g7);background:var(--g50);padding:3px 9px;border-radius:20px;display:inline-block;margin-bottom:10px;letter-spacing:.04em}
+.card-title{font-family:'DM Serif Display',Georgia,serif;font-size:20px;color:var(--ink);line-height:1.2;margin-bottom:3px;letter-spacing:-.02em}
+.card-year{font-size:12px;color:var(--mut);margin-bottom:14px}
+.mod-leg{display:flex;gap:9px;margin-bottom:14px}
+.mod-dot{display:flex;align-items:center;gap:3px;font-size:10px;color:var(--mut)}
+.mod-c{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.card-cta{font-size:12px;color:var(--g);font-weight:500}
+.card-reviewed{font-size:12px;color:var(--mut)}
 
-/* ── Two-column priorities + question review panel ── */
-.diag-prio-wrap{display:flex;gap:14px;align-items:flex-start}
-.diag-prio-col{flex:1;min-width:0;display:flex;flex-direction:column}
-.diag-prio-list{display:flex;flex-direction:column;gap:7px;flex:1}
-.diag-prio-list .prio{margin-bottom:0;flex:1}
-.diag-q-col{flex:1;min-width:0;display:flex;flex-direction:column}
-.qpanel{height:480px;max-height:480px;overflow-y:auto;border:0.5px solid var(--ln);border-radius:11px;background:var(--card);scrollbar-width:thin;scrollbar-color:#d4d7cd transparent}
-.qcard{border-bottom:0.5px solid var(--ln);transition:opacity .22s}
-.qcard:last-child{border-bottom:none}
-.qcard.q-dim{opacity:.18}
-.qcard.q-lit{opacity:1}
-.qhead{display:flex;align-items:center;gap:9px;padding:10px 14px;cursor:pointer;user-select:none;border-left:3px solid transparent;transition:background .12s,border-color .18s}
-.qcard.q-lit .qhead{border-left-color:var(--pc)}
-.qhead:hover{background:#f5f4ef}
-.q-num{font-size:12.5px;font-weight:700;color:var(--ink);flex-shrink:0;width:36px}
-.qcard.q-reviewed .q-num{text-decoration:line-through;text-decoration-color:var(--pc)}
-.q-title{font-size:12.5px;color:var(--mut);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.q-score{font-size:12px;font-weight:700;flex-shrink:0}
-.q-tag{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:5px;white-space:nowrap;flex-shrink:0;max-width:118px;overflow:hidden;text-overflow:ellipsis}
-.q-chev{font-size:9px;color:var(--mut);flex-shrink:0;transition:transform .22s}
-.qcard.q-open .q-chev{transform:rotate(90deg)}
-.qbody{max-height:0;overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1)}
-.qcard.q-open .qbody{max-height:560px}
-.qinner{padding:11px 14px 13px 17px;border-top:0.5px solid var(--ln);background:#fbfaf6}
-.q-errlabel{font-size:12px;font-weight:600;color:var(--red);margin-bottom:6px}
-.q-fb{font-size:12.5px;color:var(--ink);line-height:1.5}
-.q-review-btn{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-family:inherit;font-size:11.5px;font-weight:500;color:var(--g);background:var(--g50);border:0.5px solid #c4cbb9;border-radius:20px;padding:4px 13px;cursor:pointer;transition:all .15s}
-.q-review-btn:hover{background:var(--g);color:#fff;border-color:var(--g)}
-.q-reviewed-txt{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:11.5px;font-weight:600;color:var(--g)}
-.q-dp{margin-top:8px;display:block}
-.q-dp-row{display:flex;align-items:baseline;gap:6px}
-.q-dp-lbl{font-size:10.5px;font-weight:700;color:#d02d2d;letter-spacing:.05em;text-transform:uppercase;flex-shrink:0}
-.q-dp-short{font-size:12.5px;color:#d02d2d;font-weight:500;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(210,45,45,0.4)}
-.q-dp-expand-btn{font-family:inherit;font-size:11.5px;color:#d02d2d;background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:2px;flex-shrink:0;opacity:0.65}
-.q-dp-expand-btn:hover{opacity:1}
-.q-dp-full{margin-top:6px;padding:9px 11px;background:#fdf0f0;border-radius:7px;border-left:2px solid rgba(210,45,45,0.3);font-size:12px;color:#8b3030;line-height:1.6;display:none}
-.q-dp-full.open{display:block}
-.prio-other{cursor:pointer;border:0.5px solid #e8c97a;border-radius:11px;background:#fef6e4;padding:9px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;transition:border-color .18s,box-shadow .18s,transform .2s}
-.prio-other:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(169,106,18,0.1)}
-.prio-other.prio-active{border-color:#c9922a;box-shadow:0 0 0 2.5px #c9922a,0 6px 16px rgba(169,106,18,0.12);transform:translateY(-3px)}
-.qpanel::-webkit-scrollbar{width:5px}
-.qpanel::-webkit-scrollbar-track{background:transparent}
-.qpanel::-webkit-scrollbar-thumb{background:#d4d7cd;border-radius:4px}
-.verb-card{display:flex;flex-direction:column;gap:9px;margin-top:2px}
-.verb-card-bullet{display:flex;align-items:flex-start;gap:9px;font-size:12.5px;line-height:1.55;color:var(--ink);padding-left:2px}
-.verb-bullet{width:6px;height:6px;border-radius:50%;background:var(--ink);flex-shrink:0;margin-top:5px}
-.verb-card-subbullet{display:flex;align-items:flex-start;gap:7px;margin-top:6px;padding-left:15px;font-size:12px;line-height:1.5;color:var(--ink)}
-.verb-sub-bullet{width:5px;height:5px;border-radius:50%;background:var(--mut);flex-shrink:0;margin-top:5px}
-.verb-lbl-nesa{font-weight:700;color:#1e5799}
-.verb-lbl-mistake{font-weight:700;color:#dc2626}
-.verb-lbl-practice{font-weight:700;color:#16a34a}
+/* TOP 10 CARDS */
+.t10-outer{overflow:hidden;cursor:default}
+.t10-track{display:flex;gap:12px;width:max-content;animation:t10scroll 35s linear infinite}
+@keyframes t10scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.t10{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:18px 16px;cursor:pointer;flex:0 0 200px;transition:border-color .15s}
+.t10:hover{border-color:#9ab88a}
+.t10-num{font-family:'DM Serif Display',Georgia,serif;font-size:42px;color:#d8d4c8;line-height:1;margin-bottom:10px}
+.t10-school{font-family:'DM Serif Display',Georgia,serif;font-size:15px;color:var(--ink);margin-bottom:3px;letter-spacing:-.01em;line-height:1.25}
+.t10-sub{font-size:11px;color:var(--mut);margin-bottom:12px}
+.t10-bar{display:flex;gap:2px}
+.t10-seg{height:4px;border-radius:2px}
+
+/* SOON */
+.soon{background:var(--paper);border:0.5px dashed #d0cdc2;cursor:default}
+.soon:hover{border-color:#d0cdc2;transform:none}
+.soon .card-title{color:#bbb}
+.soon-tag{font-size:11px;color:#bbb;margin-top:5px}
 </style>
+</head>
+<body>
+<div class="app" id="app">
 
-<div class="hs-app" id="hsApp">
-  <h2 class="sr-only">Hindsight interactive prototype: review the James Ruse 2024 Chemistry trial across four screens — start, Section I multiple choice, Section II marking, and a diagnostic breakdown.</h2>
-  <div class="hs-nav">
-    <div style="display:flex;align-items:center;gap:12px">
-      <div class="hs-wm">Hindsight</div>
-    </div>
-    <div class="hs-nav-right">
-      <button id="backBtn" onclick="goBack()" style="display:none;font-family:inherit;font-size:13px;color:var(--mut);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;margin-right:4px">← back</button>
-      <button id="fwdBtn" onclick="goFwd()" style="display:none;font-family:inherit;font-size:13px;color:var(--mut);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;margin-right:4px">forward →</button>
-      <span class="step-lbl" id="stepLbl">Step 1 of 4</span>
-      <div class="step" id="stepper"><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-    </div>
+  <nav class="nav">
+    <a href="library.html" class="wm">Hindsight</a>
+    <div style="font-size:13px;font-weight:500;padding:5px 13px;border-radius:20px;background:var(--g50);color:var(--g);">Chemistry · Year 12</div>
+  </nav>
+
+  <div class="greet-bar" id="greetBar">
+    <div id="insightSlot"></div>
+    <div class="greet-title" id="greetTitle">Chemistry trial papers.</div>
+    <div style="font-size:13px;color:var(--mut);margin-top:8px;">Pick a paper &nbsp;→&nbsp; enter your marks &nbsp;→&nbsp; get your diagnostic. About 10 minutes.</div>
   </div>
-  <div id="screens"></div>
-</div>
 
+  <!-- RECOMMENDED NEXT -->
+  <div class="section" id="recSection" style="display:none">
+    <div class="sec-head">
+      <div class="sec-title">Recommended next</div>
+      <div class="sec-sub" id="recSub">Based on your last paper</div>
+    </div>
+    <div class="grid3" id="recGrid"></div>
+  </div>
+
+  <!-- TOP 10 -->
+  <div class="section alt">
+    <div class="sec-head">
+      <div class="sec-title">Top 10 in Sydney</div>
+      <div class="sec-sub">Most reviewed this week</div>
+    </div>
+    <div class="t10-outer"><div class="t10-track" id="top10Grid"></div></div>
+  </div>
+
+  <!-- ALL PAPERS -->
+  <div class="section">
+    <div class="sec-head">
+      <div class="sec-title">All papers</div>
+      <div class="sec-sub" id="allSub">Chemistry · Year 12</div>
+    </div>
+    <div class="grid3" id="allGrid"></div>
+  </div>
+
+</div>
 <script>
-(function(){
-const app=document.getElementById('screens');
-const stepper=document.getElementById('stepper');
-const stepLbl=document.getElementById('stepLbl');
-const MOD={Mod5:{n:"Module 5",full:"Equilibrium & Acid Reactions"},Mod6:{n:"Module 6",full:"Acid/Base Reactions"},Mod7:{n:"Module 7",full:"Organic Chemistry"},Mod8:{n:"Module 8",full:"Applying Chemical Ideas"}};
-const ERRORS=["Did not know theory","Did not include detail / chemistry terminology","Calculation error — knowledge","Calculation error — silly mistake","Calculation error — didn't show working","Did not address verb","Did not use diagram / stimulus / equation","Time — ran out overall","Time — spent too long on one question","Time — reading questions too slowly"];
-const ACTION={
-"Did not know theory":"Back to the theory first — textbook and class notes for this module. Then book time with your teacher on the specific questions you blanked on. Understanding why you blanked matters more than re-reading.",
-"Did not include detail / chemistry terminology":"Unpack the sample answers and marker comments, then rewrite WITH detail and submit to your teacher.",
-"Calculation error — knowledge":"Flowchart the process and show all working. Every step that goes into the calculator goes on paper first. Drill from your textbook until the method is automatic — then do it under timed conditions.",
-"Calculation error — silly mistake":"Walk through each step in your head as if explaining the method to someone — this forces you to notice where the logic breaks rather than blindly executing. Before moving on, sense-check: does the answer magnitude and unit match what the question was actually asking for?",
-"Calculation error — didn't show working":"Anything entering the calculator must appear on paper first — formula, substitution, intermediate value, final answer. Markers award steps independently, so visible working earns marks even when the final answer is wrong.",
-"Did not address verb":"Map the verb before you write — 'evaluate' is not 'describe'. Plan your response to the verb.",
-"Did not use diagram / stimulus / equation":"Be active from the moment you start reading — annotate the stimulus as you go: circle key values, label axes, mark the relevant region. Explicitly reference your annotations in your written answer where relevant. Annotations alone on the stimulus, without additional written text, can still earn marks.",
-"Time — ran out overall":"1.8 min/mark. Section I in 36 min. Write a time target at the top of each Section II question before you start. If you hit your cap mid-answer, immediately dot-point your remaining thoughts — it gives you a launch point if time opens up later, and markers can award marks for correct content even in an unfinished response.",
-"Time — spent too long on one question":"Set a strict 1.8 min/mark cap per question. When you hit it, dot-point any remaining thoughts and move on — those notes are a launch point if you return, and can earn marks even in an unfinished response. Never let one question bleed into another's time.",
-"Time — reading questions too slowly":"On longer questions, find the question mark and read it first — now you know what you're solving for. Then, read back through the stimulus asking: 'how do I use this to answer the question?'. On shorter questions, find the verb first — it defines the structure of your answer. Either way, a longer read is rarely the problem. Passive reading is."};
-const EMOJI_MAP={"Did not know theory":"📖","Did not include detail / chemistry terminology":"✏️","Calculation error — knowledge":"🔢","Calculation error — silly mistake":"⚡","Calculation error — didn't show working":"📋","Did not address verb":"🔤","Did not use diagram / stimulus / equation":"📊","Time — ran out overall":"⏱️","Time — spent too long on one question":"⏰","Time — reading questions too slowly":"👁️"};
-// Syllabus dot point lookup — keyed by NESA dot point ID
-const DP={
-  '5.4':{short:'Collision theory and reaction rates',full:'Investigate the relationship between collision theory and reaction rate in order to analyse chemical equilibrium reactions.'},
-  '5.5':{short:"Le Chatelier's principle",full:"Investigate the effects of temperature, concentration, volume and/or pressure on a system at equilibrium and explain how Le Chatelier's principle can be used to predict such effects."},
-  '5.9':{short:'Keq calculations',full:'Perform calculations to find the value of Keq and concentrations of substances within an equilibrium system, and use these values to make predictions on the direction in which a reaction may proceed.'},
-  '5.10':{short:'Effect of temperature on Keq',full:'Qualitatively analyse the effect of temperature on the value of Keq.'},
-  '5.16':{short:'Ksp calculations',full:'Derive equilibrium expressions for saturated solutions in terms of Ksp and calculate the solubility of an ionic substance from its Ksp value.'},
-  '6.3':{short:'Balanced equations for acid reactions',full:'Predict the products of acid reactions and write balanced equations to represent: acids and bases; acids and carbonates; acids and metals.'},
-  '6.4':{short:'Applications of neutralisation',full:'Investigate applications of neutralisation reactions in everyday life and industrial processes.'},
-  '6.6':{short:'Acid-base models and limitations',full:"Explore the changes in definitions and models of an acid and a base over time to explain the limitations of each model, including Arrhenius' theory and Brønsted–Lowry theory."},
-  '6.13':{short:'Titration calculations',full:'Conduct practical investigations to analyse the concentration of an unknown acid or base by titration.'},
-  '6.19':{short:'Buffers',full:'Conduct a practical investigation to prepare a buffer and demonstrate its properties.'},
-  '7.2':{short:'Structural isomers',full:'Explore and distinguish the different types of structural isomers, including chain isomers, position isomers and functional group isomers.'},
-  '7.4':{short:'Properties within a homologous series',full:'Conduct an investigation to compare the properties of organic chemical compounds within a homologous series, and explain these differences in terms of bonding.'},
-  '7.9':{short:'Reactions of hydrocarbons',full:'Investigate, write equations and construct models to represent the reactions of unsaturated hydrocarbons when added to hydrogen (H₂), halogens (X₂), hydrogen halides (HX) and water (H₂O).'},
-  '7.12':{short:'Alcohol properties and intermolecular bonding',full:'Explain the properties within and between the homologous series of alcohols with reference to the intermolecular and intramolecular bonding present.'},
-  '7.13':{short:'Enthalpy of combustion',full:'Conduct a practical investigation to measure and reliably compare the enthalpy of combustion for a range of alcohols.'},
-  '7.17':{short:'Biofuels vs fossil fuels',full:'Compare and contrast fuels from organic sources to biofuels, including ethanol.'},
-  '7.23':{short:'Reaction pathways',full:'Draft and construct flow charts to show reaction pathways for chemical synthesis, including those that involve more than one step.'},
-  '8.3':{short:'Gravimetric and precipitation titration',full:'Conduct investigations and/or process data involving gravimetric analysis and precipitation titrations.'},
-  '8.5':{short:'Qualitative organic functional group tests',full:'Conduct qualitative investigations to test for the presence in organic molecules of the following functional groups: carbon–carbon double bonds, hydroxyl groups and carboxylic acids.'},
-  '8.6':{short:'Spectroscopy (NMR, MS, IR)',full:'Investigate the processes used to analyse the structure of simple organic compounds addressed in the course, including but not limited to: proton and carbon-13 NMR, mass spectrometry and infrared spectroscopy.'},
-};
-// Real JR 2024 answer key. Q16 accepted both B and D (disputed).
-const MCQ=[
-  ['Mod7','B'], // Q1  structural isomers C₃H₆BrCl
-  ['Mod8','A'], // Q2  AAS — which component changes
-  ['Mod7','C'], // Q3  best atom economy
-  ['Mod7','D'], // Q4  two functional groups
-  ['Mod8','B'], // Q5  flame test blue/grey
-  ['Mod5','A'], // Q6  cycad fruit — open system
-  ['Mod8','C'], // Q7  IR spectrum — amide
-  ['Mod7','D'], // Q8  ethylpropanoate synthesis
-  ['Mod7','A'], // Q9  boiling point of ester Z
-  ['Mod5','A'], // Q10 heat of combustion per mol O₂
-  ['Mod7','C'], // Q11 micelle interactions
-  ['Mod7','D'], // Q12 CO₂ from fermentation
-  ['Mod8','D'], // Q13 NMR splitting pattern
-  ['Mod7','B'], // Q14 polyester monomer
-  ['Mod8','D'], // Q15 ¹³C NMR unique signals
-  ['Mod8','BD'],// Q16 confirm Pb²⁺ and Ba²⁺ (both B and D accepted)
-  ['Mod6','C'], // Q17 Mg(OH)₂ solubility
-  ['Mod6','D'], // Q18 citric acid vs HCl same pH
-  ['Mod6','A'], // Q19 pH after dilution
-  ['Mod8','A'], // Q20 structure from spectral data
-].map((x,i)=>({n:i+1,mod:x[0],correct:x[1]}));
-// Real JR 2024 Section II — 25 sub-parts, 80 marks total
-// verb: NESA directive verb only; verbLevel: identify|describe|explain|analyse|evaluate
-const SEC=[
-  {id:'21',  mod:'Mod7',marks:2, t:'Draw isomers of butanoic acid',                  verb:'Draw',      vl:'describe',  dp:'7.2'},
-  {id:'22',  mod:'Mod5',marks:2, t:'Annotate rate graph — catalyst effect',           verb:'',          vl:'',          dp:'5.4'},
-  {id:'23',  mod:'Mod7',marks:2, t:'Describe chemical test — butan-2-ol',             verb:'Describe',  vl:'describe',  dp:'8.5'},
-  {id:'24a', mod:'Mod6',marks:1, t:'Write balanced equation — Na₂CO₃ + HCl',        verb:'',          vl:'',          dp:'6.3'},
-  {id:'24b', mod:'Mod6',marks:4, t:'Calculate % purity — back titration',             verb:'Calculate', vl:'explain',   dp:'6.13'},
-  {id:'25a', mod:'Mod6',marks:2, t:'Justify NaHCO₃ for acid spills',                 verb:'Justify',   vl:'evaluate',  dp:'6.4'},
-  {id:'25b', mod:'Mod6',marks:2, t:'Arrhenius — give two reasons',                    verb:'',          vl:'',          dp:'6.6'},
-  {id:'26',  mod:'Mod5',marks:4, t:'Haber process — design features + economic benefits', verb:'Explain', vl:'explain', dp:'5.5'},
-  {id:'27a', mod:'Mod7',marks:3, t:'Account for combustion difference — octane vs biofuel', verb:'Account', vl:'explain', dp:'7.17'},
-  {id:'27b', mod:'Mod7',marks:3, t:'Calculate max temperature — q = mcΔT',           verb:'Calculate', vl:'explain',   dp:'7.13'},
-  {id:'28a', mod:'Mod7',marks:3, t:'Plot carbon atoms vs solubility',                 verb:'',          vl:'',          dp:'7.4'},
-  {id:'28b', mod:'Mod7',marks:1, t:'Estimate solubility — hexan-1-ol',                verb:'',          vl:'',          dp:'7.4'},
-  {id:'28c', mod:'Mod7',marks:4, t:'Explain solubility trend + diagram',              verb:'Explain',   vl:'explain',   dp:'7.12'},
-  {id:'29a', mod:'Mod5',marks:3, t:'Justify exothermic/endothermic — Keq vs T graph', verb:'Justify',   vl:'evaluate',  dp:'5.10'},
-  {id:'29b', mod:'Mod5',marks:4, t:'Calculate [H₂] at equilibrium — ICE table',      verb:'Calculate', vl:'explain',   dp:'5.9'},
-  {id:'30a', mod:'Mod5',marks:1, t:'Identify effect of adding Cu metal',              verb:'Identify',  vl:'identify',  dp:'5.5'},
-  {id:'30b', mod:'Mod5',marks:3, t:'Account for changes — dilution effect',           verb:'Account',   vl:'explain',   dp:'5.5'},
-  {id:'31',  mod:'Mod5',marks:5, t:'Calculate Ksp — lead thiocyanate',                verb:'Calculate', vl:'explain',   dp:'5.16'},
-  {id:'32a', mod:'Mod7',marks:6, t:'Justify identification — compounds J, M and K',  verb:'Justify',   vl:'evaluate',  dp:'7.23'},
-  {id:'32b', mod:'Mod7',marks:2, t:'Draw structural equation — hex-3-ene hydration',  verb:'Draw',      vl:'describe',  dp:'7.9'},
-  {id:'33a', mod:'Mod6',marks:2, t:'Calculate [HOCl] from titration data',            verb:'Calculate', vl:'explain',   dp:'6.13'},
-  {id:'33b', mod:'Mod6',marks:5, t:'Determine pH — buffer region (Henderson-Hasselbalch)', verb:'Determine', vl:'explain', dp:'6.19'},
-  {id:'33d', mod:'Mod6',marks:2, t:'Discuss systematic error — diluted NaOH',         verb:'Discuss',   vl:'evaluate',  dp:'6.13'},
-  {id:'34',  mod:'Mod8',marks:9, t:'Justify structure M, N, O — spectroscopic data',  verb:'Justify',   vl:'evaluate',  dp:'8.6'},
-  {id:'35',  mod:'Mod8',marks:5, t:'Multi-step titration — commercial disinfectant',  verb:'',          vl:'',          dp:'8.3'},
+const PAPERS=[
+  {id:'james-ruse-2024',school:'James Ruse',year:'2024',type:'Trial',url:'chemistry/james-ruse-2024.html',mods:[25,30,25,20]},
+  {id:'sydney-boys-2024',school:'Sydney Boys',year:'2024',type:'Trial',url:'#',mods:[20,40,20,20]},
+  {id:'north-sydney-girls-2024',school:'North Sydney Girls',year:'2024',type:'Trial',url:'#',mods:[25,25,30,20]},
+  {id:'baulkham-hills-2024',school:'Baulkham Hills',year:'2024',type:'Trial',url:'#',mods:[20,25,25,30]},
+  {id:'knox-grammar-2023',school:'Knox Grammar',year:'2023',type:'Trial',url:'#',mods:[30,20,30,20]},
+  {id:'nbsc-manly-2024',school:'NBSC Manly',year:'2024',type:'Trial',url:'#',mods:[15,40,20,25]},
+  {id:'normanhurst-2024',school:'Normanhurst Boys',year:'2024',type:'Trial',url:'#',soon:true},
+  {id:'st-george-girls-2024',school:'St George Girls',year:'2024',type:'Trial',url:'#',soon:true},
+  {id:'fort-street-2024',school:'Fort Street',year:'2024',type:'Trial',url:'#',soon:true},
 ];
-const SAMPLE_MCQ={9:'A',13:'A',16:'A',17:'A',19:'B'};
-const SAMPLE_SEC={21:['full'],22:['full'],23:['partial',4,"Calculation error — didn't show working"],24:['full'],25:['partial',2,"Did not include detail / chemistry terminology"],26:['partial',4,"Calculation error — knowledge"],27:['full'],28:['partial',4,"Did not include detail / chemistry terminology"],29:['full'],30:['partial',5,"Did not use diagram / stimulus / equation"],31:['partial',2,"Did not know theory"],32:['partial',2,"Calculation error — didn't show working"],33:['partial',3,"Did not address verb"],34:['zero',0,"Time — ran out overall"]};
-// Demo fill data — realistic result for testing diagnostic
-const DEMO_SEC_DATA={
-  '21':{mode:'full',val:2,err:''},
-  '22':{mode:'full',val:2,err:''},
-  '23':{mode:'partial',val:1,err:"Did not include detail / chemistry terminology"},
-  '24a':{mode:'full',val:1,err:''},
-  '24b':{mode:'partial',val:2,err:"Calculation error — knowledge"},
-  '25a':{mode:'partial',val:1,err:"Did not include detail / chemistry terminology"},
-  '25b':{mode:'full',val:2,err:''},
-  '26':{mode:'partial',val:2,err:"Calculation error — knowledge"},
-  '27a':{mode:'full',val:3,err:''},
-  '27b':{mode:'partial',val:1,err:"Calculation error — silly mistake"},
-  '28a':{mode:'full',val:3,err:''},
-  '28b':{mode:'full',val:1,err:''},
-  '28c':{mode:'partial',val:2,err:"Did not include detail / chemistry terminology"},
-  '29a':{mode:'full',val:3,err:''},
-  '29b':{mode:'partial',val:2,err:"Calculation error — knowledge"},
-  '30a':{mode:'full',val:1,err:''},
-  '30b':{mode:'partial',val:1,err:"Did not address verb"},
-  '31':{mode:'partial',val:3,err:"Calculation error — silly mistake"},
-  '32a':{mode:'partial',val:3,err:"Calculation error — knowledge"},
-  '32b':{mode:'full',val:2,err:''},
-  '33a':{mode:'full',val:2,err:''},
-  '33b':{mode:'partial',val:2,err:"Did not address verb"},
-  '33d':{mode:'partial',val:1,err:"Did not include detail / chemistry terminology"},
-  '34':{mode:'zero',val:0,err:"Time — ran out overall"},
-  '35':{mode:'partial',val:2,err:"Time — ran out overall"}
-};
-// Specific diagnostic feedback for every question × error combo present in DEMO_SEC_DATA.
-// Keyed by questionId + '||' + errorType. Tone: direct, prescriptive — what was missing, what to do.
-const REVIEW_FB={
-  '23||Did not include detail / chemistry terminology':"A 'describe' on a chemical test must chain reagent → observation → conclusion: you named the test for butan-2-ol but skipped the colour change and the secondary-alcohol reasoning that earns the detail marks. Rewrite it spelling out what you add, what you'd see, and why a secondary alcohol behaves that way.",
-  '24b||Calculation error — knowledge':"Back-titration marks live in the logic chain — moles of excess HCl, subtract from total added, then relate the reacted amount to the carbonate before converting to % purity. Your slip was in the 'total − excess = reacted' step, so drill that structure until it's automatic.",
-  '25a||Did not include detail / chemistry terminology':"A 'justify' needs the chemistry, not just the choice: NaHCO₃ is a weak base, so it neutralises acid spills safely without a violent exothermic surge, and any excess simply decomposes to CO₂. You stated it works but never used terms like 'weak base' or 'self-limiting' that the marks are tied to.",
-  '26||Calculation error — knowledge':"This 'explain' must couple each Haber design feature (compromise temperature, high pressure, catalyst) to its Le Chatelier effect on yield AND its economic payoff — you listed conditions but didn't link them to the equilibrium outcome. Pair every condition with both its effect and its commercial reason to capture full marks.",
-  '27b||Calculation error — silly mistake':"The q = mcΔT method was right but a substitution slip cost you — check you used the mass of water (not fuel) and kept J/kJ units consistent before solving for ΔT. Redo it writing each quantity with its unit so the arithmetic can't drift.",
-  '28c||Did not include detail / chemistry terminology':"The solubility trend explanation needs the competition between the polar –OH group hydrogen-bonding to water and the growing non-polar carbon chain — you gave the direction but not the molecular cause, and the diagram was missing. Name the intermolecular forces explicitly and annotate the diagram to lock in the detail marks.",
-  '29b||Calculation error — knowledge':"ICE-table marks depend on a correct initial / change / equilibrium setup, then substituting into Keq — your error was in the change row's mole ratio or the Keq rearrangement, not the concept. Rebuild the table from scratch and verify the change row before solving for [H₂].",
-  '30b||Did not address verb':"'Account for' means give the reason, not just state the observation — you described what happened to the equilibrium on dilution but didn't explain why via Le Chatelier and the Q-versus-Keq comparison. Always answer the 'why' for an account verb, naming the shift direction and its driving cause.",
-  '31||Calculation error — silly mistake':"The Ksp setup was sound, but a slip — most likely dropping the stoichiometric coefficient as an exponent (e.g. [SCN⁻]²) — cost you marks. Square the right concentration and check each power against the dissolution equation before computing the final value.",
-  '32a||Calculation error — knowledge':"This 6-mark 'justify' rewards linking each observation to a specific functional group with a confirming test — you identified J, M and K but didn't fully chain the evidence to all three structures. Map observation → functional group → confirmation for each compound so every identification stands on its own.",
-  '33b||Did not address verb':"'Determine' requires the full worked path to a numerical pH via Henderson–Hasselbalch — you set up the buffer but didn't carry the ratio through to a final value. Finish every step to the number, showing the pKa and the log term, because an unfinished method leaves marks on the table.",
-  '33d||Did not include detail / chemistry terminology':"A 'discuss' on systematic error needs both direction and consequence: diluted NaOH gives a larger titre, which overstates the calculated analyte concentration — you flagged the error but not its quantitative effect. State which way the result is skewed and why to earn the analysis marks.",
-  '34||Time — ran out overall':"This 9-mark spectroscopic 'justify' was left blank because time ran out — it's the single biggest recoverable block on the paper. Budget ~16 minutes for it up front and practise reading MS, IR and NMR data fast so a question this size never gets stranded.",
-  '35||Time — ran out overall':"You began this multi-step titration but ran out of time before finishing the calculation chain — the partial credit shows the method was sound. Drill multi-step titration stoichiometry against a timer so the full sequence runs faster and you reach the final answer."
-};
-// THEORY_FB — per-question feedback for "Did not know theory" errors only.
-// All other error types are handled by the generic ACTION object.
-// 23 entries (Section II sub-parts; 28a and 28b excluded — pure plotting/reading, not theory).
 
-const THEORY_FB = {
-  '21||Did not know theory': 'This question required you to know the three categories of structural isomer and apply them to C₄H₈O₂ — specifically that butanoic acid has a chain isomer (2-methylpropanoic acid) and functional group isomers (esters such as methyl propanoate). You needed to recognise that isomers share the same molecular formula but differ in connectivity, and that carboxylic acids and esters are functional group isomers of each other. Go back to syllabus dot point 7.2 — structural isomers — and practise drawing chain, position and functional group isomers for a given molecular formula until you can list every valid structure.',
+const TOP10=[
+  {school:'James Ruse 2024',sub:'284 reviews',mods:[25,30,25,20]},
+  {school:'Sydney Boys 2024',sub:'201 reviews',mods:[20,40,20,20]},
+  {school:'North Sydney Girls 2024',sub:'178 reviews',mods:[25,25,30,20]},
+  {school:'Baulkham Hills 2024',sub:'155 reviews',mods:[20,25,25,30]},
+  {school:'Knox Grammar 2023',sub:'132 reviews',mods:[30,20,30,20]},
+  {school:'NBSC Manly 2024',sub:'119 reviews',mods:[15,40,20,25]},
+  {school:'Normanhurst Boys 2024',sub:'98 reviews',mods:[25,25,20,30]},
+  {school:'St George Girls 2024',sub:'87 reviews',mods:[20,30,30,20]},
+  {school:'Fort Street 2024',sub:'74 reviews',mods:[30,25,25,20]},
+  {school:'Cranbrook 2023',sub:'61 reviews',mods:[20,20,35,25]},
+];
 
-  '22||Did not know theory': 'This question required you to explain, in collision-theory terms, how a catalyst alters the rate curve. You needed to know that a catalyst provides an alternative reaction pathway with lower activation energy, so a greater proportion of collisions exceed Eₐ and are successful — giving a steeper initial gradient that reaches the same final yield. Go back to syllabus dot point 5.4 — collision theory and reaction rate — and link each rate factor to its effect on either collision frequency or the proportion of successful collisions before annotating rate graphs.',
+const MOD_COLS=['#6e9ab5','#c4892a','#6a9958','#b05a48'];
+const MOD_LABELS=['M5','M6','M7','M8'];
 
-  '23||Did not know theory': 'This question required you to state a specific reagent and observable result that confirms the functional group in butan-2-ol. You needed to know that acidified potassium dichromate oxidises a secondary alcohol, turning orange Cr₂O₇²⁻ to green Cr³⁺, and to state both the reagent and the colour change as the positive result. Go back to syllabus dot point 8.5 — qualitative tests for functional groups — and memorise the reagent, observation and which functional groups give a positive result for each test.',
-
-  '24a||Did not know theory': 'This question required you to know the products of an acid–carbonate reaction and balance the equation. You needed to know that acid + carbonate produces a salt, water and carbon dioxide, giving Na₂CO₃ + 2HCl → 2NaCl + H₂O + CO₂, and to balance for the 2:1 acid-to-carbonate ratio. Go back to syllabus dot point 6.3 — predicting products of acid reactions — and rehearse the three general patterns (acid+base, acid+carbonate, acid+metal) until the products are automatic.',
-
-  '24b||Did not know theory': 'This question required you to know the logic of a back titration, not just titration arithmetic. You needed to know that you titrate the unreacted excess acid, subtract those moles from the total acid added to find the moles that reacted with the sample, then convert to mass and divide by the original sample mass for percentage purity. Go back to syllabus dot point 6.13 — titration analysis — and work through back-titration problems specifically, tracking moles in excess versus moles reacted before attempting purity calculations.',
-
-  '25a||Did not know theory': 'This question required you to justify why sodium bicarbonate, rather than a strong base, is used on acid spills. You needed to know that NaHCO₃ is a weak, safe base that neutralises acid without the corrosive hazards of a strong base, and that the visible CO₂ effervescence indicates when the reaction is occurring and ceasing. Go back to syllabus dot point 6.4 — applications of neutralisation — and link each everyday or industrial use to the specific chemical property that makes that substance suitable.',
-
-  '25b||Did not know theory': 'This question required you to state two specific limitations of the Arrhenius model. You needed to know that Arrhenius only applies to aqueous solutions and defines a base as an OH⁻ producer, so it cannot explain the basicity of substances like ammonia that contain no hydroxide, nor acid–base behaviour in non-aqueous systems. Go back to syllabus dot point 6.6 — changing acid–base models — and compare Arrhenius against Brønsted–Lowry, listing exactly what each model can and cannot account for.',
-
-  '26||Did not know theory': 'This question required you to apply Le Chatelier\'s principle to justify the Haber process operating conditions and their economic rationale. You needed to know that the forward reaction is exothermic and produces fewer gas moles, so high pressure and low temperature favour yield — but a moderate compromise temperature (~400–450°C) with an iron catalyst is used to reach an economically viable rate without shifting equilibrium. Go back to syllabus dot point 5.5 — Le Chatelier\'s principle — and practise explaining industrial conditions as a yield-versus-rate-versus-cost compromise, not yield alone.',
-
-  '27a||Did not know theory': 'This question required you to account for the difference in combustion between octane and a biofuel such as ethanol. You needed to know that ethanol already contains oxygen in its structure, giving cleaner, more complete combustion but releasing less energy per gram than octane, whose pure hydrocarbon chain has higher energy density but is more prone to incomplete combustion. Go back to syllabus dot point 7.17 — comparing fuels and biofuels — and tabulate energy density, combustion completeness and renewability for fossil fuels versus biofuels.',
-
-  '27b||Did not know theory': 'This question required you to connect the molar enthalpy of combustion to a temperature change via q = mcΔT. You needed to know that q is found from the moles of alcohol burned multiplied by its molar heat of combustion, and that ΔT is then obtained by rearranging to ΔT = q/(mc) using the mass and specific heat capacity of the water heated. Go back to syllabus dot point 7.13 — enthalpy of combustion of alcohols — and rehearse the full chain from moles burned to heat released to temperature rise before attempting calorimetry questions.',
-
-  '28c||Did not know theory': 'This question required you to explain the solubility trend across the alcohol homologous series in terms of bonding. You needed to know that the polar hydroxyl group forms hydrogen bonds with water, but as the non-polar hydrocarbon chain lengthens it increasingly disrupts water–water hydrogen bonding, so solubility falls down the series — and your diagram needed to show hydrogen bonding between the –OH group and water. Go back to syllabus dot point 7.12 — bonding in the alcohol homologous series — and practise drawing the hydrogen-bonding interaction while explaining the competition between the hydrophilic head and hydrophobic tail.',
-
-  '29a||Did not know theory': 'This question required you to deduce whether the reaction is exothermic or endothermic from how Keq changes with temperature. You needed to know that for an exothermic forward reaction, increasing temperature shifts equilibrium backwards and therefore decreases Keq, while an endothermic reaction shows the opposite trend — so the direction of the Keq-versus-T graph fixes the sign of ΔH. Go back to syllabus dot point 5.10 — effect of temperature on Keq — and practise reasoning from a Keq trend to the thermicity of the reaction using Le Chatelier.',
-
-  '29b||Did not know theory': 'This question required you to set up and solve an ICE table to find an equilibrium concentration, not just plug into a formula. You needed to know how to write the correct Keq expression for the reaction, populate the change row with a single variable based on the stoichiometry, and substitute the equilibrium expressions into Keq to solve for x and hence [H₂]. Go back to syllabus dot point 5.9 — Keq calculations — and drill ICE-table setup across several reaction stoichiometries until the change-row signs and coefficients are automatic.',
-
-  '30a||Did not know theory': 'This question required you to recognise that adding solid copper has no effect on the equilibrium position. You needed to know that pure solids and liquids are excluded from the equilibrium expression because their concentration is effectively constant, so increasing the amount of solid Cu cannot shift a heterogeneous equilibrium. Go back to syllabus dot point 5.5 — Le Chatelier\'s principle — and focus specifically on heterogeneous equilibria, noting which species are omitted from the reaction quotient and why.',
-
-  '30b||Did not know theory': 'This question required you to account for the equilibrium shift caused by dilution. You needed to know that adding water lowers the concentration of all dissolved species, and that the system responds by shifting toward the side with the greater number of dissolved (aqueous) particles to partially restore concentration. Go back to syllabus dot point 5.5 — Le Chatelier\'s principle — and practise the dilution case specifically, comparing moles of dissolved species on each side to predict the shift direction.',
-
-  '31||Did not know theory': 'This question required you to derive the Ksp expression for a 1:2 salt and calculate solubility. You needed to know that Pb(SCN)₂ dissolves to give one Pb²⁺ and two SCN⁻, so Ksp = [Pb²⁺][SCN⁻]² = (s)(2s)² = 4s³, and that the thiocyanate concentration is twice the molar solubility. Go back to syllabus dot point 5.16 — Ksp and solubility — and work through dissolution expressions for 1:1, 1:2 and 1:3 salts so the coefficient powers and the factor on solubility become automatic.',
-
-  '32a||Did not know theory': 'This question required you to identify unknown organic compounds by reasoning through a reaction pathway. You needed to know the standard functional group transformations — such as hydration of alkenes to alcohols and oxidation of alcohols to carboxylic acids — and to use the reagents at each step as evidence for each compound\'s identity. Go back to syllabus dot point 7.23 — reaction pathways and flow charts — and build a master organic conversion map (reagents and conditions for each arrow) so you can read identities off a sequence of steps.',
-
-  '32b||Did not know theory': 'This question required you to write the structural equation for the hydration (addition of water) of hex-3-ene. You needed to know that water adds across the carbon–carbon double bond, with –H and –OH adding to the two double-bond carbons to give hexan-3-ol, and to draw full structural formulae showing the broken double bond. Go back to syllabus dot point 7.9 — addition reactions of unsaturated hydrocarbons — and practise drawing structural equations for the addition of H₂, X₂, HX and H₂O across a double bond.',
-
-  '33a||Did not know theory': 'This question required you to calculate the concentration of HOCl from titration data using stoichiometry. You needed to know how to find moles of titrant from its concentration and volume, apply the mole ratio from the balanced equation to find moles of HOCl, then divide by the HOCl sample volume to obtain its concentration. Go back to syllabus dot point 6.13 — titration analysis — and rehearse the moles → ratio → concentration sequence so each step follows directly from the balanced equation.',
-
-  '33b||Did not know theory': 'This question required you to calculate the pH within the buffer region of a weak acid system. You needed to know that a buffer resists pH change and that pH = pKa + log([conjugate base]/[weak acid]), then substitute the concentrations of the conjugate acid–base pair present at that point. Go back to syllabus dot point 6.19 — preparing and analysing buffers — and practise identifying when a system is buffering and applying the Henderson–Hasselbalch relationship to find pH.',
-
-  '33d||Did not know theory': 'This question required you to reason about how a specific systematic error propagates through the titration result. You needed to know that an unintentionally diluted NaOH has a lower true concentration than assumed, so a larger volume is needed to reach the endpoint, systematically skewing the calculated analyte concentration in one consistent direction rather than randomly. Go back to syllabus dot point 6.13 — titration analysis — and practise tracing how each systematic error (diluted reagent, wet flask, wrong indicator) affects the titre and the final calculated value.',
-
-  '34||Did not know theory': 'This question required you to integrate data from multiple spectroscopic techniques to justify three structures. You needed to know how to read ¹H and ¹³C NMR for the number of chemical environments and splitting, mass spectrometry for molecular mass and fragment losses, and IR for characteristic functional-group absorptions, then combine them as converging evidence for each structure. Go back to syllabus dot point 8.6 — spectroscopic analysis — and practise interpreting NMR, MS and IR together on the same molecule rather than each technique in isolation.',
-
-  '35||Did not know theory': 'This question required you to work through a multi-step precipitation titration to determine an analyte in a commercial disinfectant. You needed to know the precipitation-titration method — how the titrant reacts with the analyte in a defined mole ratio, and how to carry moles through each stage of a multi-step analysis to the final concentration. Go back to syllabus dot point 8.3 — gravimetric and precipitation titration analysis — and practise sequencing multi-step mole calculations, checking the mole ratio at every stage.'
+function modBar(mods,h){
+  return '<div style="display:flex;gap:2px;margin-bottom:'+h+'px">'+mods.map((v,i)=>'<div style="flex:'+v+';height:'+(h===8?4:5)+'px;border-radius:2px;background:'+MOD_COLS[i]+'"></div>').join('')+'</div>';
+}
+function modLeg(){
+  return '<div style="display:flex;gap:9px;margin-bottom:14px">'+MOD_LABELS.map((l,i)=>'<div style="display:flex;align-items:center;gap:3px;font-size:10px;color:#74796d"><div style="width:6px;height:6px;border-radius:50%;background:'+MOD_COLS[i]+';flex-shrink:0"></div>'+l+'</div>').join('')+'</div>';
 }
 
-// CALC_KNOWLEDGE_FB — per-question feedback for "Calculation error — knowledge" errors only.
-// All other error types are handled by the generic ACTION object.
-// 23 entries (Section II sub-parts; 28a and 28b excluded — pure plotting/reading, not theory).
-
-const CALC_KNOWLEDGE_FB = {
-  '21||Calculation error — knowledge': 'A knowledge error here is not knowing the systematic process for generating valid isomers of C₄H₈O₂, so you could not reliably produce a chain isomer and a functional group isomer that both keep the molecular formula intact. The correct process is to hold the molecular formula fixed, branch the carbon skeleton for a chain isomer (2-methylpropanoic acid) and switch the functional group for a functional-group isomer (an ester such as methyl propanoate), checking each still totals C₄H₈O₂. Re-read syllabus dot point 7.2 — structural isomers. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '22||Calculation error — knowledge': 'A knowledge error here is not knowing the analytical link between a catalyst and the shape of the rate curve, so you could not reason from collision theory to the correct annotation. The correct logic is that a catalyst provides an alternative pathway with lower activation energy, raising the proportion of successful collisions, which gives a steeper initial gradient that levels off at the same final amount as both forward and reverse rates rise equally. Re-read syllabus dot point 5.4 — collision theory and reaction rate. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '23||Calculation error — knowledge': 'A knowledge error here is not knowing which reagent and observation actually identify the hydroxyl group in a secondary alcohol, so the correct test could not be selected. The correct process is to choose acidified potassium dichromate, which oxidises the secondary alcohol and turns from orange Cr₂O₇²⁻ to green Cr³⁺, and to state that colour change as the positive result. Re-read syllabus dot point 8.5 — qualitative tests for functional groups. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '24a||Calculation error — knowledge': 'A knowledge error here is not knowing the products of an acid–carbonate reaction, so the equation could not be constructed or balanced. The correct process is to recall that acid + carbonate → salt + water + CO₂, giving Na₂CO₃ + 2HCl → 2NaCl + H₂O + CO₂, then balance to the 2:1 acid-to-carbonate ratio. Re-read syllabus dot point 6.3 — products of acid reactions. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '24b||Calculation error — knowledge': 'A knowledge error here is not knowing the standardise-then-titrate method, so you could not use the pure CaCO₃ data to find [HCl] before analysing the impure sample. The correct sequence is n(CaCO₃) = m/M, apply the 1:2 ratio to get n(HCl) and hence [HCl] = n/V, then use the sample titre to find n(Na₂CO₃), convert to mass and divide by the sample mass for the percentage. Re-read syllabus dot point 6.13 — titration analysis. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '25a||Calculation error — knowledge': 'A knowledge error here is not knowing the chemical reasoning that justifies NaHCO₃ for acid spills, so the analytical argument could not be assembled. The correct reasoning is that NaHCO₃ is a weak, safe base that neutralises acid without the corrosive hazard of a strong base, and the CO₂ effervescence signals when the reaction is occurring and when it has ceased. Re-read syllabus dot point 6.4 — applications of neutralisation. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '25b||Calculation error — knowledge': 'A knowledge error here is not knowing the specific limitations of the Arrhenius model, so you could not reason out why it fails for NaHCO₃. The correct reasoning is that Arrhenius defines a base only as an OH⁻ producer in aqueous solution, so it cannot classify NaHCO₃ — which produces no hydroxide — as a base, nor explain acid–base behaviour in non-aqueous systems. Re-read syllabus dot point 6.6 — acid–base models and their limitations. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '26||Calculation error — knowledge': 'A knowledge error here is not knowing how to read the Haber-process design features and connect each to an equilibrium or economic rationale, so the analytical process broke down. The correct process is to identify features such as recycling unreacted gases, condensing out ammonia to remove product, and continuous heat exchange, then explain each as improving yield, conversion or energy efficiency rather than restating pressure and temperature. Re-read syllabus dot point 5.5 — Le Chatelier\'s principle. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '27a||Calculation error — knowledge': 'A knowledge error here is not knowing the structural reason fuels differ in heat of combustion, so the comparison could not be justified. The correct reasoning is that 2-methylpropan-1-ol already contains oxygen and a lower-energy C:H makeup, so it releases less energy per gram than octane, whose pure hydrocarbon chain gives higher energy density. Re-read syllabus dot point 7.17 — fuels versus biofuels. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '27b||Calculation error — knowledge': 'A knowledge error here is not knowing how to chain molar enthalpy of combustion to a temperature rise, so q = mcΔT could not be applied correctly. The correct sequence is q = mass × 36.1 kJ g⁻¹ for the heat released, then rearrange q = mcΔT to ΔT = q/(mc) using the mass and specific heat capacity of the water heated. Re-read syllabus dot point 7.13 — enthalpy of combustion of alcohols. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '28c||Calculation error — knowledge': 'A knowledge error here is not knowing the bonding explanation for the solubility trend, so you could not reason from structure to the falling solubility. The correct reasoning is that the polar hydroxyl group hydrogen-bonds with water, but as the non-polar hydrocarbon chain lengthens it increasingly disrupts water–water hydrogen bonding, so solubility decreases down the series. Re-read syllabus dot point 7.12 — bonding in the alcohol homologous series. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '29a||Calculation error — knowledge': 'A knowledge error here is not knowing how a Keq-versus-temperature trend fixes the sign of ΔH, so the exo/endothermic conclusion could not be reasoned out. The correct logic is that Keq decreasing as temperature rises means heat behaves as a product, so the forward reaction is exothermic — raising temperature shifts equilibrium backwards and lowers Keq. Re-read syllabus dot point 5.10 — effect of temperature on Keq. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '29b||Calculation error — knowledge': 'A knowledge error here is not knowing how to set up and solve an ICE table, so [H₂] could not be found from the initial concentrations. The correct process is to write the Keq expression, fill the change row with ±x based on the stoichiometry, substitute the equilibrium terms into Keq and solve for x to obtain [H₂]. Re-read syllabus dot point 5.9 — Keq calculations. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '30a||Calculation error — knowledge': 'A knowledge error here is not knowing that pure solids are excluded from the equilibrium expression, so you could not reason that adding Cu(s) has no effect. The correct reasoning is that a pure solid has effectively constant concentration and is omitted from the reaction quotient, so adding more solid copper cannot shift the position of a heterogeneous equilibrium. Re-read syllabus dot point 5.5 — Le Chatelier\'s principle. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '30b||Calculation error — knowledge': 'A knowledge error here is not knowing how dilution shifts a heterogeneous equilibrium, so the colour and precipitate changes could not be explained. The correct reasoning is that adding water lowers all aqueous concentrations, so the system shifts toward the side with more dissolved particles — here the reverse direction, increasing Ag⁺ and decreasing blue Cu²⁺. Re-read syllabus dot point 5.5 — Le Chatelier\'s principle. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '31||Calculation error — knowledge': 'A knowledge error here is not knowing how to derive Ksp from precipitation data, so the experimental masses could not be turned into a Ksp value. The correct process is to find moles of each reactant, identify the limiting reagent and the leftover ion concentrations after Pb(SCN)₂ precipitates, then substitute into Ksp = [Pb²⁺][SCN⁻]². Re-read syllabus dot point 5.16 — Ksp and solubility. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '32a||Calculation error — knowledge': 'A knowledge error here is not knowing the functional-group transformations along the pathway, so compounds J, M and K could not be identified from the reagents. The correct process is to apply each standard conversion — hydration of the alkene to an alcohol, oxidation of the alcohol to a carbonyl or carboxylic acid — and use the reagent at each arrow as evidence for the next compound\'s identity. Re-read syllabus dot point 7.23 — reaction pathways. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '32b||Calculation error — knowledge': 'A knowledge error here is not knowing how water adds across a C=C double bond, so the structural equation for hex-3-ene → hexan-3-ol could not be written. The correct process is to break the double bond and add –H and –OH across the two carbons, drawing full structural formulae for hex-3-ene and the product hexan-3-ol. Re-read syllabus dot point 7.9 — addition reactions of unsaturated hydrocarbons. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '33a||Calculation error — knowledge': 'A knowledge error here is not knowing the equivalence-point method, so [HOCl] could not be calculated from the NaOH data. The correct sequence is n(NaOH) = c × V at equivalence, apply the 1:1 mole ratio to get n(HOCl), then divide by the 25.00 mL HOCl volume to find its concentration. Re-read syllabus dot point 6.13 — titration analysis. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '33b||Calculation error — knowledge': 'A knowledge error here is not knowing the buffer calculation, so the pH partway to equivalence could not be found. The correct process is to recognise the partially neutralised system is a buffer, find the moles of remaining HOCl and conjugate OCl⁻ present, then apply pH = pKa + log([OCl⁻]/[HOCl]). Re-read syllabus dot point 6.19 — buffers. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '33d||Calculation error — knowledge': 'A knowledge error here is not knowing how a systematic error propagates through the titration, so the effect of a diluted NaOH could not be reasoned out. The correct logic is that a diluted NaOH has a lower true concentration than assumed, so a larger titre is needed to reach the endpoint and the calculated [HOCl] is overstated in one consistent direction rather than randomly. Re-read syllabus dot point 6.13 — titration analysis. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '34||Calculation error — knowledge': 'A knowledge error here is not knowing how to combine the spectroscopic techniques, so the structures of M, N and O could not be deduced from the data. The correct process is to use MS for molecular mass and fragment losses, ¹³C and ¹H NMR for the number of environments and splitting, and IR for functional-group bands, then combine them as converging evidence for each structure. Re-read syllabus dot point 8.6 — spectroscopic analysis (NMR, MS, IR). This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.',
-
-  '35||Calculation error — knowledge': 'A knowledge error here is not knowing the back-titration and precipitation-titration method, so the reported H₂O₂ and peracetic acid percentages could not be checked. The correct process is to carry moles through each stage — titrant to analyte by the balanced mole ratio at every step — then convert to concentration and compare against the reported values. Re-read syllabus dot point 8.3 — gravimetric and precipitation titration analysis. This identifies the exact skill being tested. Then find a worked example for this syllabus dot point (textbook or online) and walk through the method step by step.'
-}
-
-// TERMINOLOGY_FB — per-question feedback for "Did not include detail/chemistry terminology" errors only.
-// All other error types are handled by the generic ACTION object.
-// 23 entries (Section II sub-parts; 28a and 28b excluded — pure plotting/reading, not theory).
-
-const TERMINOLOGY_FB = {
-  '21||Did not include detail / chemistry terminology': 'A terminology error here is not labelling the isomers with their correct names and isomer category, so the response lacked precise vocabulary even if the structures were drawn. Full marks need the terms "chain isomer" and "functional group isomer" used correctly, the structures named (2-methylpropanoic acid; an ester such as methyl propanoate), and the point that isomers share a molecular formula but differ in connectivity. Re-read syllabus dot point 7.2 — structural isomers. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '22||Did not include detail / chemistry terminology': 'A terminology error here is describing the catalyst\'s effect without the precise collision-theory language markers want. Full marks need the terms "activation energy", "alternative reaction pathway" and "proportion of successful collisions", plus the point that the catalyst raises forward and reverse rates equally to reach the same yield. Re-read syllabus dot point 5.4 — collision theory and reaction rate. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '23||Did not include detail / chemistry terminology': 'A terminology error here is naming the test loosely or omitting the precise reagent and colour-change wording. Full marks need "acidified potassium dichromate" named exactly, the observation stated as a colour change from orange to green, and the process identified as oxidation of a secondary alcohol. Re-read syllabus dot point 8.5 — qualitative tests for functional groups. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '24a||Did not include detail / chemistry terminology': 'A terminology error here is an unbalanced equation or missing state symbols rather than the wrong products. Full marks need the correctly balanced Na₂CO₃ + 2HCl → 2NaCl + H₂O + CO₂ with state symbols (aq, l, g) and correct formulae and subscripts. Re-read syllabus dot point 6.3 — products of acid reactions. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '24b||Did not include detail / chemistry terminology': 'A terminology error here is missing units, mole notation or significant-figure conventions even when the method is right. Full marks need n = m/M and n = cV written with correct units (mol, mol L⁻¹, L), the result expressed as a % w/w, and answers carried to a sensible number of significant figures. Re-read syllabus dot point 6.13 — titration analysis. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '25a||Did not include detail / chemistry terminology': 'A terminology error here is justifying NaHCO₃ in everyday language without the chemical terms. Full marks need terms like "weak base", "neutralisation", "non-corrosive/safe" and "effervescence of CO₂" to signal completion, not just "it cleans up the acid". Re-read syllabus dot point 6.4 — applications of neutralisation. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '25b||Did not include detail / chemistry terminology': 'A terminology error here is describing Arrhenius\'s limitation imprecisely, without the defining vocabulary. Full marks need terms such as "hydroxide ion (OH⁻) producer" and "aqueous solution only", and the explicit point that NaHCO₃ produces no OH⁻ so Arrhenius cannot classify it as a base. Re-read syllabus dot point 6.6 — acid–base models and their limitations. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '26||Did not include detail / chemistry terminology': 'A terminology error here is naming the design features vaguely without the equilibrium and economic vocabulary. Full marks need terms like "recycling unreacted reactants", "removing product to shift equilibrium" and "heat exchange/energy efficiency", each tied explicitly to "yield" or "cost". Re-read syllabus dot point 5.5 — Le Chatelier\'s principle. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '27a||Did not include detail / chemistry terminology': 'A terminology error here is comparing the fuels without precise structural and energy vocabulary. Full marks need terms such as "oxygen content", "C:H ratio", "energy density" and "complete versus incomplete combustion" to explain the difference in heat of combustion. Re-read syllabus dot point 7.17 — fuels versus biofuels. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '27b||Did not include detail / chemistry terminology': 'A terminology error here is omitting units or the q = mcΔT notation even when the arithmetic is right. Full marks need q in J or kJ, m in g, c = 4.18 J g⁻¹ K⁻¹ and ΔT in °C or K, with the formula q = mcΔT shown explicitly. Re-read syllabus dot point 7.13 — enthalpy of combustion of alcohols. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '28c||Did not include detail / chemistry terminology': 'A terminology error here is explaining the trend without the bonding vocabulary. Full marks need terms such as "hydrogen bonding", "hydroxyl group", "non-polar hydrocarbon chain", "hydrophilic/hydrophobic" and "dispersion forces" to account for the falling solubility. Re-read syllabus dot point 7.12 — bonding in the alcohol homologous series. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '29a||Did not include detail / chemistry terminology': 'A terminology error here is stating the conclusion without the precise equilibrium vocabulary. Full marks need terms like "exothermic" and "heat as a product", and the point that raising temperature "shifts equilibrium in the reverse direction" to "decrease Keq". Re-read syllabus dot point 5.10 — effect of temperature on Keq. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '29b||Did not include detail / chemistry terminology': 'A terminology error here is missing the Keq expression notation or concentration units. Full marks need the correct Keq expression with square brackets for concentrations, consistent mol L⁻¹ units, and [H₂] reported to an appropriate number of significant figures. Re-read syllabus dot point 5.9 — Keq calculations. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '30a||Did not include detail / chemistry terminology': 'A terminology error here is stating "no effect" without the precise reason in chemical terms. Full marks need terms like "pure solid", "constant concentration" and "excluded from the equilibrium expression", concluding with "no shift in equilibrium position". Re-read syllabus dot point 5.5 — Le Chatelier\'s principle. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '30b||Did not include detail / chemistry terminology': 'A terminology error here is describing the colour and precipitate change without the Le Chatelier vocabulary. Full marks need terms such as "dilution decreases concentration" and "shifts toward the side with more aqueous particles", linked to the fading blue Cu²⁺ and the dissolving Ag precipitate. Re-read syllabus dot point 5.5 — Le Chatelier\'s principle. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '31||Did not include detail / chemistry terminology': 'A terminology error here is the Ksp expression notation or units being imprecise. Full marks need Ksp = [Pb²⁺][SCN⁻]² written correctly, concentrations in mol L⁻¹, and the Ksp value quoted without units to an appropriate number of significant figures. Re-read syllabus dot point 5.16 — Ksp and solubility. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '32a||Did not include detail / chemistry terminology': 'A terminology error here is identifying the compounds without correct IUPAC names or functional-group terms. Full marks need each compound\'s IUPAC name and functional group stated (alkene, alcohol, carboxylic acid) with the reaction type named at each step (hydration, oxidation). Re-read syllabus dot point 7.23 — reaction pathways. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '32b||Did not include detail / chemistry terminology': 'A terminology error here is an incomplete structural equation or the product not being named correctly. Full marks need full structural formulae showing the broken C=C with added –H and –OH, the product named hexan-3-ol, and the reaction labelled as hydration (addition of water). Re-read syllabus dot point 7.9 — addition reactions of unsaturated hydrocarbons. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '33a||Did not include detail / chemistry terminology': 'A terminology error here is missing units or mole notation in the concentration calculation. Full marks need n = cV with correct units, the 1:1 mole ratio stated, and [HOCl] reported in mol L⁻¹ to an appropriate number of significant figures. Re-read syllabus dot point 6.13 — titration analysis. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '33b||Did not include detail / chemistry terminology': 'A terminology error here is omitting the buffer terminology or pKa notation. Full marks need the system named a "buffer", pKa = –log(Ka) shown, and pH = pKa + log([OCl⁻]/[HOCl]) applied with concentrations in mol L⁻¹. Re-read syllabus dot point 6.19 — buffers. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '33d||Did not include detail / chemistry terminology': 'A terminology error here is describing the error without the precise analytical vocabulary. Full marks need terms like "systematic error", "diluted NaOH lowers its true concentration" and "larger titre", and the point that the calculated [HOCl] is "overstated" in one consistent direction. Re-read syllabus dot point 6.13 — titration analysis. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '34||Did not include detail / chemistry terminology': 'A terminology error here is justifying the structures without the correct spectroscopic vocabulary. Full marks need terms such as "molecular ion and fragment peaks" (MS), "chemical environments and splitting/multiplicity" (¹H and ¹³C NMR) and named "IR absorption bands" for each functional group, each tied to the named structures. Re-read syllabus dot point 8.6 — spectroscopic analysis (NMR, MS, IR). The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.',
-
-  '35||Did not include detail / chemistry terminology': 'A terminology error here is missing units, mole notation or the analysis terminology in the back-titration. Full marks need "back-titration" and "aliquot" used correctly, the mole ratio stated at each stage, units carried throughout (mol, mol L⁻¹), and the final concentration compared to the reported percentages. Re-read syllabus dot point 8.3 — gravimetric and precipitation titration analysis. The syllabus dot point uses the exact vocabulary NESA is looking for — compare its language to what you wrote and write down any term you couldn\'t reproduce from memory.'
-}
-
-// VERB_FB — feedback for "Did not address verb" error type.
-// Keyed by NESA directive verb (exact string match to question schema verb field).
-// Each entry has three fields: nesa, commonMistake, inPractice.
-// Displayed as a structured card in the diagnostic review panel.
-
-const VERB_FB = {
-
-  'Identify': {
-    nesa: 'Recognise and name.',
-    commonMistake: 'Describing or explaining the thing in detail, when the verb only asks for a name.',
-    inPractice: 'One word or phrase is a complete answer. No explanation required. In Chemistry this means the name of the substance, functional group, or property — not a formula, symbol, or structural diagram. If you wrote more than a name, you did more than the verb asked.'
-  },
-
-  'Describe': {
-    nesa: 'Provide characteristics and features.',
-    commonMistake: 'Sliding into analysis or explanation. If you\'re writing "this means that" or "this is significant because," you\'ve gone too far.',
-    inPractice: 'Features, not reasons. State what happens and in what order — one mark-worthy feature per mark allocated. "Describe the process" means state each step. If you\'re explaining why something happens, stop — that\'s explain, not describe.'
-  },
-
-  'Explain': {
-    nesa: 'Relate cause and effect. Make the relationships between things evident. Provide why and/or how.',
-    commonMistake: 'Describing what happened without connecting cause and effect. A list of facts is not an explanation.',
-    inPractice: 'Your answer needs a "because," "therefore," "as a result," or "hence." If it doesn\'t, you\'re describing, not explaining. Scaffold: write CAUSE and EFFECT as two subheadings before you start — fill both, then connect them with the mechanism. Don\'t skip steps; jump on every stone in the chain. Green flags: "because," "as a result," "hence," "which causes," "therefore."'
-  },
-
-  'Justify': {
-    nesa: 'Support an argument or conclusion.',
-    commonMistake: 'Stating a position without evidence, or listing evidence without explicitly linking it back to the claim.',
-    inPractice: 'Always use evidence. Structure: claim → specific evidence → re-link the evidence to the claim. The link is non-negotiable — don\'t leave the marker to make the connection themselves. Every piece of evidence must explicitly support the conclusion stated in the question.'
-  },
-
-  'Evaluate': {
-    nesa: 'Make a judgement based on criteria; determine the value of.',
-    commonMistake: 'Listing pros and cons but never committing to a final judgement, or arguing one side only.',
-    inPractice: 'Mental trigger: PROS + CONS + JUDGEMENT. Before writing, consider designing your own criteria based on what the question is asking — write them down first, then use them as the lens for your pros and cons and judgement. The judgement is your reasoned opinion stated directly — pros outweigh cons, or a limitation is significant enough to change the verdict. Commit to it and link back to the question. Green flag words: "effectively," "significantly," "is not sufficient because," "outweighs," "on balance."'
-  },
-
-  'Assess': {
-    nesa: 'Make a judgement of value, quality, outcomes, results or size.',
-    commonMistake: 'Providing evidence or content without stating a clear verdict — the judgement must be explicit, not implied by what you\'ve written.',
-    inPractice: 'Mental trigger: PROS + CONS + JUDGEMENT. Same structure as evaluate. End with a direct committed statement: "Overall, X is [effective / significant / appropriate / limited] because..." Vague conclusions lose the mark even if the content is correct.'
-  },
-
-  'Analyse': {
-    nesa: 'Identify components and the relationship between them; draw out and relate implications.',
-    commonMistake: 'Naming or describing components without explaining how they relate to each other or what the relationship implies.',
-    inPractice: 'Break it into parts — subheadings can help when there are distinct components in the stimulus. Then relate between those parts. For every component ask: what is it, how does it connect to the others, and what does that connection imply? Naming components alone is describe. If there\'s no implication drawn, you haven\'t analysed.'
-  },
-
-  'Compare': {
-    nesa: 'Show how things are similar or different.',
-    commonMistake: 'Describing X, then describing Y separately — leaving the marker to do the comparison themselves.',
-    inPractice: 'Both similarities and differences are expected unless the question specifies otherwise. Every point must be a directly paired statement: "[property of X] whereas [property of Y]." Green flag words: "whereas," "both," "unlike," "in contrast," "similarly." For longer questions, a table helps: draw a 3×3 grid with the top-left cell empty, column headings as the two things being compared (X and Y), and row headings as the features. Fill each cell. If a table gets clunky, use Similarities and Differences as subheadings instead.'
-  },
-
-  'Distinguish': {
-    nesa: 'Recognise or note/indicate as being distinct or different from; to note differences between.',
-    commonMistake: 'Including similarities — distinguish means differences only.',
-    inPractice: 'JUST the differences. If you\'re writing a similarity, delete it. One clear paired difference per mark. Green flag words: "in contrast," "whereas," "on the other hand." If your answer could also be the answer to a compare question, you\'ve probably included things you shouldn\'t have.'
-  },
-
-  'Outline': {
-    nesa: 'Sketch in general terms; indicate the main features of.',
-    commonMistake: 'Writing a full explanation with causes, mechanisms, and detail the question didn\'t ask for.',
-    inPractice: 'One concise point per mark, no "because" or "therefore." If the question is about an experiment or method, write it as numbered steps — 1. 2. 3. — stating only what happens at each step, not why it works. If you\'re explaining, you\'re over-answering.'
-  },
-
-  'Discuss': {
-    nesa: 'Identify issues and provide points for and/or against.',
-    commonMistake: 'Arguing only one side, or adding a final judgement — discuss does NOT require one.',
-    inPractice: 'Mental trigger: PROS AND CONS. Both are required. No judgement needed — just lay out both sides clearly. Split the page or use subheadings (Pros / Cons). The mark allocation is your guide: roughly one substantive point per mark, split across both sides.'
-  },
-
-  'Calculate': {
-    nesa: 'Ascertain/determine from given facts, figures or information.',
-    commonMistake: 'Writing only the final answer without showing working, or dropping units from values mid-calculation.',
-    inPractice: 'Write the formula first, then the substituted version with every value and its unit. Every digit that has a unit must have that unit written next to it — no exceptions. Show every step on its own line, don\'t skip. State your final answer with correct units and significant figures. Marks are allocated per step — clear working means you can still earn most of the marks even if the final answer is wrong.'
-  },
-
-  'Determine': {
-    nesa: 'Establish, conclude or ascertain.',
-    commonMistake: 'Showing the method or setting up the working without reaching a definite final answer — an unfinished method leaves marks on the table even if the setup is correct.',
-    inPractice: 'Your answer must end with a specific value, name, or conclusion. Write every step of working and state the result explicitly at the end. Green flag: a clearly stated final answer with correct units.'
-  },
-  'Account': {
-    nesa: 'State reasons for, report on.',
-    commonMistake: 'Narrating what happened in sequence instead of giving the reasons behind it.',
-    inPractice: 'Start with "This occurs because..." and give the specific chemical reason — intermolecular forces, equilibrium shift, reaction mechanism, bonding. If you\'re describing a sequence of events rather than explaining what drives them, you\'ve missed the verb.'
-  },
-
-  'Predict': {
-    nesa: 'Suggest what may happen based on available information.',
-    commonMistake: 'Stating a prediction without referencing the specific data or theory from the question that supports it.',
-    inPractice: 'Prediction first, then the evidence. "X will occur because [specific data or principle from the question] indicates [Y]." A bare prediction with no supporting reference earns minimal marks — the "based on available information" in the definition is the instruction to cite your source.'
-  },
-
-  'Deduce': {
-    nesa: 'Draw conclusions.',
-    commonMistake: 'Stating a conclusion without showing the logical steps from the given information to that conclusion.',
-    inPractice: 'Show each inferential step explicitly: "From [given data], it follows that [inference], therefore [conclusion]." The reasoning pathway must be visible — not just the endpoint. This is more formally logical than predict: treat it like a proof, not a guess.'
+function paperCard(p,reviewed){
+  const band='<div class="card-band">'+p.mods.map((v,i)=>'<div class="card-band-seg" style="flex:'+v+';background:'+MOD_COLS[i]+'"></div>').join('')+'</div>';
+  if(p.soon){
+    return '<div class="card soon" style="overflow:hidden;">'+band+'<div class="card-body"><div class="card-type" style="background:#f0ede3;color:#bbb">'+p.type.toUpperCase()+'</div><div class="card-title" style="color:#bbb">'+p.school+'</div><div class="card-year">'+p.year+'</div><div style="font-size:11px;color:#bbb;margin-top:4px;">Coming soon</div></div></div>';
   }
-
+  const cta=reviewed?'<div class="card-reviewed">Reviewed · '+reviewed+'/100</div>':'<div class="card-cta">Start review →</div>';
+  return '<div class="card" onclick="if(\''+p.url+'\'!==\'#\')location.href=\''+p.url+'\'">'+band+'<div class="card-body"><div class="card-type">'+p.type.toUpperCase()+'</div><div class="card-title">'+p.school+'</div><div class="card-year">'+p.year+'</div>'+modLeg()+cta+'</div></div>';
 }
 
-function boldDP(t){return t.replace(/((?:Re-read|Go back to) syllabus dot point [\d.]+)/g,'<strong>$1 (below)</strong>');}
-function greenFl(t){return t.replace(/([Gg]reen flags?(?:\s+words?)?:?)/g,'🟢 $1');}
-function fbFor(id,err,verb){
-  if(err==='Did not address verb'&&verb&&VERB_FB[verb]){
-    const v=VERB_FB[verb];
-    const ipRaw=greenFl(v.inPractice);
-    const gfIdx=ipRaw.indexOf('🟢');
-    const ipMain=gfIdx>=0?ipRaw.slice(0,gfIdx).trim():ipRaw;
-    const ipGF=gfIdx>=0?ipRaw.slice(gfIdx):null;
-    const ipHTML=ipGF?ipMain+'<div class="verb-card-subbullet"><span class="verb-sub-bullet"></span><span>'+ipGF+'</span></div>':ipMain;
-    return '<div class="verb-card">'
-      +'<div class="verb-card-bullet"><span class="verb-bullet"></span><span><span class="verb-lbl-nesa">NESA Verb:</span> '+v.nesa+'</span></div>'
-      +'<div class="verb-card-bullet"><span class="verb-bullet"></span><span><span class="verb-lbl-mistake">Common Mistakes:</span> '+v.commonMistake+'</span></div>'
-      +'<div class="verb-card-bullet"><span class="verb-bullet"></span><span><span class="verb-lbl-practice">In Practice:</span> '+ipHTML+'</span></div>'
-      +'</div>';
+function paperCardSimple(p,reviewed){
+  if(p.soon){
+    return '<div class="card soon"><div class="card-body"><div class="card-type" style="background:#f0ede3;color:#bbb">'+p.type.toUpperCase()+'</div><div class="card-title" style="color:#bbb">'+p.school+'</div><div class="card-year">'+p.year+'</div><div style="font-size:11px;color:#bbb;margin-top:4px;">Coming soon</div></div></div>';
   }
-  const PAPER_SPECIFIC=['Did not know theory','Calculation error — knowledge','Did not include detail / chemistry terminology'];
-  const key=id+'||'+err;
-  const specific=PAPER_SPECIFIC.includes(err)?(THEORY_FB[key]||CALC_KNOWLEDGE_FB[key]||TERMINOLOGY_FB[key]||REVIEW_FB[key]):null;
-  return boldDP(specific||(ACTION[err]||'Review this against the marking guidelines and sample response. Then redo the question under timed conditions until the method is automatic.'));
-}
-let DIAG=null;
-let maxStep=0;
-const STEP_SCREENS=['s1','s2','s3','s4'];
-const state={mcq:{},sec:{}};
-
-const MOD_COLOR={
-  Mod5:{bg:'#eef3e8',text:'#2D5016'},
-  Mod6:{bg:'#e8f0f8',text:'#1e5799'},
-  Mod7:{bg:'#f0eaf7',text:'#6b3a9e'},
-  Mod8:{bg:'#f7eedb',text:'#a96a12'}
-};
-// Identify=solid bright green, Describe=muted green, Explain=pure yellow, Analyse=light red, Evaluate=solid red
-const VERB_COLOR={
-  identify:{bg:'#22c55e',text:'#fff'},    // solid bright green
-  describe:{bg:'#bbf7d0',text:'#15803d'}, // muted/light green
-  explain: {bg:'#fef08a',text:'#713f12'}, // pure yellow (dead centre)
-  analyse: {bg:'#fca5a5',text:'#991b1b'}, // light red
-  evaluate:{bg:'#ef4444',text:'#fff'},    // solid red
-};
-function mc(m){return MOD_COLOR[m]||{bg:'#eceadf',text:'#555'};}
-function vc(vl){return VERB_COLOR[vl]||null;}
-
-let currentStep=0;
-function setStep(a){
-  currentStep=a;
-  maxStep=Math.max(maxStep,a);
-  [...stepper.children].forEach((d,i)=>{
-    d.className='dot'+(i<a?' done':i===a?' active':'');
-    if(i!==a&&i>0&&i<=maxStep){d.style.cursor='pointer';d.title='Go to step '+(i+1);d.onclick=()=>show(STEP_SCREENS[i],i);}
-    else{d.style.cursor='default';d.onclick=null;d.title='';}
-  });
-  if(stepLbl) stepLbl.textContent='Step '+(a+1)+' of 4';
-  const backBtn=document.getElementById('backBtn');
-  if(backBtn){backBtn.style.display=a>0?'inline':'none';backBtn.textContent=a>0?'← back':'';}
-  const fwdBtn=document.getElementById('fwdBtn');
-  if(fwdBtn){fwdBtn.style.display=(a<maxStep)?'inline':'none';}
-}
-function show(id,a){[...app.children].forEach(s=>s.classList.toggle('on',s.id===id));setStep(a);}
-window.goBack=function(){if(currentStep>0)show(STEP_SCREENS[currentStep-1],currentStep-1);};
-window.goFwd=function(){if(currentStep<maxStep)show(STEP_SCREENS[currentStep+1],currentStep+1);};
-function revealMCQ(){
-  MCQ.forEach(q=>{
-    const given=state.mcq[q.n];
-    const correct=q.correct;
-    const wrap=grid.querySelector('[data-q="'+q.n+'"]');
-    if(!wrap)return;
-    const correct_letters=Array.isArray(correct)?correct:[...correct];
-    const isRight=correct_letters.includes(given);
-    [...wrap.children].forEach(btn=>{
-      const o=btn.dataset.o;
-      btn.classList.remove('sel','wrong','correct-ans');
-      if(o===given&&isRight){btn.classList.add('sel');}
-      else if(o===given&&!isRight){btn.classList.add('wrong');}
-      else if(correct_letters.includes(o)&&!isRight){btn.classList.add('correct-ans');}
-    });
-  });
+  const cta=reviewed?'<div class="card-reviewed">Reviewed · '+reviewed+'/100</div>':'<div class="card-cta">Start review →</div>';
+  return '<div class="card" onclick="if(\''+p.url+'\'!==\'#\')location.href=\''+p.url+'\'"><div class="card-body">'+
+    '<div class="card-type">'+p.type.toUpperCase()+'</div>'+
+    '<div class="card-title">'+p.school+'</div>'+
+    '<div class="card-year">'+p.year+'</div>'+
+    modBar(p.mods,9)+modLeg()+cta+
+  '</div></div>';
 }
 
-/* ── HOME SCREEN ── */
-const s1=document.createElement('section');s1.id='s1';s1.className='scr on';
-s1.style.justifyContent='center';
-s1.style.paddingTop='28px';
-s1.innerHTML=`
-<div class="home2">
-  <div class="home-l">
-    <div class="pill">Chemistry trial · pre-loaded</div>
-    <h1 class="h-serif" style="font-size:52px;margin:20px 0 16px">James Ruse 2024<br>Chemistry Trial</h1>
-    <div style="font-size:20px;color:var(--mut);max-width:420px;line-height:1.5">Mark it once, see exactly what to study before your next paper.</div>
-    <div style="font-size:15.5px;color:var(--mut);margin:15px 0 24px">Section I + II &nbsp;·&nbsp; 100 marks &nbsp;·&nbsp; Modules 5–8</div>
-    <div><button class="btn primary" id="go1" style="opacity:0.35;cursor:not-allowed;pointer-events:none;">Start your review</button></div>
-    <div style="margin-top:20px;">
-      <div class="prof-lbl" id="profLbl">Name</div>
-      <div class="prof-row">
-        <div class="prof-seg active" id="ps0"><input id="pi0" type="text" placeholder="Your name" onkeydown="if(event.key==='Enter')profNext(0)" oninput="profHint(0)" /><span class="prof-enter" id="ph0">↵</span></div>
-        <div class="prof-seg pending" id="ps1"></div>
-        <div class="prof-seg pending" id="ps2"></div>
-      </div>
-    </div>
-    <div style="margin-top:16px;padding-top:16px;border-top:0.5px solid var(--ln)">
-      <div class="ticker-wrap" id="tickerWrap">
-        <div class="ticker-item">Emily from James Ruse just reviewed Chemistry 2024</div>
-        <div class="ticker-item">Liam from Sydney Boys just reviewed Chemistry 2024</div>
-        <div class="ticker-item">Priya from North Sydney Girls just reviewed Chemistry 2024</div>
-        <div class="ticker-item">Marcus from Knox Grammar just reviewed Chemistry 2024</div>
-        <div class="ticker-item">Sophie from Baulkham Hills just reviewed Chemistry 2024</div>
-      </div>
-    </div>
-  </div>
-  <div class="home-r">
-    <div class="preview">
-      <div class="pv-tag">Example preview</div>
-      <div class="pv-score"><span id="pvScore">0</span><small>/100</small></div>
-      <div class="pv-sub">Module 6 is your biggest opportunity — <b>14 marks recoverable</b> there.</div>
-      <div class="pv-tray">
-        <div class="pv-tiles" id="pvTiles"></div>
-        <div class="pv-tray-lab"><b id="pvCount">0</b>marks recoverable</div>
-      </div>
-      <div class="pv-h">Module breakdown</div>
-      <div class="pv-mods" id="pvMods"></div>
-      <div class="pv-h">Top priority</div>
-      <div class="pv-prio">
-        <div class="pv-prio-num">1</div>
-        <div style="flex:1">
-          <div class="pv-prio-t" id="pvPrioT"></div>
-          <div class="pv-prio-b" id="pvPrioB"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>`;
-app.appendChild(s1);
-s1.querySelector('#go1').onclick=()=>show('s2',1);
-
-(function(){
-  const steps=[
-    {l:'Name',p:'Your name',t:'text',k:'name'},
-    {l:'School',p:'Your school',t:'text',k:'school'},
-    {l:'Email',p:'Email',t:'email',k:'email'}
-  ];
-  const vals={};
-
-  function profNext(idx){
-    const inp=document.getElementById('pi'+idx);
-    if(!inp||!inp.value.trim())return;
-    vals[steps[idx].k]=inp.value.trim();
-    const seg=document.getElementById('ps'+idx);
-    seg.className='prof-seg done';
-    seg.innerHTML='';
-    seg.onclick=()=>profRestart(idx);
-    const next=idx+1;
-    if(next<3){
-      const ns=document.getElementById('ps'+next);
-      ns.className='prof-seg active';
-      ns.innerHTML='<input id="pi'+next+'" type="'+steps[next].t+'" placeholder="'+steps[next].p+'" onkeydown="if(event.key===\'Enter\')profNext('+next+')" oninput="profHint('+next+')" /><span class="prof-enter" id="ph'+next+'">↵</span>';
-      document.getElementById('profLbl').textContent=steps[next].l;
-      document.getElementById('pi'+next).focus();
-    } else {
-      document.getElementById('profLbl').textContent='';
-      localStorage.setItem('hinsightProfile',JSON.stringify(vals));
-      const btn=document.getElementById('go1');
-      btn.style.opacity='1';
-      btn.style.cursor='pointer';
-      btn.style.pointerEvents='auto';
-    }
-  }
-
-  function profRestart(idx){
-    for(let i=idx;i<3;i++){
-      delete vals[steps[i].k];
-      const s=document.getElementById('ps'+i);
-      if(i===idx){
-        s.className='prof-seg active';
-        s.innerHTML='<input id="pi'+i+'" type="'+steps[i].t+'" placeholder="'+steps[i].p+'" onkeydown="if(event.key===\'Enter\')profNext('+i+')" />';
-        s.onclick=null;
-        document.getElementById('profLbl').textContent=steps[i].l;
-        document.getElementById('pi'+i).focus();
-      } else {
-        s.className='prof-seg pending';
-        s.innerHTML='';
-        s.onclick=null;
-      }
-    }
-    const btn=document.getElementById('go1');
-    btn.style.opacity='0.35';
-    btn.style.cursor='not-allowed';
-    btn.style.pointerEvents='none';
-  }
-
-  window.profNext=profNext;
-
-  // Show ↵ hint always (subtle), brighter when typing
-  window.profHint=function(idx){
-    const inp=document.getElementById('pi'+idx);
-    const hint=document.getElementById('ph'+idx);
-    if(hint){
-      hint.style.opacity=inp.value.trim().length>0?'0.6':'0.25';
-    }
-  };
-
-  // Show ↵ on load for first field
-  const firstHint=document.getElementById('ph0');
-  if(firstHint) firstHint.style.opacity='0.25';
-})();
-
-/* ── Ticker ── */
-(function(){
-  const items=s1.querySelectorAll('.ticker-item');
-  let ci=0;
-  items[ci].style.transition='none';
-  items[ci].classList.add('t-on');
-  void items[ci].offsetHeight;
-  items[ci].style.transition='';
-  function rotateTicker(){
-    const prev=ci;
-    items[prev].classList.remove('t-on');
-    items[prev].classList.add('t-prev');
-    ci=(ci+1)%items.length;
-    items[ci].style.transition='none';
-    items[ci].classList.remove('t-prev');
-    void items[ci].offsetHeight;
-    items[ci].style.transition='';
-    items[ci].classList.add('t-on');
-    setTimeout(()=>{
-      items[prev].style.transition='none';
-      items[prev].classList.remove('t-prev');
-      void items[prev].offsetHeight;
-      items[prev].style.transition='';
-    },460);
-  }
-  setInterval(rotateTicker,3500);
-})();
-
-/* ── HOME live preview animation ── */
-(function(){
-  const TOT=28;
-  const PV_MODS=[{n:'Module 5',p:88,c:'#2D5016'},{n:'Module 6',p:51,c:'#a96a12'},{n:'Module 7',p:79,c:'#2D5016'},{n:'Module 8',p:43,c:'#9a3520'}];
-  const tiles=s1.querySelector('#pvTiles'),count=s1.querySelector('#pvCount'),mods=s1.querySelector('#pvMods');
-  const scoreEl=s1.querySelector('#pvScore'),prioT=s1.querySelector('#pvPrioT'),prioB=s1.querySelector('#pvPrioB');
-  mods.innerHTML=PV_MODS.map(m=>`<div class="pv-mc" style="border-left-color:${m.c}"><div class="mn">${m.n}</div><div class="mp" style="color:${m.c}">${m.p}%</div><div class="pvbar"><i data-w="${m.p}" style="background:${m.c}"></i></div></div>`).join('');
-  const tileEls=[];
-  for(let i=0;i<TOT;i++){const t=document.createElement('span');t.className='pv-tile';tiles.appendChild(t);tileEls.push(t);}
-
-  function typewrite(el,txt,speed,done){
-    el.textContent='';const cur=document.createElement('span');cur.className='pv-cursor';
-    const tn=document.createTextNode('');el.appendChild(tn);el.appendChild(cur);let i=0;
-    (function step(){if(i<=txt.length){tn.textContent=txt.slice(0,i++);setTimeout(step,speed);}else{cur.remove();done&&done();}})();
-  }
-
-  function run(){
-    let t0=null;const dur=850;
-    (function tick(ts){if(!t0)t0=ts;const k=Math.min(1,(ts-t0)/dur);scoreEl.textContent=Math.round(72*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(tick);})(performance.now());
-    tileEls.forEach((t,i)=>setTimeout(()=>{t.classList.add('drop');count.textContent=i+1;},700+i*42));
-    const dropsEnd=700+TOT*42;
-    setTimeout(()=>mods.querySelectorAll('.pvbar>i').forEach((b,i)=>setTimeout(()=>b.style.width=b.dataset.w+'%',i*120)),1100);
-    setTimeout(()=>typewrite(prioT,'Module 6 — Acid/Base Reactions',26,()=>typewrite(prioB,'14 marks left on the table. Revisit buffer calculations and pH concepts before your next paper.',15)),dropsEnd+200);
-  }
-  setTimeout(run,260);
-})();
-
-/* ── SECTION I — MCQ ── */
-const s2=document.createElement('section');s2.id='s2';s2.className='scr';
-s2.innerHTML=`
-<div class="s-head">
-  <h2 class="h-serif" style="font-size:29px;margin:0">Section I — Multiple choice</h2>
-  <span style="font-size:13.5px;color:var(--mut)">20 questions · 1 mark each</span>
-</div>
-<div style="font-size:14.5px;color:var(--mut);margin-top:5px">Tap the answer you gave. We mark it against the key.</div>
-<div class="prog"><i id="p2"></i></div>
-<div class="mcq-outer"><div class="mcq-grid" id="mcqGrid"></div></div>
-<div class="foot" style="justify-content:flex-end">
-  <button class="btn primary" id="go2" style="padding:11px 22px;font-size:15px">Continue to Section II</button>
-</div>`;
-app.appendChild(s2);
-const grid=s2.querySelector('#mcqGrid'),p2=s2.querySelector('#p2');
-const go2btn=s2.querySelector('#go2');
-MCQ.forEach(q=>{const c=document.createElement('div');c.className='mcq-cell';
-const col=mc(q.mod);
-c.innerHTML=`<div class="top"><span class="qn">Q${q.n}</span><span class="modtag" style="background:${col.bg};color:${col.text}">${MOD[q.mod].n.replace('Module','Mod')}</span></div><div class="opts" data-q="${q.n}">${['A','B','C','D'].map(o=>`<button class="opt" data-o="${o}">${o}</button>`).join('')}</div>`;
-grid.appendChild(c);});
-function updateGo2(){const ready=Object.keys(state.mcq).length===MCQ.length;go2btn.disabled=!ready;go2btn.style.opacity=ready?'1':'0.45';go2btn.style.cursor=ready?'pointer':'not-allowed';}
-function mcqProg(){p2.style.width=(Object.keys(state.mcq).length/20*100)+'%';updateGo2();}
-go2btn.disabled=true;go2btn.style.opacity='0.45';go2btn.style.cursor='not-allowed';
-grid.onclick=e=>{const b=e.target.closest('.opt');if(!b)return;const wrap=b.parentElement;state.mcq[+wrap.dataset.q]=b.dataset.o;[...wrap.children].forEach(x=>x.classList.toggle('sel',x===b));mcqProg();};
-go2btn.onclick=()=>{if(go2btn.disabled)return;show('s3',2);};
-
-/* ── SECTION II — MARKING ── */
-const s3=document.createElement('section');s3.id='s3';s3.className='scr';
-s3.style.padding='24px 28px 24px';
-s3.innerHTML=`
-<div class="s-head">
-  <h2 class="h-serif" style="font-size:26px;margin:0">Section II — Short & extended response</h2>
-  <span style="font-size:13px;color:var(--mut)">25 sub-parts · 80 marks</span>
-</div>
-<div style="font-size:13.5px;color:var(--mut);margin-top:3px"><b style="color:var(--g);font-weight:600">Full</b> = correct &nbsp;·&nbsp; <b style="color:var(--amber);font-weight:600">Partial</b> = part marks &nbsp;·&nbsp; <b style="color:var(--red);font-weight:600">Zero</b> = 0. Add a reason only when you slipped.</div>
-<div class="prog"><i id="p3"></i></div>
-<div class="sec-outer">
-  <div class="sec-wrap">
-    <table class="sec-table">
-      <colgroup><col class="c-q"><col class="c-m"><col class="c-v"><col class="c-k"><col class="c-a"></colgroup>
-      <thead><tr><th>Question</th><th>Module</th><th>Verb</th><th style="text-align:center">Marks</th><th>Mark it</th></tr></thead>
-      <tbody id="secBody"></tbody>
-    </table>
-  </div>
-</div>
-<div class="foot" style="justify-content:flex-end">
-  <button class="btn primary" id="go3" style="padding:11px 22px;font-size:15px">See my diagnostic</button>
-</div>`;
-app.appendChild(s3);
-const body=s3.querySelector('#secBody'),p3=s3.querySelector('#p3');
-const go3btn=s3.querySelector('#go3');
-go3btn.disabled=true;go3btn.style.opacity='0.45';go3btn.style.cursor='not-allowed';
-function updateGo3(){const ready=Object.keys(state.sec).length===SEC.length;go3btn.disabled=!ready;go3btn.style.opacity=ready?'1':'0.45';go3btn.style.cursor=ready?'pointer':'not-allowed';}
-SEC.forEach(q=>{const tr=document.createElement('tr');tr.dataset.id=q.id;
-const col=mc(q.mod);
-const verbCol=vc(q.vl);
-const verbCell=q.verb&&verbCol
-  ?`<span class="modtag" style="background:${verbCol.bg};color:${verbCol.text}">${q.verb}</span>`
-  :`<span style="font-size:12px;color:var(--mut)">—</span>`;
-tr.innerHTML=`<td class="qcell"><span class="ql">Q${q.id}</span><span class="qt">${q.t}</span></td>
-<td><span class="modtag" style="background:${col.bg};color:${col.text}">${MOD[q.mod].n.replace('Module','Mod')}</span></td>
-<td>${verbCell}</td>
-<td style="text-align:center;color:var(--mut);font-size:13.5px">${q.marks}</td>
-<td><div style="display:flex;align-items:center;flex-wrap:wrap">
-<div class="gpm" data-id="${q.id}"><button data-m="full">Full</button><button data-m="partial">Partial</button><button data-m="zero">Zero</button></div>
-<input class="pin" type="number" min="0" max="${q.marks}" placeholder="?" style="display:none" data-pin="${q.id}"><span style="font-size:12px;color:var(--mut);display:none;margin-left:5px" data-of="${q.id}">/ ${q.marks}</span>
-</div><select class="errsel" data-err="${q.id}" style="display:none"><option value="">Why did you lose marks?</option>${ERRORS.map(e=>`<option>${e}</option>`).join('')}</select></td>`;
-body.appendChild(tr);});
-function secProg(){const n=Object.keys(state.sec).length;p3.style.width=(n/SEC.length*100)+'%';updateGo3();}
-function setMode(id,mode){const q=SEC.find(s=>s.id===id);const tr=body.querySelector(`tr[data-id="${id}"]`);
-const gpm=tr.querySelector('.gpm');[...gpm.children].forEach(b=>{b.className='';if(b.dataset.m===mode)b.className='on-'+mode[0];});
-const pin=tr.querySelector('[data-pin]'),of=tr.querySelector('[data-of]'),sel=tr.querySelector('[data-err]');
-pin.style.display=of.style.display=(mode==='partial')?'inline-block':'none';
-sel.style.display=(mode==='partial'||mode==='zero')?'inline-block':'none';
-state.sec[id]={mode,val:mode==='full'?q.marks:mode==='zero'?0:(+pin.value||0),err:sel.value};
-if(mode==='partial'&&pin.value==='')pin.focus();secProg();}
-body.onclick=e=>{const b=e.target.closest('.gpm button');if(!b)return;setMode(b.parentElement.dataset.id,b.dataset.m);};
-body.addEventListener('input',e=>{const id=e.target.dataset.pin||e.target.dataset.err||null;if(!id||!state.sec[id])return;
-if(e.target.dataset.pin){const q=SEC.find(s=>s.id===id);let v=+e.target.value||0;if(v>q.marks){e.target.style.borderColor='var(--red)';e.target.style.color='var(--red)';v=q.marks;e.target.value=v;setTimeout(()=>{e.target.style.borderColor='';e.target.style.color='';},700);}else if(v===q.marks&&q.marks>0){setMode(id,'full');return;}else if(v===0){setMode(id,'zero');return;}if(v<0){v=0;e.target.value=0;}state.sec[id].val=v;}
-if(e.target.dataset.err)state.sec[id].err=e.target.value;});
-go3btn.onclick=()=>{if(go3btn.disabled)return;
-  s4.innerHTML='<div class="diag-loading"><div class="hs-spin"></div><div class="spin-label">Analysing your result…</div></div>';
-  show('s4',3);
-  setTimeout(()=>buildDiag(),2500);
-};
-
-/* ── RESULTS / DIAGNOSTIC ── */
-const s4=document.createElement('section');s4.id='s4';s4.className='scr';s4.style.overflowY='auto';app.appendChild(s4);
-
-function buildDiag(){
-const mods={};Object.keys(MOD).forEach(m=>mods[m]={earned:0,total:0});
-MCQ.forEach(q=>{mods[q.mod].total+=1;if(q.correct.includes(state.mcq[q.n]))mods[q.mod].earned+=1;});
-SEC.forEach(q=>{mods[q.mod].total+=q.marks;const r=state.sec[q.id];if(r)mods[q.mod].earned+=r.val;});
-let earned=0;Object.values(mods).forEach(m=>{earned+=m.earned;});earned=Math.round(earned);
-const lost=Object.keys(mods).map(m=>({m,lost:mods[m].total-mods[m].earned,...mods[m]})).sort((a,b)=>b.lost-a.lost);
-const worst=lost[0];
-const errAgg={};SEC.forEach(q=>{const r=state.sec[q.id];if(r&&(r.mode==='partial'||r.mode==='zero')&&r.err){const l=q.marks-r.val;if(!errAgg[r.err])errAgg[r.err]={lost:0,c:0};errAgg[r.err].lost+=l;errAgg[r.err].c++;}});
-const errSorted=Object.entries(errAgg).filter(([,v])=>v.lost>0).sort((a,b)=>b[1].lost-a[1].lost);
-const maxErr=errSorted.length?errSorted[0][1].lost:1;
-// Build module × error combos ranked by marks lost
-const modErrMap={};
-SEC.forEach(q=>{const r=state.sec[q.id];if(r&&(r.mode==='partial'||r.mode==='zero')&&r.err){const l=q.marks-r.val;if(l>0){const key=q.mod+'||'+r.err;if(!modErrMap[key])modErrMap[key]={mod:q.mod,err:r.err,lost:0};modErrMap[key].lost+=l;}}});
-const modErrSorted=Object.values(modErrMap).sort((a,b)=>b.lost-a.lost);
-const prios=modErrSorted.slice(0,3).map(x=>({mod:x.mod,err:x.err,lost:x.lost,action:ACTION[x.err]||`Revisit the ${MOD[x.mod].full} theory — textbook and class notes — then redo the questions you missed under timed conditions.`}));
-// fallback: pad with highest-loss modules if fewer than 3 errors logged
-if(prios.length<3){const used=new Set(prios.map(p=>p.mod+'||'+p.err));for(const x of lost){if(prios.length>=3)break;if(x.lost<=0)continue;const key=x.m+'||';if(!used.has(key)){used.add(key);prios.push({mod:x.m,err:null,lost:x.lost,action:`Revisit the ${MOD[x.m].full} theory — textbook and class notes — then redo the questions you missed under timed conditions.`});}}}
-
-function pct(m){return mods[m]&&mods[m].total?Math.round(mods[m].earned/mods[m].total*100):0;}
-function band(p){return p>=70?['Strong','var(--g)']:p>=55?['Below target','var(--amber)']:['Needs work','var(--red)'];}
-// Pre-build priority HTML outside the big innerHTML string to avoid template nesting issues
-const NUM_COLS=['var(--g)','var(--amber)','#1e5799'];
-const PC_GLOW=['rgba(45,80,22,.08)','rgba(169,106,18,.08)','rgba(30,87,153,.08)'];
-let prioHTML='';
-if(prios.length){
-  prios.forEach((p,i)=>{
-    const col=mc(p.mod);
-    const emoji=p.err?(EMOJI_MAP[p.err]||'📌'):'📖';
-    const numCol=NUM_COLS[i]||'var(--g)';
-    const modLabel=MOD[p.mod].n.replace('Module','Mod');
-    const errLabel=p.err||MOD[p.mod].full;
-    const marksLabel=p.lost+' mark'+(p.lost!==1?'s':'')+' left';
-    const pc=NUM_COLS[i]||'var(--g)';
-    const glow=PC_GLOW[i]||'rgba(45,80,22,.08)';
-    prioHTML+='<div class="prio'+(i===0?' prio-active':'')+'" data-prio="'+i+'" data-prio-err="'+(p.err||'')+'" style="--pc:'+pc+';--pc-glow:'+glow+'" onclick="hsSpot('+i+')">'
-      +'<div class="prio-left">'
-        +'<div class="prio-top-row"><div class="prio-num" style="color:'+numCol+'">'+(i+1)+'</div><div class="prio-emoji">'+emoji+'</div></div>'
-        +'<span class="modtag" style="background:'+col.bg+';color:'+col.text+';align-self:flex-start">'+modLabel+'</span>'
-        +'<div class="prio-err">'+errLabel+'</div>'
-        +'<div class="prio-marks"><b>'+p.lost+' mark'+(p.lost!==1?'s':'')+'</b> left</div>'
-        +'<div class="bar" style="margin-top:6px"><i data-prio-bar="'+i+'" data-w="0" style="background:'+pc+'"></i></div>'
-      +'</div>'
-      +'<div class="prio-right"><div class="prio-action">'+p.action+'</div></div>'
-    +'</div>';
-  });
-}else{
-  prioHTML='<div style="font-size:15px;color:var(--mut)">Nothing urgent — keep doing timed papers to stay sharp.</div>';
+function t10Card(t,n){
+  return '<div class="t10"><div class="t10-num">'+(n+1)+'</div><div class="t10-school">'+t.school+'</div><div class="t10-sub">'+t.sub+'</div>'+modBar(t.mods,8)+'</div>';
 }
-const sentence=worst.lost<=0
-  ?`Clean sweep — <b>${earned}/100</b>. Lock in what's working and keep the run going.`
-  :`<b>${MOD[worst.m].n}</b> is your biggest opportunity — <b>${worst.lost} Marks</b> are recoverable here, and fixing this module will move your score more than anything else.`;
-const today=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short'});
-// ── Question review panel: every missed Section II response, ordered by priority ──
-const TAG_STYLES=[{bg:'var(--g50)',text:'var(--g)'},{bg:'var(--amber50)',text:'var(--amber)'},{bg:'#e8f0f8',text:'#1e5799'}];
-const allMissed=SEC.map(q=>({q,r:state.sec[q.id]})).filter(x=>x.r&&(x.r.mode==='partial'||x.r.mode==='zero')&&(x.q.marks-x.r.val)>0&&x.r.err);
-allMissed.forEach(m=>{m.prioIdx=prios.findIndex(p=>p.err?(p.mod===m.q.mod&&p.err===m.r.err):(p.mod===m.q.mod));if(m.prioIdx<0)m.prioIdx=3;});
-const missed=allMissed;
-const otherQs=missed.filter(m=>m.prioIdx===3);
-if(otherQs.length){prioHTML+='<div class="prio-other" data-prio="3" onclick="hsSpot(3)"><span style="font-size:12.5px;font-weight:700;color:#a96a12;letter-spacing:.06em">OTHER</span><span style="font-size:11.5px;color:#c49a30">'+(otherQs.length)+' question'+(otherQs.length!==1?'s':'')+' — not a top priority</span></div>';}
-const ordered=missed.slice().sort((a,b)=>a.prioIdx-b.prioIdx);
-const qToPrio={};const prioQ=[...prios.map(()=>[]),[]];//index 3 = OTHER
-missed.forEach(m=>{qToPrio[m.q.id]=m.prioIdx;if(m.prioIdx>=0)prioQ[m.prioIdx].push(m.q.id);});
-let qPanelHTML='';
-if(ordered.length){
-  ordered.forEach(m=>{
-    const q=m.q,r=m.r,pi=m.prioIdx;
-    const pc=pi<3?(NUM_COLS[pi]||'var(--g)'):'#c9922a';
-    const tg=pi<3?TAG_STYLES[pi]:{bg:'#fef0d4',text:'#a96a12'};
-    const scoreCol=r.val>0?'var(--amber)':'var(--red)';
-    const fb=fbFor(q.id,r.err,q.verb);
-    qPanelHTML+='<div class="qcard '+(pi===0?'q-lit':'q-dim')+'" data-id="'+q.id+'" data-prio="'+pi+'" style="--pc:'+pc+'">'
-      +'<div class="qhead" onclick="hsToggleQ(\''+q.id+'\')">'
-        +'<span class="q-num">Q'+q.id+'</span>'
-        +'<span class="q-title">'+q.t+'</span>'
-        +'<span class="q-score" style="color:'+scoreCol+'">'+r.val+'/'+q.marks+'</span>'
-        +'<span class="q-tag" style="background:'+tg.bg+';color:'+tg.text+'">'+r.err+'</span>'
-        +'<span class="q-chev">▶</span>'
-      +'</div>'
-      +'<div class="qbody"><div class="qinner">'
-        +'<div class="q-errlabel">✕ '+r.err+'</div>'
-        +'<div class="q-fb">'+fb+'</div>'
-        +(q.dp&&DP[q.dp]?'<div class="q-dp"><div class="q-dp-row"><span class="q-dp-lbl">syllabus dot point</span><span class="q-dp-short">'+DP[q.dp].short+'</span><button class="q-dp-expand-btn" onclick="event.stopPropagation();hsDpToggle(this.closest(\'.q-dp\'))">show full ↓</button></div><div class="q-dp-full">'+DP[q.dp].full+'</div></div>':'')
-        +'<button class="q-review-btn q-action" onclick="hsReview(\''+q.id+'\')">✓ Mark reviewed</button>'
-      +'</div></div>'
-    +'</div>';
-  });
-}else{
-  qPanelHTML='<div style="padding:18px 16px;font-size:13px;color:var(--mut)">No questions to review — clean execution across Section II.</div>';
+
+// Load profile + history from localStorage
+const profile=JSON.parse(localStorage.getItem('hinsightProfile')||'{}');
+const history=JSON.parse(localStorage.getItem('hinsightHistory')||'{}');
+
+// Insight strip — renders ABOVE greeting title
+const weakMod=history.weakMod;
+const modNames=['Module 5','Module 6','Module 7','Module 8'];
+if(weakMod!==undefined){
+  const slot=document.getElementById('insightSlot');
+  slot.innerHTML='<div class="insight" style="margin-bottom:0"><div class="mod-badge">M'+(weakMod+5)+'</div><div class="insight-txt">'+modNames[weakMod]+' is still your biggest gap from your last paper.<span>Recommended papers are weighted towards '+modNames[weakMod]+'.</span></div></div>';
 }
-s4.innerHTML=`
-<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-shrink:0;margin-bottom:4px">
-  <div class="receipt">James Ruse 2024 Chemistry — reviewed ${today}</div>
-  <div style="text-align:right;border:0.5px solid var(--ln);border-radius:9px;padding:8px 13px;background:var(--card);flex-shrink:0">
-    <div style="font-size:10px;font-weight:700;color:var(--mut);letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px">JR 2024 cohort</div>
-    <div style="font-size:13px;font-weight:600;color:var(--ink)"><span style="font-weight:400;color:var(--mut)">Median 73</span> &nbsp;·&nbsp; Mean 71.5</div>
-  </div>
-</div>
-<div class="scorewrap"><div class="score" id="scoreNum">0<small>/100</small></div><div class="psent">${sentence}</div></div>
-<div class="sub-h">📊 Module breakdown</div>
-<div class="mod-grid">${Object.keys(MOD).map(m=>{const p=pct(m);const b=band(p);const col=mc(m);return `<div class="mod-card" style="border-left:3px solid ${col.text}"><div class="mn">${MOD[m].n}</div><div class="ms">${MOD[m].full}</div><div class="row"><span class="pct" style="color:${col.text}">${p}%</span><span class="lab" style="background:${b[1]}">${b[0]}</span></div><div style="font-size:12.5px;color:var(--mut);margin-top:5px">${Math.round(mods[m].earned)} / ${mods[m].total} Marks</div><div class="bar"><i data-w="${p}" style="background:${col.text}"></i></div></div>`;}).join('')}</div>
-<div class="sub-h">⚠️ Error pattern — where your marks actually went</div>
-${errSorted.length
-  ?`<div>${errSorted.map(([e,v])=>`<div class="err-row"><span class="nm">${e}</span><span class="eb"><i data-w="${Math.round(v.lost/maxErr*100)}"></i></span><span class="ev">${v.lost} Marks · ${v.c} Qs</span></div>`).join('')}</div>`
-  :`<div style="font-size:15px;color:var(--mut)">No recurring error pattern — strong execution across Section II.</div>`}
-<div class="diag-prio-wrap">
-  <div class="diag-prio-col">
-    <div class="sub-h">🎯 Top 3 priorities</div>
-    <div class="diag-prio-list">${prioHTML}</div>
-  </div>
-  <div class="diag-q-col">
-    <div class="sub-h" style="visibility:hidden" aria-hidden="true">Question review</div>
-    <div class="qpanel">${qPanelHTML}</div>
-  </div>
-</div>
-<div class="sub-h">📄 Try these next</div>
-<div class="rec-insight">${worst.lost>0?MOD[worst.m].n+' is your weakest module — these papers are weighted there.':'Strong result — these papers will push your consistency further.'}</div>
-<div class="rec-row">
-  <div class="rec-card">
-    <div class="rec-title">Sydney Boys 2024</div>
-    <div class="rec-body">40% Module 6 questions — targeted exposure on your weakest area. The mark allocation mirrors exactly what you need to rebuild.</div>
-  </div>
-  <div class="rec-card">
-    <div class="rec-title">North Sydney Girls 2023</div>
-    <div class="rec-body">6 extended-response questions across Modules 7 & 8. Trains the multi-part structure that cost you marks here.</div>
-  </div>
-</div>
-<div class="soon">More subjects coming soon</div>`;
-DIAG={s4,prios,active:0,reviewed:{},qToPrio,prioQ};
-revealMCQ();
-requestAnimationFrame(()=>{
-let t0=null;const dur=900;const el=s4.querySelector('#scoreNum');
-function tick(ts){if(!t0)t0=ts;const k=Math.min(1,(ts-t0)/dur);const v=Math.round(earned*(1-Math.pow(1-k,3)));el.innerHTML=v+'<small>/100</small>';if(k<1)requestAnimationFrame(tick);}
-requestAnimationFrame(tick);
-setTimeout(()=>{s4.querySelectorAll('.bar>i,.eb>i').forEach(b=>{b.style.width=b.dataset.w+'%';});},120);
-setTimeout(()=>{const first=s4.querySelector('.qcard.q-lit');if(first)first.classList.add('q-open');},400);
-});
+
+// Greeting — renders below insight
+const greetTitle=document.getElementById('greetTitle');
+if(profile.name){
+  greetTitle.textContent='Welcome back, '+profile.name+'.';
 }
-// Exposed globally so the nav button can call it
-window.demoFill=function(){
-  // Fill MCQ — all correct, wrong on 5 questions
-  MCQ.forEach(q=>{state.mcq[q.n]=q.correct[0];});
-  state.mcq[9]='B';state.mcq[13]='C';state.mcq[16]='C';state.mcq[17]='A';state.mcq[20]='C';
-  // Fill Section II
-  SEC.forEach(q=>{state.sec[q.id]=DEMO_SEC_DATA[q.id]||{mode:'full',val:q.marks,err:''};});
-  // Jump straight to diagnostic
-  s4.innerHTML='<div class="diag-loading"><div class="hs-spin"></div><div class="spin-label">Analysing your result…</div></div>';
-  show('s4',3);
-  setTimeout(()=>buildDiag(),1000);
-};
-// ── Spotlight: switch which priority's questions are lit ──
-window.hsSpot=function(i){
-  if(!DIAG)return;DIAG.active=i;const root=DIAG.s4;
-  root.querySelectorAll('.prio[data-prio],.prio-other[data-prio]').forEach(c=>c.classList.toggle('prio-active',+c.dataset.prio===i));
-  root.querySelectorAll('.qcard').forEach(c=>{const lit=+c.dataset.prio===i;c.classList.toggle('q-lit',lit);c.classList.toggle('q-dim',!lit);c.classList.remove('q-open');});
-  const panel=root.querySelector('.qpanel');
-  if(!panel)return;
-  if(i===3){
-    const firstOther=[...root.querySelectorAll('.qcard')].find(c=>+c.dataset.prio===3);
-    if(firstOther){const pt=panel.getBoundingClientRect().top;const et=firstOther.getBoundingClientRect().top;panel.scrollTo({top:panel.scrollTop+(et-pt)-8,behavior:'smooth'});}
-  }else{
-    panel.scrollTo({top:0,behavior:'smooth'});
-  }
-};
-// ── Accordion: open one question at a time, keep it in view ──
-window.hsToggleQ=function(id){
-  if(!DIAG)return;const root=DIAG.s4;
-  const card=[...root.querySelectorAll('.qcard')].find(c=>c.dataset.id===id);
-  if(!card)return;
-  // Universal spotlight: clicking a question in a non-active priority switches the spotlight to it first
-  const cardPrio=+card.dataset.prio;
-  if(cardPrio>=0&&cardPrio!==DIAG.active)hsSpot(cardPrio);
-  const willOpen=!card.classList.contains('q-open');
-  root.querySelectorAll('.qcard.q-open').forEach(c=>c.classList.remove('q-open'));
-  if(willOpen){card.classList.add('q-open');card.scrollIntoView({behavior:'smooth',block:'nearest'});}
-};
-// ── Dot point expand ──
-window.hsDpToggle=function(el){const open=el.querySelector('.q-dp-full').classList.toggle('open');el.querySelector('.q-dp-expand-btn').textContent=open?'hide ↑':'show full ↓';};
-// ── Mark reviewed: strike question, swap button, advance priority bar ──
-window.hsReview=function(id){
-  if(!DIAG)return;DIAG.reviewed[id]=true;const root=DIAG.s4;
-  const card=[...root.querySelectorAll('.qcard')].find(c=>c.dataset.id===id);
-  if(card){card.classList.add('q-reviewed');const btn=card.querySelector('.q-action');if(btn)btn.outerHTML='<span class="q-reviewed-txt">✓ Reviewed</span>';}
-  const pi=DIAG.qToPrio[id];
-  if(pi>=0&&pi<DIAG.prioQ.length){const ids=DIAG.prioQ[pi];const done=ids.filter(x=>DIAG.reviewed[x]).length;const w=ids.length?Math.round(done/ids.length*100):0;const bar=root.querySelector('.prio[data-prio="'+pi+'"] [data-prio-bar]');if(bar)bar.style.width=w+'%';}
-};
-})();
+
+// Recommended section — always visible
+const recSection=document.getElementById('recSection');
+recSection.style.display='block';
+if(weakMod!==undefined){
+  document.getElementById('recSub').textContent='Based on your '+modNames[weakMod]+' weakness';
+  const sorted=[...PAPERS].filter(p=>!p.soon).sort((a,b)=>b.mods[weakMod]-a.mods[weakMod]).slice(0,3);
+  document.getElementById('recGrid').innerHTML=sorted.map(p=>paperCardSimple(p,history[p.id])).join('');
+} else {
+  document.getElementById('recSub').textContent='Most popular to start with';
+  const defaults=PAPERS.filter(p=>!p.soon).slice(0,3);
+  document.getElementById('recGrid').innerHTML=defaults.map(p=>paperCardSimple(p,null)).join('');
+}
+
+// Top 10 — duplicated for seamless infinite scroll
+const t10html=TOP10.map((t,i)=>t10Card(t,i)).join('');
+document.getElementById('top10Grid').innerHTML=t10html+t10html;
+
+// All papers
+const reviewed=Object.keys(history).filter(k=>k!=='weakMod');
+document.getElementById('allSub').textContent=PAPERS.filter(p=>!p.soon).length+' papers · Chemistry Year 12';
+document.getElementById('allGrid').innerHTML=PAPERS.map(p=>paperCardSimple(p,history[p.id])).join('');
 </script>
 </body>
 </html>
