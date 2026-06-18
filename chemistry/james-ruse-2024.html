@@ -40,12 +40,17 @@
 /* ── HOME SCREEN ── */
 .prof-row{display:flex;gap:6px;align-items:stretch;}
 .prof-seg{transition:flex 0.3s ease;border-radius:9px;overflow:hidden;height:40px;}
-.prof-seg.active{flex:5;background:var(--card);border:0.5px solid #9ab88a;display:flex;align-items:center;padding:0 12px;gap:6px;}
+.prof-seg.active{flex:5;background:var(--card);border:0.5px solid #9ab88a;display:flex;align-items:center;padding:0 12px;gap:6px;overflow:visible;}
 .prof-seg.done{flex:1;background:#e8e4d8;cursor:pointer;min-width:20px;}
 .prof-seg.pending{flex:1;background:var(--ln);opacity:0.5;min-width:20px;}
 .prof-seg input{border:none;background:transparent;outline:none;font-size:14px;color:var(--ink);font-family:inherit;width:100%;}
 .prof-seg input::placeholder{color:var(--mut);opacity:0.7;}
 .prof-enter{font-size:13px;color:var(--mut);opacity:0.25;transition:opacity .15s;flex-shrink:0;pointer-events:none;}
+.school-wrap{position:relative;width:100%;display:flex;align-items:center;}
+.school-dropdown{position:absolute;top:calc(100% + 6px);left:-12px;right:-12px;background:var(--card);border:0.5px solid #9ab88a;border-radius:9px;overflow:hidden;z-index:100;box-shadow:0 4px 16px rgba(0,0,0,.08);max-height:180px;overflow-y:auto;}
+.school-opt{padding:9px 12px;font-size:13px;color:var(--ink);cursor:pointer;font-family:inherit;}
+.school-opt:hover,.school-opt.active{background:#eef4f0;}
+.prof-err{font-size:11px;color:#c0392b;margin-left:4px;flex-shrink:0;}
 .prof-lbl{font-size:13px;color:var(--mut);margin-bottom:7px;}
 .ticker-wrap{position:relative;height:28px;overflow:hidden;margin-top:4px}
 .ticker-item{position:absolute;top:0;width:100%;font-size:17px;color:var(--ink);display:flex;align-items:center;gap:9px;line-height:1.55;transform:translateY(100%);transition:transform .42s cubic-bezier(.4,0,.2,1);font-weight:400}
@@ -84,6 +89,17 @@
 .gpm button.on-z{background:var(--red);color:#fff}
 .pin{width:44px;font-family:inherit;font-size:13px;text-align:center;border:0.5px solid var(--ln);border-radius:6px;padding:4px;margin-left:8px}
 .errsel{font-family:inherit;font-size:12px;border:0.5px solid var(--ln);border-radius:6px;padding:5px 8px;color:var(--ink);background:#fff;width:100%;max-width:280px;margin-top:5px}
+/* Multi-select error dropdown */
+.errsel-wrap{position:relative;max-width:280px;margin-top:5px;display:none}
+.errsel-btn{font-family:inherit;font-size:12px;border:0.5px solid var(--ln);border-radius:6px;padding:5px 8px;color:var(--mut);background:#fff;width:100%;text-align:left;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:6px;transition:border-color .12s}
+.errsel-btn:hover{border-color:#cfd6c4}
+.errsel-btn.has-sel{color:var(--ink);border-color:#c4cbb9}
+.errsel-lbl{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.errsel-drop{position:absolute;top:calc(100% + 3px);left:0;right:0;min-width:260px;background:#fff;border:0.5px solid var(--ln);border-radius:7px;box-shadow:0 4px 18px rgba(0,0,0,0.10);z-index:200;max-height:220px;overflow-y:auto;padding:4px 0;display:none}
+.errsel-opt{display:flex;align-items:center;gap:8px;padding:5px 10px;font-size:12px;color:var(--ink);cursor:pointer;transition:background .1s;user-select:none}
+.errsel-opt:hover{background:var(--g50)}
+.errsel-opt input[type=checkbox]{accent-color:var(--red);flex-shrink:0;cursor:pointer}
+.errsel-opt.is-checked{color:var(--red);font-weight:500}
 .foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:10px;flex-shrink:0}
 
 /* ── Diagnostic ── */
@@ -238,7 +254,7 @@
     <div class="hs-nav-right">
       <button id="backBtn" onclick="goBack()" style="display:none;font-family:inherit;font-size:13px;color:var(--mut);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;margin-right:4px">← back</button>
       <button id="fwdBtn" onclick="goFwd()" style="display:none;font-family:inherit;font-size:13px;color:var(--mut);background:none;border:none;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;margin-right:4px">forward →</button>
-      <span class="step-lbl" id="stepLbl">Step 1 of 4</span>
+<span class="step-lbl" id="stepLbl">Step 1 of 4</span>
       <div class="step" id="stepper"><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
     </div>
   </div>
@@ -356,36 +372,6 @@ const SEC=[
   {id:'34',  mod:'Mod8',marks:9, t:'Justify structure M, N, O — spectroscopic data',  verb:'Justify',   vl:'evaluate',  dp:'8.6'},
   {id:'35',  mod:'Mod8',marks:5, t:'Multi-step titration — commercial disinfectant',  verb:'',          vl:'',          dp:'8.3'},
 ];
-const SAMPLE_MCQ={9:'A',13:'A',16:'A',17:'A',19:'B'};
-const SAMPLE_SEC={21:['full'],22:['full'],23:['partial',4,"Calculation error — didn't show working"],24:['full'],25:['partial',2,"Did not include detail / chemistry terminology"],26:['partial',4,"Calculation error — knowledge"],27:['full'],28:['partial',4,"Did not include detail / chemistry terminology"],29:['full'],30:['partial',5,"Did not use diagram / stimulus / equation"],31:['partial',2,"Did not know theory"],32:['partial',2,"Calculation error — didn't show working"],33:['partial',3,"Did not address verb"],34:['zero',0,"Time — ran out overall"]};
-// Demo fill data — realistic result for testing diagnostic
-const DEMO_SEC_DATA={
-  '21':{mode:'full',val:2,err:''},
-  '22':{mode:'full',val:2,err:''},
-  '23':{mode:'partial',val:1,err:"Did not include detail / chemistry terminology"},
-  '24a':{mode:'full',val:1,err:''},
-  '24b':{mode:'partial',val:2,err:"Calculation error — knowledge"},
-  '25a':{mode:'partial',val:1,err:"Did not include detail / chemistry terminology"},
-  '25b':{mode:'full',val:2,err:''},
-  '26':{mode:'partial',val:2,err:"Calculation error — knowledge"},
-  '27a':{mode:'full',val:3,err:''},
-  '27b':{mode:'partial',val:1,err:"Calculation error — silly mistake"},
-  '28a':{mode:'full',val:3,err:''},
-  '28b':{mode:'full',val:1,err:''},
-  '28c':{mode:'partial',val:2,err:"Did not include detail / chemistry terminology"},
-  '29a':{mode:'full',val:3,err:''},
-  '29b':{mode:'partial',val:2,err:"Calculation error — knowledge"},
-  '30a':{mode:'full',val:1,err:''},
-  '30b':{mode:'partial',val:1,err:"Did not address verb"},
-  '31':{mode:'partial',val:3,err:"Calculation error — silly mistake"},
-  '32a':{mode:'partial',val:3,err:"Calculation error — knowledge"},
-  '32b':{mode:'full',val:2,err:''},
-  '33a':{mode:'full',val:2,err:''},
-  '33b':{mode:'partial',val:2,err:"Did not address verb"},
-  '33d':{mode:'partial',val:1,err:"Did not include detail / chemistry terminology"},
-  '34':{mode:'zero',val:0,err:"Time — ran out overall"},
-  '35':{mode:'partial',val:2,err:"Time — ran out overall"}
-};
 // Specific diagnostic feedback for every question × error combo present in DEMO_SEC_DATA.
 // Keyed by questionId + '||' + errorType. Tone: direct, prescriptive — what was missing, what to do.
 const REVIEW_FB={
@@ -401,8 +387,8 @@ const REVIEW_FB={
   '32a||Calculation error — knowledge':"This 6-mark 'justify' rewards linking each observation to a specific functional group with a confirming test — you identified J, M and K but didn't fully chain the evidence to all three structures. Map observation → functional group → confirmation for each compound so every identification stands on its own.",
   '33b||Did not address verb':"'Determine' requires the full worked path to a numerical pH via Henderson–Hasselbalch — you set up the buffer but didn't carry the ratio through to a final value. Finish every step to the number, showing the pKa and the log term, because an unfinished method leaves marks on the table.",
   '33d||Did not include detail / chemistry terminology':"A 'discuss' on systematic error needs both direction and consequence: diluted NaOH gives a larger titre, which overstates the calculated analyte concentration — you flagged the error but not its quantitative effect. State which way the result is skewed and why to earn the analysis marks.",
-  '34||Time — ran out overall':"This 9-mark spectroscopic 'justify' was left blank because time ran out — it's the single biggest recoverable block on the paper. Budget ~16 minutes for it up front and practise reading MS, IR and NMR data fast so a question this size never gets stranded.",
-  '35||Time — ran out overall':"You began this multi-step titration but ran out of time before finishing the calculation chain — the partial credit shows the method was sound. Drill multi-step titration stoichiometry against a timer so the full sequence runs faster and you reach the final answer."
+  '34||Time — ran out overall':"Biggest recoverable block on the paper at 9 marks. Budget ~16 minutes for it up front and practise reading MS, IR and NMR data fast so a question this size never gets stranded.",
+  '35||Time — ran out overall':"Drill multi-step titration stoichiometry against a timer so the full calculation chain runs faster and you reach the final answer before time's up."
 };
 /* ── PAPER-SPECIFIC FEEDBACK (optional — delete these 3 objects for a new paper to use generic feedback only) ── */
 // THEORY_FB — per-question feedback for "Did not know theory" errors only.
@@ -672,7 +658,7 @@ const VERB_FB = {
 
 function boldDP(t){return t.replace(/((?:Re-read|Go back to) syllabus dot point [\d.]+)/g,'<strong>$1 (below)</strong>');}
 function greenFl(t){return t.replace(/([Gg]reen flags?(?:\s+words?)?:?)/g,'🟢 $1');}
-function fbFor(id,err,verb){
+function fbFor(id,err,verb,detailMode=false){
   if(err==='Did not address verb'&&verb&&VERB_FB[verb]){
     const v=VERB_FB[verb];
     const ipRaw=greenFl(v.inPractice);
@@ -688,9 +674,12 @@ function fbFor(id,err,verb){
   }
   const PAPER_SPECIFIC=['Did not know theory','Calculation error — knowledge','Did not include detail / chemistry terminology'];
   const key=id+'||'+err;
-  const specific=PAPER_SPECIFIC.includes(err)?(THEORY_FB[key]||CALC_KNOWLEDGE_FB[key]||TERMINOLOGY_FB[key]||REVIEW_FB[key]):null;
-  return boldDP(specific||(ACTION[err]||'Review this against the marking guidelines and sample response. Then redo the question under timed conditions until the method is automatic.'));
+  const specific=PAPER_SPECIFIC.includes(err)?(THEORY_FB[key]||CALC_KNOWLEDGE_FB[key]||TERMINOLOGY_FB[key]||REVIEW_FB[key]):(REVIEW_FB[key]||null);
+  if(specific)return boldDP(specific);
+  if(detailMode)return '<span style="font-size:12px;color:var(--mut);font-style:italic">Action steps in the priority card →</span>';
+  return boldDP(ACTION[err]||'Review this against the marking guidelines and sample response. Then redo the question under timed conditions until the method is automatic.');
 }
+function getErrs(r){return(r&&r.errs&&r.errs.length)?r.errs:(r&&r.err?[r.err]:[]);}
 let DIAG=null;
 let maxStep=0;
 const STEP_SCREENS=['s1','s2','s3','s4'];
@@ -813,10 +802,195 @@ s1.querySelector('#go1').onclick=()=>show('s2',1);
   ];
   const vals={};
 
+  const SCHOOLS=[
+    /* Selective */
+    'James Ruse Agricultural High School','Sydney Boys High School','Sydney Girls High School',
+    'North Sydney Boys High School','North Sydney Girls High School','Baulkham Hills High School',
+    'Hornsby Girls High School','Girraween High School','Hurlstone Agricultural High School',
+    'Penrith High School','Caringbah High School','Fort Street High School',
+    'Gosford High School','Normanhurst Boys High School','Blacktown Girls High School',
+    'Macquarie Fields High School','NBSC Manly Selective Campus','Chatswood High School',
+    'Cherrybrook Technology High School','Campbelltown Performing Arts High School',
+    'Liverpool Girls High School','Tempe High School','Kogarah High School',
+    'Wollongong High School of the Performing Arts','Newcastle High School',
+    'Coffs Harbour High School','Orange High School','Dubbo College Senior Campus',
+    'Armidale Secondary College','Ballina High School','Tamworth Senior College',
+    'Bathurst High School','Parramatta High School','Farrer Memorial Agricultural High School',
+    'Northern Beaches Secondary College Freshwater Senior Campus',
+    /* Private — boys */
+    'Knox Grammar School','The King\'s School','Shore (Sydney Church of England Grammar)',
+    'Sydney Grammar School','Newington College','Trinity Grammar School',
+    'St Aloysius\' College','St Ignatius\' College Riverview','Waverley College',
+    'De La Salle College Ashfield','Marist College North Shore','St Joseph\'s College Hunters Hill',
+    'Barker College','Cranbrook School','The Scots College','St Patrick\'s College Strathfield',
+    'Marist Catholic College Penshurst','De La Salle Catholic College Caringbah',
+    'St Leo\'s Catholic College','Patrician Brothers\' College Blacktown',
+    'Patrician Brothers\' College Fairfield','St Dominic\'s College Penrith',
+    'St Gregory\'s College','Oakhill College','Hills Grammar School',
+    'William Clarke College','Reddam House','Hunter Valley Grammar School',
+    'Calrossy Anglican School','The Armidale School','Macquarie Anglican Grammar School',
+    'The Illawarra Grammar School','Kinross Wolaroi School','St John\'s College Dubbo',
+    'Trinity Catholic College Lismore','Xavier College Albury',
+    /* Private — girls */
+    'Abbotsleigh','Ascham School','Kambala','MLC School Burwood','PLC Sydney',
+    'Pymble Ladies\' College','Ravenswood School for Girls','SCEGGS Darlinghurst',
+    'Queenwood School','Loreto Kirribilli','Loreto Normanhurst',
+    'Monte Sant\'Angelo Mercy College','Santa Sabina College','Brigidine College St Ives',
+    'St Catherine\'s School Waverley','Roseville College','Meriden School','Wenona School',
+    'St Vincent\'s College Potts Point','Stella Maris College','Mercy Catholic College Chatswood',
+    'Domremy College Five Dock','Cerdon College Merrylands',
+    'Our Lady of Mercy College Parramatta','Mater Maria Catholic College Warriewood',
+    'Mt St Benedict College Pennant Hills','St Ursula\'s College Kingsgrove',
+    'Bethany College Hurstville','Mary MacKillop Catholic College',
+    'New England Girls\' School','Frensham School Mittagong',
+    'Kincoppal-Rose Bay School of the Sacred Heart',
+    /* Private — coed */
+    'Reddam House','Hills Grammar School','William Clarke College',
+    'Norwest Christian College','Penrith Anglican College',
+    'Blue Mountains Grammar School','Gilroy Catholic College Castle Hill',
+    'Champagnat Catholic College Pagewood','Thomas Aquinas Catholic College',
+    'St Peter\'s Catholic College Tuggerawong','Trinity Catholic College Auburn',
+    'La Salle Catholic College Bankstown','Marist Catholic College Kogarah',
+    'St George Christian School','Christian Brothers High School Lewisham',
+    'Edmund Rice College Wollongong',
+    /* Public — Inner Sydney / Eastern Suburbs */
+    'Sydney Secondary College Balmain Campus','Sydney Secondary College Leichhardt Campus',
+    'Marrickville High School','Ashfield Boys High School','Concord High School',
+    'Dulwich High School of Visual Arts and Design','Canterbury Boys High School',
+    'Beverly Hills Girls High School','Kingsgrove High School',
+    /* Public — North Shore / Northern Beaches */
+    'Epping Boys High School','Ryde Secondary College','Turramurra High School',
+    'Killara High School','Davidson High School','Pittwater High School',
+    'Narrabeen Sports High School','NBSC Cromer Campus',
+    /* Public — Western Sydney */
+    'Homebush Boys High School','Westfields Sports High School','Birrong Girls High School',
+    'Bankstown Girls High School','Fairfield High School','Fairvale High School',
+    'Canley Vale High School','Punchbowl Boys High School','Wiley Park Girls High School',
+    'Belmore Boys High School','Moorebank High School','Liverpool Boys High School',
+    'Chester Hill High School','Carlingford High School','Pennant Hills High School',
+    'Castle Hill High School','Kellyville High School','Rouse Hill High School',
+    'Galston High School',
+    /* Public — South Sydney / Sutherland */
+    'Georges River College Oatley Senior Campus','Georges River College Hurstville Campus',
+    'Blakehurst High School','Gymea Technology High School',
+    'Port Hacking High School','Cronulla High School','Miranda High School',
+    'Engadine High School','Heathcote High School','Menai High School',
+    'Sutherland High School','Jannali High School',
+    /* Public — Blue Mountains / West */
+    'Springwood High School','Katoomba High School','Lithgow High School',
+    /* Public — Newcastle / Hunter */
+    'Maitland Grossmann High School','Cessnock High School','Belmont High School',
+    'Lambton High School','Merewether High School','Cardiff High School',
+    'Kotara High School','Hunter Sports High School',
+    /* Public — Illawarra / South Coast */
+    'Shellharbour High School','Figtree High School','Dapto High School',
+    'Keira High School','Illawarra Sports High School','Nowra High School',
+    /* Public — Central Coast */
+    'Tuggerah Lakes Secondary College Berkeley Vale Campus',
+    'Tuggerah Lakes Secondary College The Entrance Campus',
+    'Wyong High School','Terrigal High School','Erina High School',
+    /* Public — Northern NSW */
+    'Byron Bay High School','Lismore High School','Mullumbimby High School',
+    'Grafton High School','Maclean High School',
+    /* Public — Western / Inland NSW */
+    'Dubbo College Senior Campus','Bathurst High School','Orange High School',
+    'Mudgee High School','Goulburn High School','Wagga Wagga High School',
+    'Albury High School','Griffith High School'
+  ].filter((v,i,a)=>v&&a.indexOf(v)===i).sort();
+
+  let schoolSelected=false;
+
+  function buildSchoolInput(segEl){
+    segEl.innerHTML='<div class="school-wrap"><input id="pi1" type="text" placeholder="Your school" autocomplete="off" /><span class="prof-enter" id="ph1">↵</span></div>';
+    const inp=segEl.querySelector('input');
+    inp.focus();
+    inp.addEventListener('input',()=>{
+      schoolSelected=false;
+      profHint(1);
+      renderDropdown(inp);
+    });
+    inp.addEventListener('keydown',(e)=>{
+      const dd=document.getElementById('schoolDD');
+      if(dd){
+        const opts=dd.querySelectorAll('.school-opt');
+        const active=dd.querySelector('.school-opt.active');
+        if(e.key==='ArrowDown'){
+          e.preventDefault();
+          const next=active?active.nextElementSibling:opts[0];
+          if(next){active&&active.classList.remove('active');next.classList.add('active');}
+          return;
+        }
+        if(e.key==='ArrowUp'){
+          e.preventDefault();
+          const prev=active?active.previousElementSibling:opts[opts.length-1];
+          if(prev){active&&active.classList.remove('active');prev.classList.add('active');}
+          return;
+        }
+        if(e.key==='Enter'){
+          const toSel=active||opts[0];
+          if(toSel){inp.value=toSel.textContent;schoolSelected=true;removeDropdown();profHint(1);profNext(1);return;}
+        }
+      }
+      if(e.key==='Enter') profNext(1);
+    });
+    inp.addEventListener('blur',()=>setTimeout(removeDropdown,150));
+  }
+
+  function renderDropdown(inp){
+    removeDropdown();
+    const q=inp.value.trim().toLowerCase();
+    if(!q)return;
+    const matches=SCHOOLS.filter(s=>s.toLowerCase().includes(q)).slice(0,8);
+    if(!matches.length)return;
+    const dd=document.createElement('div');
+    dd.id='schoolDD';
+    dd.className='school-dropdown';
+    matches.forEach(s=>{
+      const opt=document.createElement('div');
+      opt.className='school-opt';
+      opt.textContent=s;
+      opt.addEventListener('mousedown',(e)=>{
+        e.preventDefault();
+        inp.value=s;
+        schoolSelected=true;
+        removeDropdown();
+        profHint(1);
+        profNext(1);
+      });
+      dd.appendChild(opt);
+    });
+    inp.closest('.school-wrap').appendChild(dd);
+  }
+
+  function removeDropdown(){
+    const dd=document.getElementById('schoolDD');
+    if(dd)dd.remove();
+  }
+
+  function isValidEmail(v){
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  }
+
   function profNext(idx){
     const inp=document.getElementById('pi'+idx);
     if(!inp||!inp.value.trim())return;
-    vals[steps[idx].k]=inp.value.trim();
+    const val=inp.value.trim();
+
+    // Email validation
+    if(idx===2&&!isValidEmail(val)){
+      let err=document.getElementById('profEmailErr');
+      if(!err){
+        err=document.createElement('span');
+        err.id='profEmailErr';
+        err.className='prof-err';
+        err.textContent='Invalid email';
+        inp.parentNode.insertBefore(err,inp.nextSibling);
+      }
+      inp.style.color='#c0392b';
+      return;
+    }
+
+    vals[steps[idx].k]=val;
     const seg=document.getElementById('ps'+idx);
     seg.className='prof-seg done';
     seg.innerHTML='';
@@ -825,9 +999,13 @@ s1.querySelector('#go1').onclick=()=>show('s2',1);
     if(next<3){
       const ns=document.getElementById('ps'+next);
       ns.className='prof-seg active';
-      ns.innerHTML='<input id="pi'+next+'" type="'+steps[next].t+'" placeholder="'+steps[next].p+'" onkeydown="if(event.key===\'Enter\')profNext('+next+')" oninput="profHint('+next+')" /><span class="prof-enter" id="ph'+next+'">↵</span>';
+      if(next===1){
+        buildSchoolInput(ns);
+      } else {
+        ns.innerHTML='<input id="pi'+next+'" type="'+steps[next].t+'" placeholder="'+steps[next].p+'" autocomplete="off" onkeydown="if(event.key===\'Enter\')profNext('+next+')" oninput="profHint('+next+')" /><span class="prof-enter" id="ph'+next+'">↵</span>';
+        document.getElementById('pi'+next).focus();
+      }
       document.getElementById('profLbl').textContent=steps[next].l;
-      document.getElementById('pi'+next).focus();
     } else {
       document.getElementById('profLbl').textContent='';
       localStorage.setItem('hinsightProfile',JSON.stringify(vals));
@@ -839,15 +1017,23 @@ s1.querySelector('#go1').onclick=()=>show('s2',1);
   }
 
   function profRestart(idx){
+    const prevVal=vals[steps[idx].k]||'';
     for(let i=idx;i<3;i++){
       delete vals[steps[i].k];
       const s=document.getElementById('ps'+i);
       if(i===idx){
         s.className='prof-seg active';
-        s.innerHTML='<input id="pi'+i+'" type="'+steps[i].t+'" placeholder="'+steps[i].p+'" onkeydown="if(event.key===\'Enter\')profNext('+i+')" />';
-        s.onclick=null;
+        if(i===1){
+          buildSchoolInput(s);
+          const pi=document.getElementById('pi1');
+          if(pi&&prevVal){pi.value=prevVal;profHint(1);}
+        } else {
+          s.innerHTML='<input id="pi'+i+'" type="'+steps[i].t+'" placeholder="'+steps[i].p+'" autocomplete="off" onkeydown="if(event.key===\'Enter\')profNext('+i+')" />';
+          s.onclick=null;
+          document.getElementById('pi'+i).focus();
+        }
         document.getElementById('profLbl').textContent=steps[i].l;
-        document.getElementById('pi'+i).focus();
+        s.onclick=null;
       } else {
         s.className='prof-seg pending';
         s.innerHTML='';
@@ -867,13 +1053,21 @@ s1.querySelector('#go1').onclick=()=>show('s2',1);
     const inp=document.getElementById('pi'+idx);
     const hint=document.getElementById('ph'+idx);
     if(hint){
-      hint.style.opacity=inp.value.trim().length>0?'0.6':'0.25';
+      hint.style.opacity=inp&&inp.value.trim().length>0?'0.6':'0.25';
+    }
+    // Clear email error on retype
+    if(idx===2){
+      const err=document.getElementById('profEmailErr');
+      if(err)err.remove();
+      if(inp)inp.style.color='';
     }
   };
 
   // Show ↵ on load for first field
   const firstHint=document.getElementById('ph0');
   if(firstHint) firstHint.style.opacity='0.25';
+
+
 })();
 
 /* ── Ticker ── */
@@ -997,20 +1191,39 @@ tr.innerHTML=`<td class="qcell"><span class="ql">Q${q.id}</span><span class="qt"
 <td><div style="display:flex;align-items:center;flex-wrap:wrap">
 <div class="gpm" data-id="${q.id}"><button data-m="full">Full</button><button data-m="partial">Partial</button><button data-m="zero">Zero</button></div>
 <input class="pin" type="number" min="0" max="${q.marks}" placeholder="?" style="display:none" data-pin="${q.id}"><span style="font-size:12px;color:var(--mut);display:none;margin-left:5px" data-of="${q.id}">/ ${q.marks}</span>
-</div><select class="errsel" data-err="${q.id}" style="display:none"><option value="">Why did you lose marks?</option>${ERRORS.map(e=>`<option>${e}</option>`).join('')}</select></td>`;
+</div><div class="errsel-wrap" data-errid="${q.id}"><button type="button" class="errsel-btn" data-errbtn="${q.id}" onclick="hsErrToggle('${q.id}')"><span class="errsel-lbl" data-errlbl="${q.id}">Why did you lose marks?</span><span style="font-size:10px;flex-shrink:0">▾</span></button><div class="errsel-drop" data-errdrop="${q.id}">${ERRORS.map(e=>`<label class="errsel-opt"><input type="checkbox" data-errcheck="${q.id}" value="${e}"> ${e}</label>`).join('')}</div></div></td>`;
 body.appendChild(tr);});
 function secProg(){const n=Object.keys(state.sec).length;p3.style.width=(n/SEC.length*100)+'%';updateGo3();}
 function setMode(id,mode){const q=SEC.find(s=>s.id===id);const tr=body.querySelector(`tr[data-id="${id}"]`);
 const gpm=tr.querySelector('.gpm');[...gpm.children].forEach(b=>{b.className='';if(b.dataset.m===mode)b.className='on-'+mode[0];});
-const pin=tr.querySelector('[data-pin]'),of=tr.querySelector('[data-of]'),sel=tr.querySelector('[data-err]');
+const pin=tr.querySelector('[data-pin]'),of=tr.querySelector('[data-of]'),wrap=tr.querySelector('.errsel-wrap');
 pin.style.display=of.style.display=(mode==='partial')?'inline-block':'none';
-sel.style.display=(mode==='partial'||mode==='zero')?'inline-block':'none';
-state.sec[id]={mode,val:mode==='full'?q.marks:mode==='zero'?0:(+pin.value||0),err:sel.value};
+if(wrap)wrap.style.display=(mode==='partial'||mode==='zero')?'block':'none';
+const errs=wrap?[...wrap.querySelectorAll('input[type=checkbox]:checked')].map(x=>x.value):[];
+state.sec[id]={mode,val:mode==='full'?q.marks:mode==='zero'?0:(+pin.value||0),errs};
 if(mode==='partial'&&pin.value==='')pin.focus();secProg();}
-body.onclick=e=>{const b=e.target.closest('.gpm button');if(!b)return;setMode(b.parentElement.dataset.id,b.dataset.m);};
-body.addEventListener('input',e=>{const id=e.target.dataset.pin||e.target.dataset.err||null;if(!id||!state.sec[id])return;
+body.onclick=e=>{
+  const b=e.target.closest('.gpm button');if(b){setMode(b.parentElement.dataset.id,b.dataset.m);return;}
+};
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.errsel-wrap'))document.querySelectorAll('.errsel-drop').forEach(d=>d.style.display='none');
+},true);
+body.addEventListener('change',e=>{
+  const cb=e.target.closest('[data-errcheck]');if(!cb)return;
+  const id=cb.dataset.errcheck;if(!state.sec[id])return;
+  const tr=cb.closest('tr');
+  const checked=[...tr.querySelectorAll('[data-errcheck]:checked')].map(x=>x.value);
+  state.sec[id].errs=checked;
+  const lbl=tr.querySelector('[data-errlbl]');
+  if(lbl)lbl.textContent=checked.length===0?'Why did you lose marks?':checked.length===1?checked[0]:checked.length+' errors selected';
+  const btn=tr.querySelector('.errsel-btn');
+  if(btn)btn.classList.toggle('has-sel',checked.length>0);
+  const opt=cb.closest('.errsel-opt');
+  if(opt)opt.classList.toggle('is-checked',cb.checked);
+});
+body.addEventListener('input',e=>{const id=e.target.dataset.pin||null;if(!id||!state.sec[id])return;
 if(e.target.dataset.pin){const q=SEC.find(s=>s.id===id);let v=+e.target.value||0;if(v>q.marks){e.target.style.borderColor='var(--red)';e.target.style.color='var(--red)';v=q.marks;e.target.value=v;setTimeout(()=>{e.target.style.borderColor='';e.target.style.color='';},700);}else if(v===q.marks&&q.marks>0){setMode(id,'full');return;}else if(v===0){setMode(id,'zero');return;}if(v<0){v=0;e.target.value=0;}state.sec[id].val=v;}
-if(e.target.dataset.err)state.sec[id].err=e.target.value;});
+});
 go3btn.onclick=()=>{if(go3btn.disabled)return;
   s4.innerHTML='<div class="diag-loading"><div class="hs-spin"></div><div class="spin-label">Analysing your result…</div></div>';
   show('s4',3);
@@ -1027,16 +1240,16 @@ SEC.forEach(q=>{mods[q.mod].total+=q.marks;const r=state.sec[q.id];if(r)mods[q.m
 let earned=0;Object.values(mods).forEach(m=>{earned+=m.earned;});earned=Math.round(earned);
 const lost=Object.keys(mods).map(m=>({m,lost:mods[m].total-mods[m].earned,...mods[m]})).sort((a,b)=>b.lost-a.lost);
 const worst=lost[0];
-const errAgg={};SEC.forEach(q=>{const r=state.sec[q.id];if(r&&(r.mode==='partial'||r.mode==='zero')&&r.err){const l=q.marks-r.val;if(!errAgg[r.err])errAgg[r.err]={lost:0,c:0};errAgg[r.err].lost+=l;errAgg[r.err].c++;}});
+const errAgg={};SEC.forEach(q=>{const r=state.sec[q.id];if(!r||(r.mode!=='partial'&&r.mode!=='zero'))return;const l=q.marks-r.val;const errs=getErrs(r);if(l>0&&errs.length){errs.forEach(err=>{if(!errAgg[err])errAgg[err]={lost:0,c:0};errAgg[err].lost+=l;errAgg[err].c++;});}});
 const errSorted=Object.entries(errAgg).filter(([,v])=>v.lost>0).sort((a,b)=>b[1].lost-a[1].lost);
 const maxErr=errSorted.length?errSorted[0][1].lost:1;
-// Build module × error combos ranked by marks lost
-const modErrMap={};
-SEC.forEach(q=>{const r=state.sec[q.id];if(r&&(r.mode==='partial'||r.mode==='zero')&&r.err){const l=q.marks-r.val;if(l>0){const key=q.mod+'||'+r.err;if(!modErrMap[key])modErrMap[key]={mod:q.mod,err:r.err,lost:0};modErrMap[key].lost+=l;}}});
-const modErrSorted=Object.values(modErrMap).sort((a,b)=>b.lost-a.lost);
-const prios=modErrSorted.slice(0,3).map(x=>({mod:x.mod,err:x.err,lost:x.lost,action:ACTION[x.err]||`Revisit the ${MOD[x.mod].full} theory — textbook and class notes — then redo the questions you missed under timed conditions.`}));
-// fallback: pad with highest-loss modules if fewer than 3 errors logged
-if(prios.length<3){const used=new Set(prios.map(p=>p.mod+'||'+p.err));for(const x of lost){if(prios.length>=3)break;if(x.lost<=0)continue;const key=x.m+'||';if(!used.has(key)){used.add(key);prios.push({mod:x.m,err:null,lost:x.lost,action:`Revisit the ${MOD[x.m].full} theory — textbook and class notes — then redo the questions you missed under timed conditions.`});}}}
+// Build priorities by error type (all modules combined), ranked by total marks lost
+const errPrioMap={};
+SEC.forEach(q=>{const r=state.sec[q.id];if(!r||(r.mode!=='partial'&&r.mode!=='zero'))return;const l=q.marks-r.val;const errs=getErrs(r);if(l>0){errs.forEach(err=>{if(!errPrioMap[err])errPrioMap[err]={lost:0,modLost:{}};errPrioMap[err].lost+=l;errPrioMap[err].modLost[q.mod]=(errPrioMap[err].modLost[q.mod]||0)+l;});}});
+const errPrioSorted=Object.entries(errPrioMap).sort((a,b)=>b[1].lost-a[1].lost);
+const prios=errPrioSorted.slice(0,3).map(([err,v])=>{const dom=Object.entries(v.modLost).sort((a,b)=>b[1]-a[1])[0][0];return{err,mod:dom,lost:v.lost,action:ACTION[err]||`Review the relevant theory — textbook and class notes — then redo the questions you missed under timed conditions.`};});
+// fallback: pad with highest-loss modules if fewer than 3 error types logged
+if(prios.length<3){const usedErrs=new Set(prios.map(p=>p.err));for(const x of lost){if(prios.length>=3)break;if(x.lost<=0)continue;if(!usedErrs.has(null)){usedErrs.add(null);prios.push({mod:x.m,err:null,lost:x.lost,action:`Revisit the ${MOD[x.m].full} theory — textbook and class notes — then redo the questions you missed under timed conditions.`});}}}
 
 function pct(m){return mods[m]&&mods[m].total?Math.round(mods[m].earned/mods[m].total*100):0;}
 function band(p){return p>=70?['Strong','var(--g)']:p>=55?['Below target','var(--amber)']:['Needs work','var(--red)'];}
@@ -1074,8 +1287,8 @@ const sentence=worst.lost<=0
 const today=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short'});
 // ── Question review panel: every missed Section II response, ordered by priority ──
 const TAG_STYLES=[{bg:'var(--g50)',text:'var(--g)'},{bg:'var(--amber50)',text:'var(--amber)'},{bg:'#e8f0f8',text:'#1e5799'}];
-const allMissed=SEC.map(q=>({q,r:state.sec[q.id]})).filter(x=>x.r&&(x.r.mode==='partial'||x.r.mode==='zero')&&(x.q.marks-x.r.val)>0&&x.r.err);
-allMissed.forEach(m=>{m.prioIdx=prios.findIndex(p=>p.err?(p.mod===m.q.mod&&p.err===m.r.err):(p.mod===m.q.mod));if(m.prioIdx<0)m.prioIdx=3;});
+const allMissed=SEC.map(q=>({q,r:state.sec[q.id]})).filter(x=>{if(!x.r||(x.r.mode!=='partial'&&x.r.mode!=='zero'))return false;if(x.q.marks-x.r.val<=0)return false;return getErrs(x.r).length>0;});
+allMissed.forEach(m=>{const errs=getErrs(m.r);m.errs=errs;let best=-1;errs.forEach(err=>{const pi=prios.findIndex(p=>p.err?p.err===err:p.mod===m.q.mod);if(pi>=0&&(best<0||pi<best))best=pi;});m.prioIdx=best>=0?best:3;});
 const missed=allMissed;
 const otherQs=missed.filter(m=>m.prioIdx===3);
 if(otherQs.length){prioHTML+='<div class="prio-other" data-prio="3" onclick="hsSpot(3)"><span style="font-size:12.5px;font-weight:700;color:#a96a12;letter-spacing:.06em">OTHER</span><span style="font-size:11.5px;color:#c49a30">'+(otherQs.length)+' question'+(otherQs.length!==1?'s':'')+' — not a top priority</span></div>';}
@@ -1085,22 +1298,26 @@ missed.forEach(m=>{qToPrio[m.q.id]=m.prioIdx;if(m.prioIdx>=0)prioQ[m.prioIdx].pu
 let qPanelHTML='';
 if(ordered.length){
   ordered.forEach(m=>{
-    const q=m.q,r=m.r,pi=m.prioIdx;
+    const q=m.q,r=m.r,pi=m.prioIdx,errs=m.errs||getErrs(r);
     const pc=pi<3?(NUM_COLS[pi]||'var(--g)'):'#c9922a';
     const tg=pi<3?TAG_STYLES[pi]:{bg:'#fef0d4',text:'#a96a12'};
     const scoreCol=r.val>0?'var(--amber)':'var(--red)';
-    const fb=fbFor(q.id,r.err,q.verb);
+    // Show primary error tag in header; indicate extras with +N badge
+    const primaryErr=pi<3&&prios[pi]&&prios[pi].err?prios[pi].err:errs[0];
+    const extraCount=errs.length-(errs.includes(primaryErr)?1:0);
+    // Per-error feedback in body (detailMode — no repeated generic action text)
+    const fbParts=errs.map(err=>{const fb=fbFor(q.id,err,q.verb,true);return'<div class="q-errlabel">✕ '+err+'</div>'+(fb?'<div class="q-fb">'+fb+'</div>':'');}).join('');
     qPanelHTML+='<div class="qcard '+(pi===0?'q-lit':'q-dim')+'" data-id="'+q.id+'" data-prio="'+pi+'" style="--pc:'+pc+'">'
       +'<div class="qhead" onclick="hsToggleQ(\''+q.id+'\')">'
         +'<span class="q-num">Q'+q.id+'</span>'
         +'<span class="q-title">'+q.t+'</span>'
         +'<span class="q-score" style="color:'+scoreCol+'">'+r.val+'/'+q.marks+'</span>'
-        +'<span class="q-tag" style="background:'+tg.bg+';color:'+tg.text+'">'+r.err+'</span>'
+        +'<span class="q-tag" style="background:'+tg.bg+';color:'+tg.text+'">'+(primaryErr||'')+'</span>'
+        +(extraCount>0?'<span class="q-tag" style="background:#f3f5ee;color:var(--mut);font-size:10px">+'+extraCount+'</span>':'')
         +'<span class="q-chev">▶</span>'
       +'</div>'
       +'<div class="qbody"><div class="qinner">'
-        +'<div class="q-errlabel">✕ '+r.err+'</div>'
-        +'<div class="q-fb">'+fb+'</div>'
+        +fbParts
         +(q.dp&&DP[q.dp]?'<div class="q-dp"><div class="q-dp-row"><span class="q-dp-lbl">syllabus dot point</span><span class="q-dp-short">'+DP[q.dp].short+'</span><button class="q-dp-expand-btn" onclick="event.stopPropagation();hsDpToggle(this.closest(\'.q-dp\'))">show full ↓</button></div><div class="q-dp-full">'+DP[q.dp].full+'</div></div>':'')
         +'<button class="q-review-btn q-action" onclick="hsReview(\''+q.id+'\')">✓ Mark reviewed</button>'
       +'</div></div>'
@@ -1157,17 +1374,11 @@ setTimeout(()=>{s4.querySelectorAll('.bar>i,.eb>i').forEach(b=>{b.style.width=b.
 setTimeout(()=>{const first=s4.querySelector('.qcard.q-lit');if(first)first.classList.add('q-open');},400);
 });
 }
-// Exposed globally so the nav button can call it
-window.demoFill=function(){
-  // Fill MCQ — all correct, wrong on 5 questions
-  MCQ.forEach(q=>{state.mcq[q.n]=q.correct[0];});
-  state.mcq[9]='B';state.mcq[13]='C';state.mcq[16]='C';state.mcq[17]='A';state.mcq[20]='C';
-  // Fill Section II
-  SEC.forEach(q=>{state.sec[q.id]=DEMO_SEC_DATA[q.id]||{mode:'full',val:q.marks,err:''};});
-  // Jump straight to diagnostic
-  s4.innerHTML='<div class="diag-loading"><div class="hs-spin"></div><div class="spin-label">Analysing your result…</div></div>';
-  show('s4',3);
-  setTimeout(()=>buildDiag(),1000);
+window.hsErrToggle=function(id){
+  const drop=document.querySelector('.errsel-drop[data-errdrop="'+id+'"]');if(!drop)return;
+  const isOpen=drop.style.display==='block';
+  document.querySelectorAll('.errsel-drop').forEach(d=>d.style.display='none');
+  if(!isOpen)drop.style.display='block';
 };
 // ── Spotlight: switch which priority's questions are lit ──
 window.hsSpot=function(i){
