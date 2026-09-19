@@ -659,6 +659,14 @@ const VERB_FB = {
 function boldDP(t){return t.replace(/((?:Re-read|Go back to) syllabus dot point [\d.]+)/g,'<strong>$1 (below)</strong>');}
 function greenFl(t){return t.replace(/([Gg]reen flags?(?:\s+words?)?:?)/g,'🟢 $1');}
 function fbFor(id,err,verb,detailMode=false){
+  try{
+    var _te = JSON.parse(localStorage.getItem('teacherEdits')||'{}');
+    var _shortMap = {'Did not know theory':'theory','Calculation error — knowledge':'calc','Did not include detail / chemistry terminology':'term','Did not address verb':'verb','Silly mistake':'silly'};
+    var _k1 = id+'||'+err;
+    var _k2 = id+'||'+(_shortMap[err]||err);
+    var _hit = _te[_k1] || _te[_k2];
+    if(_hit) return '<div style=\"position:relative\">'+_hit.text+'<div style=\"margin-top:8px;font-size:11px;color:#74796d;font-style:italic\">✎ Edited by '+_hit.editedBy+'</div></div>';
+  }catch(_){}
   if(err==='Did not address verb'&&verb&&VERB_FB[verb]){
     const v=VERB_FB[verb];
     const ipRaw=greenFl(v.inPractice);
@@ -1418,5 +1426,142 @@ window.hsReview=function(id){
 };
 })();
 </script>
+
+<!-- ============ DEMO FILL (added for teacher demo) ============ -->
+<style>
+.demo-fill-btn{position:fixed;bottom:22px;right:22px;background:#1d211a;color:#fff;border:none;border-radius:24px;padding:11px 18px;font-family:'DM Sans',system-ui,sans-serif;font-size:13px;font-weight:500;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,0.18);z-index:900;display:flex;align-items:center;gap:8px;transition:transform .15s,background .15s;letter-spacing:.01em}
+.demo-fill-btn:hover{background:#2D5016;transform:translateY(-1px)}
+.demo-fill-btn .zap{font-size:14px}
+.demo-fill-toast{position:fixed;bottom:80px;right:22px;background:rgba(29,33,26,.94);color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;font-family:'DM Sans',system-ui,sans-serif;z-index:901;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s;pointer-events:none}
+.demo-fill-toast.show{opacity:1;transform:translateY(0)}
+</style>
+<button class="demo-fill-btn" id="demoFillBtn" title="Auto-fill demo data"><span class="zap">⚡</span> Demo fill</button>
+<div class="demo-fill-toast" id="demoFillToast"></div>
+<script>
+(function(){
+  // Realistic MCQ answers — 14/20 correct for a mid-band result.
+  // Uses the correct answer for most Qs and a plausible wrong answer for the rest.
+  const MCQ_DEMO_WRONG = new Set([2,5,13,16,18,20]); // 6 wrong -> 14/20
+  const WRONG_PICK = {A:'C',B:'D',C:'A',D:'B',BD:'A'};
+
+  // Section II fill plan: id -> {mode, pinVal (if partial), errs (if partial|zero)}
+  const SEC_DEMO = {
+    '21':  {mode:'full'},
+    '22':  {mode:'full'},
+    '23':  {mode:'partial', pin:1, errs:['Did not include detail / chemistry terminology']},
+    '24a': {mode:'full'},
+    '24b': {mode:'partial', pin:2, errs:['Calculation error — knowledge']},
+    '25a': {mode:'partial', pin:1, errs:['Did not include detail / chemistry terminology']},
+    '25b': {mode:'full'},
+    '26':  {mode:'partial', pin:2, errs:['Calculation error — knowledge','Did not address verb']},
+    '27a': {mode:'full'},
+    '27b': {mode:'partial', pin:2, errs:['Calculation error — silly mistake']},
+    '28a': {mode:'full'},
+    '28b': {mode:'full'},
+    '28c': {mode:'partial', pin:2, errs:['Did not include detail / chemistry terminology']},
+    '29a': {mode:'full'},
+    '29b': {mode:'partial', pin:2, errs:['Calculation error — knowledge']},
+    '30a': {mode:'full'},
+    '30b': {mode:'partial', pin:1, errs:['Did not address verb']},
+    '31':  {mode:'partial', pin:3, errs:['Calculation error — silly mistake']},
+    '32a': {mode:'partial', pin:4, errs:['Calculation error — knowledge']},
+    '32b': {mode:'full'},
+    '33a': {mode:'full'},
+    '33b': {mode:'partial', pin:2, errs:['Did not address verb']},
+    '33d': {mode:'partial', pin:1, errs:['Did not include detail / chemistry terminology']},
+    '34':  {mode:'zero',    errs:['Time — ran out overall']},
+    '35':  {mode:'zero',    errs:['Time — ran out overall']},
+  };
+
+  function showToast(msg){
+    const t = document.getElementById('demoFillToast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(()=>t.classList.remove('show'), 2200);
+  }
+
+  function fillMCQ(){
+    if(typeof MCQ === 'undefined' || typeof state === 'undefined') return 0;
+    // Fill profile/name if not present so the review path doesn't break
+    try {
+      if(!localStorage.getItem('hindsightProfile')){
+        localStorage.setItem('hindsightProfile', JSON.stringify({name:'Demo Student', school:'James Ruse Agricultural HS', email:'demo@school.nsw.edu.au'}));
+      }
+    } catch(_){}
+    let filled = 0;
+    MCQ.forEach(q => {
+      const correct = q.correct;
+      const pick = MCQ_DEMO_WRONG.has(q.n) ? (WRONG_PICK[correct] || 'A') : (correct.length>1 ? correct[0] : correct);
+      // find the mcq-cell for this question
+      const wraps = document.querySelectorAll('.mcq-cell [data-q]');
+      let wrap = null;
+      wraps.forEach(w => { if(+w.dataset.q === q.n) wrap = w; });
+      if(!wrap) return;
+      const btn = wrap.querySelector('.opt[data-o="'+pick+'"]');
+      if(btn){ btn.click(); filled++; }
+    });
+    return filled;
+  }
+
+  function fillSecII(){
+    if(typeof SEC === 'undefined' || typeof state === 'undefined') return 0;
+    let filled = 0;
+    SEC.forEach(q => {
+      const plan = SEC_DEMO[q.id];
+      if(!plan) return;
+      const tr = document.querySelector('tr[data-id="'+q.id+'"]');
+      if(!tr) return;
+      // click the mode button
+      const modeBtn = tr.querySelector('.gpm button[data-m="'+plan.mode+'"]');
+      if(!modeBtn) return;
+      modeBtn.click();
+      // partial mode -> set pin value and trigger input handler
+      if(plan.mode === 'partial' && typeof plan.pin === 'number'){
+        const pin = tr.querySelector('[data-pin]');
+        if(pin){
+          pin.value = Math.min(plan.pin, q.marks);
+          pin.dispatchEvent(new Event('input', {bubbles:true}));
+        }
+      }
+      // check error boxes
+      if(plan.errs && plan.errs.length){
+        plan.errs.forEach(errName => {
+          const cb = tr.querySelector('[data-errcheck][value="'+errName.replace(/"/g,'\\"')+'"]');
+          if(cb && !cb.checked){ cb.checked = true; cb.dispatchEvent(new Event('change', {bubbles:true})); }
+        });
+      }
+      filled++;
+    });
+    return filled;
+  }
+
+  function currentScreen(){
+    const shown = document.querySelector('.scr.on') || document.querySelector('.scr[style*="display:block"]') || document.querySelector('.scr:not([style*="display:none"])');
+    return shown ? shown.id : null;
+  }
+
+  document.getElementById('demoFillBtn').addEventListener('click', () => {
+    const scr = currentScreen();
+    let msg = '';
+    // If we're on screen 1 (start), skip through to MCQ first
+    if(scr === 's1' || !scr){
+      const startBtn = document.querySelector('#s1 .btn.primary, #s1 button');
+      if(startBtn){ startBtn.click(); setTimeout(() => document.getElementById('demoFillBtn').click(), 350); return; }
+    }
+    // Fill MCQ if we're on it (or fill it regardless so full run is ready)
+    const mcqFilled = fillMCQ();
+    if(mcqFilled > 0) msg = 'Filled ' + mcqFilled + ' MCQ answers';
+    // If we're on Section II, also fill it
+    if(scr === 's3'){
+      const secFilled = fillSecII();
+      msg = 'Filled ' + secFilled + ' Section II sub-parts';
+    }
+    if(!msg) msg = 'Demo data ready — click Continue';
+    showToast(msg);
+  });
+})();
+</script>
+
 </body>
 </html>
