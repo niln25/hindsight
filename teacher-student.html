@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hindsight — Student view</title>
+<style>
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/dm-serif-display@5.0.19/400.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5.0.19/400.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5.0.19/500.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5.0.19/600.css');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--g:#2D5016;--g7:#3d6a22;--g50:#eef3e8;--ink:#1d211a;--mut:#74796d;--ln:#e6e3d8;--paper:#faf9f5;--card:#fff;
+--m5:#6e9ab5;--m6:#c4892a;--m7:#6a9958;--m8:#b05a48;
+--ok:#2f7a3a;--warn:#c48a1a;--bad:#b6432c;
+--ok-bg:#e6f0e0;--warn-bg:#fbedd0;--bad-bg:#f6dedc;
+--ok-soft:#f0f6ec;--warn-soft:#fdf5e2}
+body{font-family:'DM Sans',system-ui,sans-serif;color:var(--ink);background:var(--paper);min-height:100vh}
+.serif{font-family:'DM Serif Display',Georgia,serif;font-weight:400;letter-spacing:-.01em}
+
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 40px;border-bottom:0.5px solid var(--ln);background:var(--card);position:sticky;top:0;z-index:10}
+.wm{font-family:'DM Serif Display',Georgia,serif;font-size:23px;color:var(--g);letter-spacing:-.01em;text-decoration:none}
+.nav-right{display:flex;align-items:center;gap:18px;font-size:13px;color:var(--mut)}
+.nav-right .who{font-weight:500;color:var(--ink)}
+.nav-right .sep{color:var(--ln)}
+.nav-right a{color:var(--mut);text-decoration:none;font-weight:500}
+.nav-right a:hover{color:var(--g)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:24px 40px 80px}
+
+.back{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--mut);text-decoration:none;margin-bottom:18px}
+.back:hover{color:var(--g)}
+
+/* STUDENT HEADER */
+.stu-head{background:var(--card);border:0.5px solid var(--ln);border-radius:12px;padding:24px 28px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.stu-name{font-family:'DM Serif Display',Georgia,serif;font-size:30px;color:var(--ink);line-height:1.1}
+.stu-meta{margin-top:6px;font-size:13px;color:var(--mut)}
+.stu-meta .sep{margin:0 8px;color:var(--ln)}
+.stu-flags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.flag-badge{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500}
+.flag-struggling{background:var(--bad-bg);color:var(--bad)}
+.flag-international{background:#dbe6f0;color:#2c5478}
+
+.score-box{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.score-lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600}
+.score-big{font-family:'DM Serif Display',Georgia,serif;font-size:48px;color:var(--ink);line-height:1}
+.score-big.low{color:var(--bad)}
+.score-big.mid{color:var(--warn)}
+.score-big .of{font-size:20px;color:var(--mut);margin-left:4px;font-family:'DM Sans',sans-serif}
+.score-note{font-size:12px;color:var(--mut)}
+
+/* TABS */
+.tabs{display:flex;gap:0;border-bottom:0.5px solid var(--ln);margin-bottom:24px}
+.tab{padding:12px 20px;background:none;border:none;border-bottom:2px solid transparent;font-family:inherit;font-size:14px;font-weight:500;color:var(--mut);cursor:pointer;transition:all .15s;margin-bottom:-1px}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--g);border-bottom-color:var(--g)}
+
+.panel{display:none}
+.panel.active{display:block}
+
+.section-label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600;margin-bottom:12px}
+
+/* MODULE STRIP */
+.mods{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+.mod{background:var(--card);border:0.5px solid var(--ln);border-radius:12px;padding:16px 18px}
+.mod .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.mod .name{font-size:13px;font-weight:500;color:var(--mut)}
+.mod .name .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.mod .avg{font-family:'DM Serif Display',Georgia,serif;font-size:22px;color:var(--ink)}
+.mod .avg .pct{font-size:13px;color:var(--mut);margin-left:2px;font-family:'DM Sans',sans-serif}
+.bar{height:6px;background:var(--paper);border-radius:4px;overflow:hidden}
+.bar>span{display:block;height:100%;border-radius:4px}
+
+/* ERROR PATTERN */
+.err-grid{background:var(--card);border:0.5px solid var(--ln);border-radius:12px;padding:20px 24px;margin-bottom:28px}
+.err-row{display:flex;align-items:center;gap:14px;padding:8px 0;font-size:13px}
+.err-row:not(:last-child){border-bottom:0.5px solid var(--ln)}
+.err-name{flex:1;color:var(--ink);font-weight:500}
+.err-bar{flex:2;height:8px;background:var(--paper);border-radius:4px;overflow:hidden;max-width:400px}
+.err-bar>span{display:block;height:100%;background:var(--m6);border-radius:4px}
+.err-count{color:var(--mut);font-size:12px;min-width:70px;text-align:right}
+
+/* PRIORITIES */
+.prios{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
+.prio{background:var(--card);border:0.5px solid var(--ln);border-radius:12px;padding:18px 20px;border-left:3px solid var(--m6)}
+.prio.p1{border-left-color:var(--bad)}
+.prio.p2{border-left-color:var(--warn)}
+.prio.p3{border-left-color:var(--m6)}
+.prio-rank{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600;margin-bottom:6px}
+.prio-title{font-family:'DM Serif Display',Georgia,serif;font-size:17px;color:var(--ink);margin-bottom:8px;line-height:1.25}
+.prio-body{font-size:13px;color:var(--mut);line-height:1.5}
+.prio-count{margin-top:10px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--m6);font-weight:600}
+
+/* QUESTION REVIEW */
+.qlist{background:var(--card);border:0.5px solid var(--ln);border-radius:12px;overflow:hidden}
+.qitem{border-bottom:0.5px solid var(--ln)}
+.qitem:last-child{border-bottom:none}
+.qhead{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none;transition:background .1s}
+.qhead:hover{background:var(--paper)}
+.qnum{font-family:'DM Serif Display',Georgia,serif;font-size:16px;color:var(--ink);min-width:44px}
+.qtitle{flex:1;font-size:14px;color:var(--ink)}
+.qmarks{font-size:13px;color:var(--mut);min-width:48px;text-align:right}
+.qmarks.low{color:var(--bad)}
+.qmarks.mid{color:var(--warn)}
+.qerr{font-size:11px;padding:3px 10px;border-radius:20px;background:var(--bad-bg);color:var(--bad);font-weight:500;white-space:nowrap}
+.qerr.theory{background:#fce4de;color:#8a3521}
+.qerr.calc{background:#f4e2c2;color:#7a5210}
+.qerr.term{background:#e6dcf0;color:#503078}
+.qerr.verb{background:#dbe6f0;color:#2c5478}
+.qerr.silly{background:#f3f5ee;color:var(--mut)}
+.qchev{color:var(--mut);font-size:10px;transition:transform .2s}
+.qitem.open .qchev{transform:rotate(90deg)}
+.qbody{max-height:0;overflow:hidden;transition:max-height .25s;background:var(--paper)}
+.qitem.open .qbody{max-height:800px}
+.qbody-inner{padding:16px 22px 20px 22px}
+.qb-label{font-size:12px;color:var(--mut);font-weight:500;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.qb-fb{font-size:14px;color:var(--ink);line-height:1.55;background:var(--card);border:0.5px solid var(--ln);border-radius:8px;padding:12px 14px;position:relative}
+.qb-fb:hover .pencil{opacity:1}
+.pencil{position:absolute;top:8px;right:8px;background:var(--card);border:0.5px solid var(--ln);border-radius:6px;width:26px;height:26px;font-size:13px;cursor:pointer;color:var(--mut);opacity:0;transition:opacity .15s,color .15s,border-color .15s;display:flex;align-items:center;justify-content:center}
+.pencil:hover{color:var(--g);border-color:var(--g)}
+.qb-fb.editing .pencil{display:none}
+.qb-edit textarea{width:100%;font-family:inherit;font-size:14px;color:var(--ink);background:var(--card);border:0.5px solid var(--g);border-radius:8px;padding:12px 14px;line-height:1.55;resize:vertical;min-height:100px;outline:none}
+.qb-edit-actions{display:flex;gap:8px;margin-top:8px}
+.btn-sm{padding:7px 14px;font-family:inherit;font-size:13px;font-weight:500;border-radius:6px;cursor:pointer;border:0.5px solid transparent}
+.btn-sm.primary{background:var(--g);color:#fff;border-color:var(--g)}
+.btn-sm.primary:hover{background:var(--g7)}
+.btn-sm.ghost{background:none;color:var(--mut);border-color:var(--ln)}
+.btn-sm.ghost:hover{color:var(--ink);border-color:var(--ink)}
+.edited-badge{margin-top:8px;font-size:11px;color:var(--mut);font-style:italic;display:flex;align-items:center;gap:5px}
+.edited-badge .ck{color:var(--g)}
+
+/* SELF-ASSESSMENT */
+.sa-summary{background:var(--card);border:0.5px solid var(--ln);border-radius:12px;padding:16px 20px;margin-bottom:20px;font-size:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.sa-summary strong{color:var(--ink);font-weight:600}
+.sa-num{font-family:'DM Serif Display',Georgia,serif;font-size:22px;color:var(--g)}
+.sa-cols{background:var(--card);border:0.5px solid var(--ln);border-radius:12px;overflow:hidden}
+.sa-head{display:grid;grid-template-columns:80px 1fr 1fr;padding:12px 18px;background:var(--paper);border-bottom:0.5px solid var(--ln);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);font-weight:600}
+.sa-row{display:grid;grid-template-columns:80px 1fr 1fr;padding:14px 18px;border-bottom:0.5px solid var(--ln);gap:12px;align-items:center}
+.sa-row:last-child{border-bottom:none}
+.sa-row.agree{background:var(--ok-soft)}
+.sa-row.disagree{background:var(--warn-soft)}
+.sa-q{font-family:'DM Serif Display',Georgia,serif;font-size:15px;color:var(--ink)}
+.sa-cell{font-size:13px;color:var(--ink);display:flex;flex-wrap:wrap;gap:6px}
+.sa-none{color:var(--mut);font-style:italic;font-size:12px}
+.sa-tag{padding:2px 9px;border-radius:20px;font-size:11px;font-weight:500;background:#e5e8de;color:var(--ink);white-space:nowrap}
+.sa-tag.match{background:var(--ok-bg);color:var(--ok)}
+.sa-tag.miss{background:var(--warn-bg);color:var(--warn)}
+.sa-tag.extra{background:#dbe6f0;color:#2c5478}
+
+/* PROGRESS */
+.prog-chart{background:var(--card);border:0.5px solid var(--ln);border-radius:12px;padding:24px;margin-bottom:20px}
+.prog-svg{width:100%;height:220px;display:block}
+.prog-note{background:var(--card);border:0.5px solid var(--ln);border-radius:12px;padding:16px 20px;font-size:13px;color:var(--mut);display:flex;gap:10px;align-items:center}
+
+
+.app-fade{opacity:0;transform:translateY(6px);animation:appFadeIn .55s ease-out .05s forwards}
+@keyframes appFadeIn{to{opacity:1;transform:translateY(0)}}
+.prio.p1{border-left-color:var(--bad)}
+.prio.p2{border-left-color:var(--warn)}
+.prio.p3.consolidate{border-left-color:var(--ok);background:linear-gradient(to right,#f4f9f0 0%,var(--card) 40%)}
+.prio.p3.consolidate .prio-count{color:var(--ok)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120%);background:var(--ink);color:#fff;padding:12px 20px;border-radius:8px;font-size:14px;box-shadow:0 4px 16px rgba(0,0,0,.15);transition:transform .3s;z-index:100}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media (max-width:900px){
+  .mods{grid-template-columns:repeat(2,1fr)}
+  .prios{grid-template-columns:1fr}
+  .wrap{padding:20px 20px 60px}
+  .nav{padding:14px 20px}
+  .sa-head,.sa-row{grid-template-columns:60px 1fr 1fr}
+}
+</style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="teacher-dashboard.html" class="wm">Hindsight</a>
+    <div class="nav-right">
+      <span class="who">Ms. Chen</span>
+      <span class="sep">·</span>
+      <span>Year 12 Chemistry</span>
+      <span class="sep">·</span>
+      <a href="#" id="signOut">Sign out</a>
+    </div>
+  </nav>
+
+  <div class="wrap app-fade">
+    <a href="teacher-dashboard.html" class="back">← Back to dashboard</a>
+
+    <div class="stu-head" id="stuHead"></div>
+
+    <div class="tabs">
+      <button class="tab active" data-panel="diag">Diagnostic</button>
+      <button class="tab" data-panel="sa">Self-Assessment Review</button>
+      <button class="tab" data-panel="prog">Progress</button>
+    </div>
+
+    <div class="panel active" id="panel-diag">
+      <div class="section-label">Module breakdown</div>
+      <div class="mods" id="mods"></div>
+
+      <div class="section-label">Error pattern</div>
+      <div class="err-grid" id="errGrid"></div>
+
+      <div class="section-label">Top 3 priorities</div>
+      <div class="prios" id="prios"></div>
+
+      <div class="section-label">Question review · <span style="text-transform:none;letter-spacing:0;font-weight:400;color:var(--mut)">hover a feedback block to edit</span></div>
+      <div class="qlist" id="qlist"></div>
+    </div>
+
+    <div class="panel" id="panel-sa">
+      <div class="sa-summary" id="saSummary"></div>
+      <div class="sa-cols">
+        <div class="sa-head"><div>Q</div><div>Student identified</div><div>AI flagged</div></div>
+        <div id="saRows"></div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-prog">
+      <div class="prog-chart" id="progChart"></div>
+      <div class="prog-note">📊 More data points will appear after the next paper submission.</div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+/* -------------------- LOAD STUDENT -------------------- */
+const params = new URLSearchParams(window.location.search);
+const studentId = params.get('id') || 's01';
+
+let ROSTER = [];
+try { ROSTER = JSON.parse(localStorage.getItem('classRoster') || '[]'); } catch(_){}
+if(!ROSTER.length){
+  // Fallback minimal roster so this page still renders if opened directly
+  ROSTER = [{ id:'s01', name:'Marcus Chen', school:'James Ruse Agricultural HS', status:'submitted', score:92, weakest:'M5', flags:[], lastActive: Date.now() }];
+}
+const student = ROSTER.find(s => s.id === studentId) || ROSTER[0];
+
+/* -------------------- MOCK DIAGNOSTIC (deterministic by id) -------------------- */
+function seedFromId(id){ let h=0; for(let i=0;i<id.length;i++) h=(h*31+id.charCodeAt(i))|0; return Math.abs(h); }
+function rng(seed){ let s = seed>>>0; return () => { s = (s*1664525 + 1013904223)>>>0; return s/4294967296; }; }
+const rand = rng(seedFromId(studentId));
+
+const ERROR_TYPES = [
+  { key:'theory',   label:'Did not know theory',                          cls:'theory' },
+  { key:'calc',     label:'Calculation error — knowledge',                cls:'calc'   },
+  { key:'term',     label:'Did not include detail / chemistry terminology', cls:'term'  },
+  { key:'verb',     label:'Did not address verb',                         cls:'verb'   },
+  { key:'silly',    label:'Silly mistake',                                cls:'silly'  },
+];
+
+const QUESTIONS = [
+  { id:'20',  title:'Neutralisation of ethanoic acid',      marks:2, module:'M6' },
+  { id:'21a', title:'Calculate the equilibrium constant',    marks:3, module:'M5' },
+  { id:'21b', title:'Predict the shift when temperature rises', marks:2, module:'M5' },
+  { id:'22',  title:'Titration curve — identify buffer region', marks:3, module:'M6' },
+  { id:'23',  title:'Name the organic reaction',            marks:2, module:'M7' },
+  { id:'24a', title:'Mechanism of nucleophilic substitution', marks:3, module:'M7' },
+  { id:'24b', title:'Predict the major product',            marks:2, module:'M7' },
+  { id:'25',  title:'IR spectrum interpretation',           marks:3, module:'M8' },
+  { id:'26',  title:'Mass spec fragment identification',    marks:2, module:'M8' },
+  { id:'27a', title:'Buffer pH calculation',                marks:3, module:'M6' },
+  { id:'27b', title:'Explain why the buffer resists pH change', marks:4, module:'M6' },
+  { id:'28',  title:'Design a synthesis pathway',           marks:5, module:'M7' },
+  { id:'29a', title:'Identify the unknown organic compound', marks:3, module:'M8' },
+  { id:'29b', title:'Justify your identification',          marks:3, module:'M8' },
+  { id:'30',  title:'Evaluate the industrial process',      marks:5, module:'M8' },
+];
+
+// Module scores derived from overall + weakest bias
+const overall = student.score || 65;
+function moduleScore(mod){
+  let base = overall + (rand()*16 - 8);
+  if(mod === student.weakest) base -= 12 + rand()*8;
+  else base += rand()*6;
+  return Math.max(20, Math.min(100, Math.round(base)));
+}
+let MOD_SCORES = { M5: moduleScore('M5'), M6: moduleScore('M6'), M7: moduleScore('M7'), M8: moduleScore('M8') };
+
+// Per-question mock: score + primary error
+const DIAG = QUESTIONS.map(q => {
+  const modAvg = MOD_SCORES[q.module];
+  const wrong = rand() < (100 - modAvg) / 100;
+  let score = q.marks;
+  let errs = [];
+  if(wrong){
+    const errCount = rand() < 0.3 ? 2 : 1;
+    const pool = [...ERROR_TYPES];
+    // bias to theory/calc for weakest module
+    if(q.module === student.weakest){ pool.unshift(ERROR_TYPES[0], ERROR_TYPES[1]); }
+    for(let i=0; i<errCount; i++){
+      const e = pool[Math.floor(rand() * pool.length)];
+      if(!errs.find(x => x.key === e.key)) errs.push(e);
+    }
+    score = Math.max(0, Math.round(q.marks * rand() * 0.6));
+  }
+  return { ...q, score, errs, wrong };
+});
+
+// -------------------- CURATED DEMO DIAGNOSTIC (s07 — Priya Sharma) --------------------
+// Every question below is guaranteed wrong with an error type that has a matching
+// FEEDBACK entry, so the diagnostic renders rich content and every pencil-edit works.
+if (studentId === 's07') {
+  const ET = k => ERROR_TYPES.find(e => e.key === k);
+  const curatedById = {
+    '20':  { score: 1, errs: [ET('theory'), ET('term')] },
+    '21a': { score: 1, errs: [ET('calc'), ET('theory')] },
+    '21b': { score: 0, errs: [ET('verb')] },
+    '22':  { score: 1, errs: [ET('theory')] },
+    '23':  { score: 3, errs: [] },              // clean
+    '24a': { score: 3, errs: [] },              // clean
+    '24b': { score: 2, errs: [] },              // clean
+    '25':  { score: 3, errs: [] },              // clean
+    '26':  { score: 2, errs: [] },              // clean
+    '27a': { score: 1, errs: [ET('calc')] },
+    '27b': { score: 2, errs: [ET('theory'), ET('term')] },
+    '28':  { score: 2, errs: [ET('verb')] },
+    '29a': { score: 3, errs: [] },              // clean
+    '29b': { score: 3, errs: [] },              // clean
+    '30':  { score: 2, errs: [ET('verb'), ET('theory')] },
+  };
+  DIAG.length = 0;
+  QUESTIONS.forEach(q => {
+    const c = curatedById[q.id];
+    DIAG.push({ ...q, score: c.score, errs: c.errs, wrong: c.errs.length > 0 });
+  });
+  // Also override module scores so the strip matches the curated diagnostic
+  MOD_SCORES.M5 = 62;   // Priya's weakest area alongside M6
+  MOD_SCORES.M6 = 54;   // curated weakest
+  MOD_SCORES.M7 = 78;
+  MOD_SCORES.M8 = 82;
+}
+
+/* -------------------- FEEDBACK TEXT (mock, keyed by q||err) -------------------- */
+const FEEDBACK = {
+  '20||theory': 'Neutralisation of a weak acid (ethanoic acid) with a strong base gives a basic salt because the conjugate base (CH₃COO⁻) hydrolyses in water: CH₃COO⁻ + H₂O ⇌ CH₃COOH + OH⁻. Marker wants (1) the equation, (2) the word “hydrolyses,” and (3) the link to pH > 7. You gave the pH observation without the mechanism — that’s the 1 mark you lost. Syllabus dot point: CH-12-13 (acid/base reactions).',
+  '20||term': 'Use "conjugate base" and "hydrolyse" — not "reacts with water again." Precise language earns the mark.',
+  '21a||calc': 'You substituted the initial concentrations directly into Kc = [products]/[reactants] — that gives the reaction quotient Q, not Kc. Build an ICE table: subtract the change from initial to get equilibrium concentrations, then substitute. Rewrite the full setup: I | C | E rows, then Kc expression, then substitute, then evaluate. HSC markers give the setup mark separately from the answer mark, so show every line. Syllabus dot point: CH-12-8.',
+  '21a||theory': 'Kc is dimensionless in the HSC context. Do not include units.',
+  '21b||verb': 'PREDICT demands a direction PLUS justification. Structure: (1) state the shift — “the equilibrium shifts to the left/right,” (2) invoke Le Chatelier — “to counteract the increase in temperature,” (3) link to the reaction’s enthalpy — “because the forward reaction is exothermic, so shifting left absorbs the added heat.” You wrote “the reaction moves” — no direction, no principle named. That’s a 0/2 despite understanding the concept. Verb card: PREDICT ≠ DESCRIBE.',
+  '22||theory': 'The buffer region is around the pKa, not at the equivalence point. Reread the buffer chapter — this is a common flip.',
+  '23||term': 'Name the reaction using both the substrate class and the reaction type: "addition of HBr to an alkene," not just "addition."',
+  '24a||theory': 'SN1 vs SN2 — you conflated the two. SN2 is a single concerted step with backside attack. Draw the arrow-pushing mechanism.',
+  '24b||theory': 'Markovnikov applies here: H goes to the carbon with more H\'s, halogen to the more substituted carbon. Show the carbocation intermediate.',
+  '25||term': 'Name the functional group causing each absorption peak. "Around 1700" is not enough — specify C=O of a carbonyl.',
+  '26||calc': 'M+ peak gives the molecular mass. Loss of 15 = methyl group. Loss of 29 = ethyl or CHO. Walk through the fragmentation logic.',
+  '27a||calc': 'Henderson-Hasselbalch: pH = pKa + log([A-]/[HA]). You used [HA]/[A-] — flipped ratio. Redo.',
+  '27b||theory': 'A buffer resists pH change because both the weak acid and its conjugate base are present in significant amounts. Explain in terms of Le Chatelier when small amounts of H+ or OH- are added.',
+  '27b||term': 'Use "significant amounts" or "comparable concentrations" of HA and A- — the ratio being close to 1 is the key idea.',
+  '28||verb': 'DESIGN means propose a step-by-step pathway with reagents at each step. You gave a product but no route. Draw the pathway.',
+  '29a||theory': 'Correlate all spectra together — IR + NMR + mass spec — not each in isolation. The alcohol peak in IR plus the C-O stretch tells you it\'s a secondary alcohol.',
+  '29b||verb': 'JUSTIFY means link every piece of evidence to your identification. You listed the spectra but did not tie them to the specific compound.',
+  '30||verb': 'EVALUATE = weigh strengths against weaknesses AND come to a judgement. You described the process well but did not evaluate.',
+  '30||theory': 'Include environmental, economic, and yield considerations. The marker looks for at least two of these three.',
+};
+function fbText(qid, errKey){
+  // check localStorage teacherEdits first
+  try {
+    const edits = JSON.parse(localStorage.getItem('teacherEdits') || '{}');
+    const k = qid + '||' + errKey;
+    if(edits[k]) return { text: edits[k].text, edited: edits[k] };
+  } catch(_){}
+  const key = qid + '||' + errKey;
+  const t = FEEDBACK[key] || 'Review this question against the marking guidelines. Redo under timed conditions until the approach is automatic.';
+  return { text: t, edited: null };
+}
+
+/* -------------------- RENDER HEADER -------------------- */
+function scoreClass(s){ if(s<55) return 'low'; if(s<70) return 'mid'; return ''; }
+const submittedDate = new Date(student.lastActive).toLocaleDateString('en-AU', {day:'numeric',month:'short',year:'numeric'});
+const flagsHTML = (student.flags||[]).map(f => `<span class="flag-badge flag-${f}">${f}</span>`).join('');
+document.getElementById('stuHead').innerHTML = `
+  <div>
+    <div class="stu-name">${student.name}</div>
+    <div class="stu-meta">${student.school}<span class="sep">·</span>${student.status==='submitted' ? 'Submitted ' + submittedDate : 'Not yet submitted'}</div>
+    ${flagsHTML ? `<div class="stu-flags">${flagsHTML}</div>` : ''}
+  </div>
+  <div class="score-box">
+    <div class="score-lbl">Trial score</div>
+    <div class="score-big ${student.score!==null?scoreClass(student.score):''}">${student.score!==null?student.score:'—'}<span class="of">/100</span></div>
+    <div class="score-note">James Ruse 2024 Chemistry</div>
+  </div>
+`;
+
+/* -------------------- RENDER DIAGNOSTIC TAB -------------------- */
+const MOD_META = [
+  { key:'M5', name:'Module 5', color:'var(--m5)' },
+  { key:'M6', name:'Module 6', color:'var(--m6)' },
+  { key:'M7', name:'Module 7', color:'var(--m7)' },
+  { key:'M8', name:'Module 8', color:'var(--m8)' },
+];
+function bandColor(v){ if(v>=70) return 'var(--ok)'; if(v>=55) return 'var(--warn)'; return 'var(--bad)'; }
+document.getElementById('mods').innerHTML = MOD_META.map(m => `
+  <div class="mod">
+    <div class="top">
+      <div class="name"><span class="dot" style="background:${m.color}"></span>${m.name}</div>
+      <div class="avg">${MOD_SCORES[m.key]}<span class="pct">%</span></div>
+    </div>
+    <div class="bar"><span style="width:${MOD_SCORES[m.key]}%;background:${bandColor(MOD_SCORES[m.key])}"></span></div>
+  </div>
+`).join('');
+
+// Error pattern counts
+const errCounts = {};
+DIAG.forEach(q => q.errs.forEach(e => errCounts[e.key] = (errCounts[e.key]||0) + 1));
+const totalErrs = Object.values(errCounts).reduce((a,b)=>a+b,0) || 1;
+const errSorted = ERROR_TYPES.filter(e => errCounts[e.key]).sort((a,b) => errCounts[b.key] - errCounts[a.key]);
+document.getElementById('errGrid').innerHTML = errSorted.length ? errSorted.map(e => `
+  <div class="err-row">
+    <div class="err-name">${e.label}</div>
+    <div class="err-bar"><span style="width:${Math.round(errCounts[e.key]/totalErrs*100)}%"></span></div>
+    <div class="err-count">${errCounts[e.key]} question${errCounts[e.key]===1?'':'s'}</div>
+  </div>
+`).join('') : '<div style="color:var(--mut);font-size:13px;text-align:center;padding:12px 0">No recurring error pattern — clean execution.</div>';
+
+// Top 3 priorities from error pattern
+const PRIO_TITLES = {
+  theory: 'Rebuild theory in ' + (student.weakest||'weakest module'),
+  calc:   'Drill calculation method',
+  term:   'Tighten chemistry terminology',
+  verb:   'Answer the NESA verb, not the topic',
+  silly:  'Slow down on procedural steps',
+};
+const PRIO_BODIES = {
+  theory: 'Reread the syllabus dot points and rewrite each one in your own words. Then redo the questions where theory was the issue, closed-book, under timed conditions.',
+  calc:   'Rework each failed calculation from a blank page — do not just check the answer. The muscle memory of setting it up correctly is what earns marks under exam pressure.',
+  term:   'Build a personal glossary: for every mark you lost to imprecise language, write the marker-approved phrasing beside your original. Read it before your next paper.',
+  verb:   'Before writing, circle the NESA verb and write one line describing what that verb demands. This 20-second discipline lifts scores across the paper.',
+  silly:  'Add a 30-second final read of each Section II response. Focus on procedural errors: sign flips, units, decimal places, forgotten labels.',
+};
+// Always show 3 priorities. Fill with 'consolidate' when the diagnostic surfaces fewer errors.
+const CONSOLIDATE = {
+  key:'consolidate',
+  title:'Consolidate strengths under exam pressure',
+  body:'The technical work is solid — the next lift comes from making it automatic. Redo two full papers under strict 3-hour conditions in the fortnight before the exam, focused on Section II pacing (1.8 min/mark). Speed and precision under time is what separates E4 from Band 6.',
+  count:'Precision layer'
+};
+const HIGH_SCORE = {
+  key:'high',
+  title:'Small-margin errors worth polishing',
+  body:'At this score, marks are lost to precision, not knowledge: notation, units, sig figs, verb-matching in longer responses. Track every mark lost in the next paper against these four categories — the pattern that emerges is your Band 6 lift.',
+  count:'Top-band polish'
+};
+const p1 = errSorted[0], p2 = errSorted[1], p3 = errSorted[2];
+const prioCards = [];
+if(p1) prioCards.push({...p1, isErr:true, rank:1});
+else prioCards.push({...HIGH_SCORE, isErr:false, rank:1});
+if(p2) prioCards.push({...p2, isErr:true, rank:2});
+else prioCards.push({...CONSOLIDATE, isErr:false, rank:2});
+if(p3) prioCards.push({...p3, isErr:true, rank:3});
+else prioCards.push({...CONSOLIDATE, isErr:false, rank:3, key:'consolidate2', title:'Deepen mastery of adjacent topics', body:'With current gaps closed, extend into topics the syllabus flags as commonly linked but not always tested: gravimetric analysis, spectroscopy cross-referencing, and industrial process trade-offs. These earn the differentiation marks in Section II extended responses.', count:'Extension layer'});
+
+document.getElementById('prios').innerHTML = prioCards.map(pc => {
+  const cls = pc.isErr ? '' : (pc.rank===1 ? '' : 'consolidate');
+  const title = pc.isErr ? PRIO_TITLES[pc.key] : pc.title;
+  const body = pc.isErr ? PRIO_BODIES[pc.key] : pc.body;
+  const count = pc.isErr ? (errCounts[pc.key] + ' question' + (errCounts[pc.key]===1?'':'s') + ' affected') : pc.count;
+  return `
+    <div class="prio p${pc.rank} ${cls}">
+      <div class="prio-rank">Priority ${pc.rank}</div>
+      <div class="prio-title">${title}</div>
+      <div class="prio-body">${body}</div>
+      <div class="prio-count">${count}</div>
+    </div>
+  `;
+}).join('');
+
+// Question review accordion
+function marksClass(score, marks){ const p = marks?score/marks:0; if(p===0) return 'low'; if(p<0.6) return 'mid'; return ''; }
+document.getElementById('qlist').innerHTML = DIAG.filter(q => q.wrong).map(q => {
+  const errsHTML = q.errs.map(e => `<span class="qerr ${e.cls}">${e.label}</span>`).join(' ');
+  const bodyHTML = q.errs.map(e => {
+    const fb = fbText(q.id, e.key);
+    const editedBadge = fb.edited ? `<div class="edited-badge"><span class="ck">✎</span> Edited by ${fb.edited.editedBy} · ${new Date(fb.edited.editedAt).toLocaleDateString('en-AU',{day:'numeric',month:'short'})}</div>` : '';
+    return `
+      <div class="qb-block" data-q="${q.id}" data-err="${e.key}" style="margin-bottom:14px">
+        <div class="qb-label"><span class="qerr ${e.cls}" style="font-size:10px;padding:2px 8px">${e.label}</span></div>
+        <div class="qb-fb">
+          <div class="qb-fb-text">${fb.text}</div>
+          <button class="pencil" title="Edit feedback" onclick="startEdit(this)">✏️</button>
+          ${editedBadge}
+        </div>
+      </div>
+    `;
+  }).join('');
+  return `
+    <div class="qitem">
+      <div class="qhead" onclick="this.parentElement.classList.toggle('open')">
+        <span class="qnum">Q${q.id}</span>
+        <span class="qtitle">${q.title}</span>
+        ${errsHTML}
+        <span class="qmarks ${marksClass(q.score,q.marks)}">${q.score}/${q.marks}</span>
+        <span class="qchev">▶</span>
+      </div>
+      <div class="qbody"><div class="qbody-inner">${bodyHTML}</div></div>
+    </div>
+  `;
+}).join('') || `<div style="padding:28px 32px;background:linear-gradient(135deg,#f4f9f0 0%,#ffffff 100%);border-bottom:0.5px solid var(--ln)">
+  <div style="font-family:'DM Serif Display',Georgia,serif;font-size:22px;color:var(--g);margin-bottom:8px">Clean execution across Section II.</div>
+  <div style="font-size:14px;color:var(--ink);line-height:1.55;margin-bottom:16px">${student.name.split(' ')[0]} scored ${student.score}/100 on this paper — within the top ${student.score>=90?5:10}% of the cohort. No recurring error patterns surfaced, but there are still marks to chase.</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:12px">
+    <div style="background:var(--card);border:0.5px solid var(--ln);border-radius:8px;padding:12px 14px">
+      <div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);font-weight:600;margin-bottom:4px">Strongest module</div>
+      <div style="font-family:'DM Serif Display',Georgia,serif;font-size:18px;color:var(--ink)">${Object.entries(MOD_SCORES).sort((a,b)=>b[1]-a[1])[0][0]} · ${Object.entries(MOD_SCORES).sort((a,b)=>b[1]-a[1])[0][1]}%</div>
+    </div>
+    <div style="background:var(--card);border:0.5px solid var(--ln);border-radius:8px;padding:12px 14px">
+      <div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);font-weight:600;margin-bottom:4px">Marks from top</div>
+      <div style="font-family:'DM Serif Display',Georgia,serif;font-size:18px;color:var(--ink)">${100-student.score} marks</div>
+    </div>
+    <div style="background:var(--card);border:0.5px solid var(--ln);border-radius:8px;padding:12px 14px">
+      <div style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);font-weight:600;margin-bottom:4px">Estimated band</div>
+      <div style="font-family:'DM Serif Display',Georgia,serif;font-size:18px;color:var(--g)">${student.score>=90?'Band 6 (E4)':student.score>=80?'Band 6':'Band 5+'}</div>
+    </div>
+  </div>
+</div>`;
+
+/* -------------------- INLINE EDIT (Phase 5) -------------------- */
+function startEdit(btn){
+  const fbBox = btn.closest('.qb-fb');
+  const block = btn.closest('.qb-block');
+  const qid = block.getAttribute('data-q');
+  const errKey = block.getAttribute('data-err');
+  const currentText = fbBox.querySelector('.qb-fb-text').textContent.trim();
+  fbBox.classList.add('editing');
+  fbBox.innerHTML = `
+    <div class="qb-edit">
+      <textarea class="qb-edit-ta">${currentText}</textarea>
+      <div class="qb-edit-actions">
+        <button class="btn-sm primary" onclick="saveEdit(this,'${qid}','${errKey}')">Save</button>
+        <button class="btn-sm ghost" onclick="cancelEdit(this,'${qid}','${errKey}')">Cancel</button>
+      </div>
+    </div>
+  `;
+  fbBox.querySelector('textarea').focus();
+}
+function saveEdit(btn, qid, errKey){
+  const fbBox = btn.closest('.qb-fb');
+  const newText = fbBox.querySelector('textarea').value.trim();
+  const key = qid + '||' + errKey;
+  let edits = {};
+  try { edits = JSON.parse(localStorage.getItem('teacherEdits') || '{}'); } catch(_){}
+  edits[key] = { text: newText, editedBy: 'Ms. Chen', editedAt: Date.now() };
+  try { localStorage.setItem('teacherEdits', JSON.stringify(edits)); } catch(_){}
+  fbBox.classList.remove('editing');
+  fbBox.innerHTML = `
+    <div class="qb-fb-text">${newText}</div>
+    <button class="pencil" title="Edit feedback" onclick="startEdit(this)">✏️</button>
+    <div class="edited-badge"><span class="ck">✎</span> Edited by Ms. Chen · ${new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short'})}</div>
+  `;
+  showToast('Feedback updated — student will see your version');
+}
+function cancelEdit(btn, qid, errKey){
+  const fbBox = btn.closest('.qb-fb');
+  const fb = fbText(qid, errKey);
+  const editedBadge = fb.edited ? `<div class="edited-badge"><span class="ck">✎</span> Edited by ${fb.edited.editedBy} · ${new Date(fb.edited.editedAt).toLocaleDateString('en-AU',{day:'numeric',month:'short'})}</div>` : '';
+  fbBox.classList.remove('editing');
+  fbBox.innerHTML = `
+    <div class="qb-fb-text">${fb.text}</div>
+    <button class="pencil" title="Edit feedback" onclick="startEdit(this)">✏️</button>
+    ${editedBadge}
+  `;
+}
+
+/* -------------------- SELF-ASSESSMENT COMPARISON -------------------- */
+// Student's self-identified errors (mock): agrees with AI ~70% of the time
+const SA_DATA = DIAG.filter(q => q.wrong).map(q => {
+  const aiErrs = q.errs.map(e => e.key);
+  const studentErrs = [];
+  aiErrs.forEach(k => { if(rand() < 0.72) studentErrs.push(k); });
+  // sometimes student flags something AI didn't
+  if(rand() < 0.15){
+    const extra = ERROR_TYPES[Math.floor(rand()*ERROR_TYPES.length)].key;
+    if(!studentErrs.includes(extra) && !aiErrs.includes(extra)) studentErrs.push(extra);
+  }
+  const missed = aiErrs.filter(k => !studentErrs.includes(k));
+  const extras = studentErrs.filter(k => !aiErrs.includes(k));
+  const agree = missed.length===0 && extras.length===0;
+  return { q, aiErrs, studentErrs, agree, missed, extras };
+});
+const agreeCount = SA_DATA.filter(r => r.agree).length;
+document.getElementById('saSummary').innerHTML = `
+  <div><strong>Self-assessment accuracy</strong> — how closely ${student.name.split(' ')[0]}'s error tags match what the AI flagged.</div>
+  <div><span class="sa-num">${agreeCount}/${SA_DATA.length}</span> <span style="color:var(--mut);font-size:13px">error areas matched</span></div>
+`;
+function errLabel(k){ return (ERROR_TYPES.find(e=>e.key===k)||{}).label || k; }
+document.getElementById('saRows').innerHTML = SA_DATA.map(r => {
+  const rowCls = r.agree ? 'agree' : 'disagree';
+  const stuHTML = r.studentErrs.length ? r.studentErrs.map(k => {
+    const cls = r.aiErrs.includes(k) ? 'match' : 'extra';
+    return `<span class="sa-tag ${cls}">${errLabel(k)}</span>`;
+  }).join('') : '<span class="sa-none">nothing flagged</span>';
+  const aiHTML = r.aiErrs.map(k => {
+    const cls = r.studentErrs.includes(k) ? 'match' : 'miss';
+    return `<span class="sa-tag ${cls}">${errLabel(k)}</span>`;
+  }).join('');
+  return `
+    <div class="sa-row ${rowCls}">
+      <div class="sa-q">Q${r.q.id}</div>
+      <div class="sa-cell">${stuHTML}</div>
+      <div class="sa-cell">${aiHTML}</div>
+    </div>
+  `;
+}).join('') || '<div style="padding:24px;text-align:center;color:var(--mut);font-size:13px">No errors to compare — perfect execution.</div>';
+
+/* -------------------- PROGRESS TAB -------------------- */
+function renderProgress(){
+  const currentScore = student.score || 0;
+  // Generate 4 historical mock scores trending toward current, deterministic per student
+  const drift = (n) => currentScore - 8 - Math.round(rand()*14) + n*3;
+  const history = [
+    { label:'Sydney Boys 2023',    score: Math.max(30, Math.min(100, drift(0))) },
+    { label:'North Sydney 2023',   score: Math.max(30, Math.min(100, drift(1) + Math.round(rand()*6-3))) },
+    { label:'Ruse 2023',           score: Math.max(30, Math.min(100, drift(2) + Math.round(rand()*6-3))) },
+    { label:'Baulkham Hills 2024', score: Math.max(30, Math.min(100, drift(3) + Math.round(rand()*4-2))) },
+    { label:'James Ruse 2024',     score: currentScore, current:true },
+  ];
+  const W = 800, H = 220, PAD = 44;
+  const xFor = (i) => PAD + ((W-PAD*2) * (i/(history.length-1)));
+  const yFor = (v) => H - PAD - (v/100)*(H-PAD*2);
+  const pathD = history.map((p,i) => (i===0?'M':'L') + xFor(i) + ',' + yFor(p.score)).join(' ');
+  const areaD = pathD + ' L ' + xFor(history.length-1) + ',' + (H-PAD) + ' L ' + xFor(0) + ',' + (H-PAD) + ' Z';
+  const svg = `
+    <svg class="prog-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#2D5016" stop-opacity="0.22"/>
+          <stop offset="100%" stop-color="#2D5016" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <line x1="${PAD}" y1="${H-PAD}" x2="${W-PAD}" y2="${H-PAD}" stroke="#e6e3d8" stroke-width="1"/>
+      <line x1="${PAD}" y1="${PAD}" x2="${PAD}" y2="${H-PAD}" stroke="#e6e3d8" stroke-width="1"/>
+      ${[0,25,50,75,100].map(v => {
+        const y = H - PAD - (v/100)*(H-PAD*2);
+        return `<line x1="${PAD}" y1="${y}" x2="${W-PAD}" y2="${y}" stroke="#f0eee4" stroke-width="1" stroke-dasharray="2 4"/>
+                <text x="${PAD-8}" y="${y+4}" text-anchor="end" font-size="11" fill="#74796d" font-family="DM Sans">${v}</text>`;
+      }).join('')}
+      <path d="${areaD}" fill="url(#areaGrad)"/>
+      <path d="${pathD}" fill="none" stroke="#2D5016" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+      ${history.map((p,i) => {
+        const cx = xFor(i), cy = yFor(p.score);
+        const isCur = p.current;
+        return `
+          ${isCur ? `<circle cx="${cx}" cy="${cy}" r="12" fill="#2D5016" fill-opacity="0.15"/>` : ''}
+          <circle cx="${cx}" cy="${cy}" r="${isCur?7:5}" fill="${isCur?'#2D5016':'#fff'}" stroke="#2D5016" stroke-width="2"/>
+          <text x="${cx}" y="${cy-14}" text-anchor="middle" font-size="${isCur?14:12}" fill="#1d211a" font-family="DM Serif Display" font-weight="400">${p.score}</text>
+          <text x="${cx}" y="${H-PAD+18}" text-anchor="middle" font-size="10" fill="#74796d" font-family="DM Sans">${p.label}</text>
+        `;
+      }).join('')}
+    </svg>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding-top:16px;margin-top:12px;border-top:0.5px solid var(--ln);font-size:13px;color:var(--mut)">
+      <div>▲ <strong style="color:var(--ink)">+${currentScore - history[0].score} marks</strong> across 5 papers</div>
+      <div>Average trend: <strong style="color:var(--g)">${(history.reduce((a,b)=>a+b.score,0)/history.length).toFixed(1)}%</strong></div>
+      <div style="color:var(--ok)">● improving</div>
+    </div>
+  `;
+  document.getElementById('progChart').innerHTML = svg;
+}
+if(student.status === 'submitted') renderProgress();
+else document.getElementById('progChart').innerHTML = '<div style="padding:24px;text-align:center;color:var(--mut);font-size:14px">No score yet — this student has not submitted the paper.</div>';
+
+/* -------------------- TABS -------------------- */
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('panel-' + t.getAttribute('data-panel')).classList.add('active');
+  });
+});
+
+/* -------------------- SIGN OUT + TOAST -------------------- */
+document.getElementById('signOut').addEventListener('click', e => {
+  e.preventDefault();
+  try { localStorage.removeItem('teacherSession'); } catch(_){}
+  window.location.href = 'teacher-login.html';
+});
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+</script>
+</body>
+</html>

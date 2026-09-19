@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hindsight — Class dashboard</title>
+<style>
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/dm-serif-display@5.0.19/400.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5.0.19/400.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5.0.19/500.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5.0.19/600.css');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--g:#2D5016;--g7:#3d6a22;--g50:#eef3e8;--ink:#1d211a;--mut:#74796d;--ln:#e6e3d8;--paper:#faf9f5;--card:#fff;
+--m5:#6e9ab5;--m6:#c4892a;--m7:#6a9958;--m8:#b05a48;
+--ok:#2f7a3a;--warn:#c48a1a;--bad:#b6432c;
+--ok-bg:#e6f0e0;--warn-bg:#fbedd0;--bad-bg:#f6dedc}
+body{font-family:'DM Sans',system-ui,sans-serif;color:var(--ink);background:var(--paper);min-height:100vh}
+.serif{font-family:'DM Serif Display',Georgia,serif;font-weight:400;letter-spacing:-.01em}
+
+/* SCOPE TABS */
+.scope-tabs{display:flex;gap:4px;background:var(--paper);border-radius:8px;padding:3px;border:0.5px solid var(--ln)}
+.scope-tab{padding:6px 12px;background:none;border:none;border-radius:6px;font-family:inherit;font-size:13px;font-weight:500;color:var(--mut);cursor:pointer;transition:all .15s}
+.scope-tab:hover{color:var(--ink)}
+.scope-tab.active{background:var(--card);color:var(--g);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+
+/* CLASS AVG TILE (blue-toned) */
+.class-avg{background:#eef4f8;border:0.5px solid #b8cddb;border-radius:12px;padding:16px 20px;display:flex;flex-direction:column;justify-content:center;min-width:160px}
+.class-avg .lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#3c5f78;font-weight:600;margin-bottom:6px}
+.class-avg .val{font-family:'DM Serif Display',Georgia,serif;font-size:34px;color:#2c5478;line-height:1}
+.class-avg .val .pct{font-size:16px;color:#5b7d94;margin-left:2px;font-family:'DM Sans',sans-serif}
+.class-avg .sub{font-size:12px;color:#5b7d94;margin-top:4px}
+.cohort-row{display:grid;grid-template-columns:1fr 180px;gap:14px;margin-bottom:14px;align-items:stretch}
+
+/* CALLOUT — red variant for weakest module */
+.callout.critical{background:#fbecea;border-color:#e8b8b0;color:#7d3a2d}
+.callout.critical strong{color:#5e2820}
+
+/* COHORT PANEL */
+.cohort-panel{display:none}
+.cohort-panel.active{display:block}
+.class-panel{display:block}
+.class-panel.hidden{display:none}
+.classes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.class-card{background:var(--card);border:0.5px solid var(--ln);border-radius:10px;padding:14px 16px}
+.class-card.mine{border-color:var(--g);background:var(--g50)}
+.class-card .cc-name{font-size:13px;font-weight:500;color:var(--ink);display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.class-card .cc-name .cc-mine{font-size:10px;color:var(--g);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.class-card .cc-avg{font-family:'DM Serif Display',Georgia,serif;font-size:22px;color:var(--ink)}
+.class-card .cc-teacher{font-size:11px;color:var(--mut);margin-top:2px}
+.cohort-bench{background:var(--card);border:0.5px solid var(--ln);border-radius:12px;padding:20px 24px;margin-bottom:24px}
+.cohort-bench-row{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.cohort-bench .bench-item .lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600;margin-bottom:6px}
+.cohort-bench .bench-item .val{font-family:'DM Serif Display',Georgia,serif;font-size:24px;color:var(--ink)}
+.cohort-bench .bench-item .val .pct{font-size:14px;color:var(--mut);margin-left:2px;font-family:'DM Sans',sans-serif}
+.cohort-bench .bench-item .val.mine{color:var(--g)}
+.cohort-bench .divider{color:var(--ln);font-size:20px}
+.state-tease{background:linear-gradient(135deg,#f4f7ef 0%,#eef3e8 100%);border:0.5px dashed #b8c9a4;border-radius:12px;padding:18px 22px;font-size:13px;color:#5c7042;display:flex;gap:12px;align-items:center}
+.state-tease .st-badge{background:var(--g);color:#fff;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+
+/* FADE IN */
+.app-fade{opacity:0;transform:translateY(6px);animation:appFadeIn .55s ease-out .05s forwards}
+@keyframes appFadeIn{to{opacity:1;transform:translateY(0)}}
+
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 40px;border-bottom:0.5px solid var(--ln);background:var(--card);position:sticky;top:0;z-index:10}
+.wm{font-family:'DM Serif Display',Georgia,serif;font-size:23px;color:var(--g);letter-spacing:-.01em;text-decoration:none}
+.nav-right{display:flex;align-items:center;gap:18px;font-size:13px;color:var(--mut)}
+.nav-right .who{font-weight:500;color:var(--ink)}
+.nav-right .sep{color:var(--ln)}
+.nav-right a{color:var(--mut);text-decoration:none;font-weight:500}
+.nav-right a:hover{color:var(--g)}
+
+.wrap{max-width:1240px;margin:0 auto;padding:32px 40px 80px}
+
+/* PAGE HEAD */
+.page-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:24px;gap:24px;flex-wrap:wrap}
+.page-title{font-family:'DM Serif Display',Georgia,serif;font-size:32px;color:var(--ink);line-height:1.1}
+.page-sub{margin-top:4px;font-size:14px;color:var(--mut)}
+
+/* COHORT STRIP */
+.section-label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600;margin-bottom:10px}
+.cohort{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px}
+.mod{background:var(--card);border:0.5px solid var(--ln);border-radius:12px;padding:16px 18px}
+.mod .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.mod .name{font-size:13px;font-weight:500;color:var(--mut)}
+.mod .name .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.mod .avg{font-family:'DM Serif Display',Georgia,serif;font-size:24px;color:var(--ink)}
+.mod .avg .pct{font-size:14px;color:var(--mut);margin-left:2px;font-family:'DM Sans',sans-serif}
+.bar{height:6px;background:var(--paper);border-radius:4px;overflow:hidden}
+.bar>span{display:block;height:100%;border-radius:4px}
+
+.callout{background:#fff7e6;border:0.5px solid #eccb85;border-radius:12px;padding:14px 18px;margin-bottom:32px;font-size:14px;color:#7a5210;display:flex;gap:10px;align-items:center}
+.callout .flag{font-size:16px}
+.callout strong{color:#5c3d0a;font-weight:600}
+
+/* TOOLBAR */
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:14px;flex-wrap:wrap}
+.search{flex:1;max-width:340px;position:relative}
+.search input{width:100%;padding:10px 12px 10px 34px;font-family:inherit;font-size:14px;color:var(--ink);background:var(--card);border:0.5px solid var(--ln);border-radius:8px;outline:none}
+.search input:focus{border-color:var(--g)}
+.search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--mut)}
+.btn{padding:10px 16px;background:var(--g);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s}
+.btn:hover{background:var(--g7)}
+
+/* TABLE */
+.tbl-wrap{background:var(--card);border:0.5px solid var(--ln);border-radius:12px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;padding:14px 16px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--mut);font-weight:600;border-bottom:0.5px solid var(--ln);cursor:pointer;user-select:none;white-space:nowrap}
+th:hover{color:var(--g)}
+th .arrow{opacity:0;margin-left:4px;font-size:10px}
+th.sorted .arrow{opacity:1}
+td{padding:14px 16px;border-bottom:0.5px solid var(--ln);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr.row{cursor:pointer;transition:background .1s}
+tr.row:hover{background:var(--paper)}
+.name-cell{font-weight:500;color:var(--ink)}
+.name-cell .school{display:block;font-size:12px;color:var(--mut);font-weight:400;margin-top:2px}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:13px}
+.status.sub{color:var(--ok)}
+.status.pen{color:var(--mut)}
+.status .mark{display:inline-block;width:14px;height:14px;border-radius:50%;text-align:center;line-height:14px;font-size:9px;font-weight:600}
+.status.sub .mark{background:var(--ok-bg);color:var(--ok)}
+.status.pen .mark{background:var(--paper);border:0.5px solid var(--ln);color:var(--mut)}
+.score{font-family:'DM Serif Display',Georgia,serif;font-size:18px;color:var(--ink)}
+.score.low{color:var(--bad)}
+.score.mid{color:var(--warn)}
+.score.dash{color:var(--mut);font-size:14px;font-family:'DM Sans',sans-serif}
+.tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500}
+.tag-m5{background:#dde8ef;color:#3c5f78}
+.tag-m6{background:#f4e2c2;color:#7a5210}
+.tag-m7{background:#dae7ce;color:#3f5f2f}
+.tag-m8{background:#eecfc9;color:#7b3423}
+.flags{display:flex;gap:6px;flex-wrap:wrap}
+.flag-badge{padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500}
+.flag-struggling{background:var(--bad-bg);color:var(--bad)}
+.flag-international{background:#dbe6f0;color:#2c5478}
+.last{color:var(--mut);font-size:13px}
+
+.empty{padding:40px;text-align:center;color:var(--mut);font-size:14px}
+
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(29,33,26,.45);display:none;align-items:center;justify-content:center;z-index:200;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--card);border:0.5px solid var(--ln);border-radius:12px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:28px 28px 24px}
+.modal-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.modal-title{font-family:'DM Serif Display',Georgia,serif;font-size:24px;color:var(--ink)}
+.modal-close{background:none;border:none;font-size:20px;color:var(--mut);cursor:pointer;padding:4px 8px;line-height:1;border-radius:6px}
+.modal-close:hover{background:var(--paper);color:var(--ink)}
+.modal-sub{font-size:13px;color:var(--mut);margin-bottom:20px}
+.field{margin-bottom:16px}
+.field label{font-size:12px;color:var(--mut);font-weight:500;letter-spacing:.02em;text-transform:uppercase;margin-bottom:6px;display:block}
+.field input,.field select,.field textarea{width:100%;padding:10px 12px;font-family:inherit;font-size:14px;color:var(--ink);background:var(--paper);border:0.5px solid var(--ln);border-radius:8px;outline:none;transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--g)}
+.field textarea{resize:vertical;min-height:70px}
+.dropzone{border:1px dashed var(--ln);border-radius:8px;padding:20px;text-align:center;background:var(--paper);font-size:13px;color:var(--mut);cursor:pointer;transition:border-color .15s,background .15s}
+.dropzone:hover{border-color:var(--g);background:#f4f7ef}
+.dropzone.has-file{border-color:var(--g);background:var(--g50);color:var(--g)}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;padding-top:18px;border-top:0.5px solid var(--ln)}
+.btn-ghost{padding:10px 16px;background:none;color:var(--mut);border:0.5px solid var(--ln);border-radius:8px;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer}
+.btn-ghost:hover{color:var(--ink);border-color:var(--ink)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120%);background:var(--ink);color:#fff;padding:12px 20px;border-radius:8px;font-size:14px;box-shadow:0 4px 16px rgba(0,0,0,.15);transition:transform .3s;z-index:100}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media (max-width:900px){
+  .cohort{grid-template-columns:repeat(2,1fr)}
+  .wrap{padding:24px 20px 60px}
+  .nav{padding:14px 20px}
+}
+</style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="index.html" class="wm">Hindsight</a>
+    <div class="nav-right">
+      <div class="scope-tabs">
+        <button class="scope-tab active" data-scope="class">Ms. Chen’s class</button>
+        <button class="scope-tab" data-scope="cohort">Year 12 Chemistry cohort</button>
+      </div>
+      <a href="#" id="signOut">Sign out</a>
+    </div>
+  </nav>
+
+  <div class="wrap app-fade">
+    <div class="page-head">
+      <div>
+        <div class="page-title" id="pageTitle">Class dashboard</div>
+        <div class="page-sub" id="pageSub">15 students · James Ruse 2024 Chemistry Trial</div>
+      </div>
+    </div>
+
+    <!-- ============ MY CLASS VIEW ============ -->
+    <div class="class-panel" id="classPanel">
+      <div class="section-label">Performance by module</div>
+      <div class="cohort-row">
+        <div class="cohort" id="cohort"></div>
+        <div class="class-avg">
+          <div class="lbl">Class average</div>
+          <div class="val" id="classAvgVal">—<span class="pct">%</span></div>
+          <div class="sub" id="classAvgSub">across 11 submissions</div>
+        </div>
+      </div>
+      <div class="callout" id="callout"></div>
+
+    <div class="toolbar">
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input id="searchInput" placeholder="Search students...">
+      </div>
+      <button class="btn" id="assignBtn">+ Assign task</button>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr id="theadRow">
+            <th data-key="name">Name<span class="arrow">▼</span></th>
+            <th data-key="status">Status<span class="arrow">▼</span></th>
+            <th data-key="score">Score<span class="arrow">▼</span></th>
+            <th data-key="weakest">Weakest module<span class="arrow">▼</span></th>
+            <th data-key="flags">Flags<span class="arrow">▼</span></th>
+            <th data-key="lastActive">Last active<span class="arrow">▼</span></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+    </div><!-- /class-panel -->
+
+    <!-- ============ COHORT VIEW ============ -->
+    <div class="cohort-panel" id="cohortPanel">
+      <div class="section-label">Cohort benchmark</div>
+      <div class="cohort-bench">
+        <div class="cohort-bench-row">
+          <div class="bench-item"><div class="lbl">Your class</div><div class="val mine" id="benchMine">—<span class="pct">%</span></div></div>
+          <div class="divider">vs</div>
+          <div class="bench-item"><div class="lbl">Year 12 cohort</div><div class="val" id="benchCohort">—<span class="pct">%</span></div></div>
+          <div class="divider">•</div>
+          <div class="bench-item"><div class="lbl">Cohort rank</div><div class="val" id="benchRank">—</div></div>
+          <div class="divider">•</div>
+          <div class="bench-item"><div class="lbl">Papers submitted</div><div class="val" id="benchSubs">—</div></div>
+        </div>
+      </div>
+
+      <div class="section-label">All Year 12 Chemistry classes</div>
+      <div class="classes-grid" id="classesGrid"></div>
+
+      <div class="section-label">Cohort performance by module</div>
+      <div class="cohort" id="cohortMods"></div>
+      <div class="callout" id="cohortCallout"></div>
+
+      <div class="section-label" style="margin-top:24px">Common errors across cohort</div>
+      <div style="background:var(--card);border:0.5px solid var(--ln);border-radius:12px;padding:20px 24px;margin-bottom:24px" id="cohortErrGrid"></div>
+
+      <div class="state-tease">
+        <span class="st-badge">Coming soon</span>
+        <span><strong style="color:var(--g)">Statewide benchmark.</strong> Compare Year 12 Chemistry results across NSW selective schools — free for teachers, launching 2027.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="assignModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-head">
+        <div class="modal-title" id="modalTitle">Assign a task</div>
+        <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-sub">This task will be sent to Year 12 Chemistry — Period 3 (15 students).</div>
+
+      <div class="field">
+        <label for="taskName">Task name</label>
+        <input id="taskName" type="text" placeholder="James Ruse 2024 Chemistry Trial" value="James Ruse 2024 Chemistry Trial">
+      </div>
+
+      <div class="field">
+        <label for="paperSelect">Paper</label>
+        <select id="paperSelect">
+          <option value="james-ruse-2024">James Ruse 2024 — Chemistry Trial</option>
+          <option value="sydney-boys-2024">Sydney Boys 2024 — Chemistry Trial</option>
+          <option value="north-sydney-2023">North Sydney Boys 2023 — Chemistry Trial</option>
+          <option value="ruse-2023">James Ruse 2023 — Chemistry Trial</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Or attach a file</label>
+        <div class="dropzone" id="dropzone">
+          <div id="dzText">Drop a PDF here, or click to browse</div>
+          <input type="file" id="fileInput" accept=".pdf,.docx,.jpg,.png" style="display:none">
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="dueDate">Due date</label>
+        <input id="dueDate" type="date">
+      </div>
+
+      <div class="field">
+        <label for="taskNote">Note to class (optional)</label>
+        <textarea id="taskNote" placeholder="Focus on Module 6 — that's been our weakest area."></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-ghost" id="modalCancel">Cancel</button>
+        <button class="btn" id="modalAssign">Assign</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+/* -------------------- MOCK ROSTER -------------------- */
+const ROSTER = [
+  { id:'s01', name:'Marcus Chen',      school:'James Ruse Agricultural HS', status:'submitted', score:92, weakest:'M5', flags:[],                    lastActive: hoursAgo(26) },
+  { id:'s02', name:'Kai Tanaka',       school:'Sydney Grammar',             status:'submitted', score:88, weakest:'M5', flags:[],                    lastActive: hoursAgo(48) },
+  { id:'s03', name:'Sophia Nguyen',    school:'North Sydney Girls HS',      status:'submitted', score:85, weakest:'M8', flags:[],                    lastActive: hoursAgo(5)  },
+  { id:'s04', name:'Ethan Kim',        school:'Baulkham Hills HS',          status:'submitted', score:82, weakest:'M8', flags:[],                    lastActive: hoursAgo(2)  },
+  { id:'s05', name:'Aarav Patel',      school:'Knox Grammar',               status:'submitted', score:78, weakest:'M6', flags:[],                    lastActive: hoursAgo(2)  },
+  { id:'s06', name:'Isabella Rossi',   school:'MLC School',                 status:'submitted', score:74, weakest:'M7', flags:[],                    lastActive: hoursAgo(1)  },
+  { id:'s07', name:'Priya Sharma',     school:'Ravenswood',                 status:'submitted', score:71, weakest:'M6', flags:[],                    lastActive: hoursAgo(3)  },
+  { id:'s08', name:'Liam O’Brien',school:'St Aloysius’ College',  status:'submitted', score:68, weakest:'M7', flags:[],                    lastActive: hoursAgo(6)  },
+  { id:'s09', name:'Yuki Wang',        school:'Cheltenham Girls HS',        status:'submitted', score:52, weakest:'M6', flags:['struggling','international'], lastActive: hoursAgo(8) },
+  { id:'s10', name:'Zara Ahmed',       school:'Meriden',                    status:'submitted', score:48, weakest:'M6', flags:['struggling'],        lastActive: hoursAgo(4)  },
+  { id:'s11', name:'Maya Krishnan',    school:'Cherrybrook Tech HS',        status:'submitted', score:45, weakest:'M8', flags:['struggling'],        lastActive: hoursAgo(72) },
+  { id:'s12', name:'Oliver Thompson',  school:'Barker College',             status:'pending',   score:null, weakest:'M7', flags:[],                  lastActive: hoursAgo(96) },
+  { id:'s13', name:'Layla Hassan',     school:'Al Zahra College',           status:'pending',   score:null, weakest:'M6', flags:[],                  lastActive: hoursAgo(120)},
+  { id:'s14', name:'Chen Wei',         school:'Sydney Boys HS',             status:'pending',   score:null, weakest:'M8', flags:['international'],   lastActive: hoursAgo(144)},
+  { id:'s15', name:'James Wilson',     school:'Newington College',          status:'pending',   score:null, weakest:'M5', flags:[],                  lastActive: hoursAgo(168)},
+];
+
+function hoursAgo(h){ return Date.now() - h*3600*1000; }
+
+/* Persist roster to localStorage so downstream screens can read it */
+try { localStorage.setItem('classRoster', JSON.stringify(ROSTER)); } catch(_){}
+
+/* -------------------- COHORT STRIP -------------------- */
+const MODULES = [
+  { key:'M5', name:'Module 5', label:'Equilibrium & Acid Reactions', color:'var(--m5)', avg:74 },
+  { key:'M6', name:'Module 6', label:'Acid/Base Reactions',          color:'var(--m6)', avg:58 },
+  { key:'M7', name:'Module 7', label:'Organic Chemistry',            color:'var(--m7)', avg:68 },
+  { key:'M8', name:'Module 8', label:'Applying Chemical Ideas',      color:'var(--m8)', avg:71 },
+];
+function bandColor(v){ if(v>=70) return 'var(--ok)'; if(v>=55) return 'var(--warn)'; return 'var(--bad)'; }
+function renderCohort(){
+  const el = document.getElementById('cohort');
+  el.innerHTML = MODULES.map(m => `
+    <div class="mod">
+      <div class="top">
+        <div class="name"><span class="dot" style="background:${m.color}"></span>${m.name}</div>
+        <div class="avg">${m.avg}<span class="pct">%</span></div>
+      </div>
+      <div class="bar"><span style="width:${m.avg}%;background:${bandColor(m.avg)}"></span></div>
+    </div>
+  `).join('');
+  // Class average tile
+  const submitted = ROSTER.filter(s => s.status==='submitted' && s.score!==null);
+  const classAvg = submitted.length ? Math.round(submitted.reduce((a,b)=>a+b.score,0)/submitted.length) : 0;
+  document.getElementById('classAvgVal').innerHTML = classAvg + '<span class="pct">%</span>';
+  document.getElementById('classAvgSub').textContent = 'across ' + submitted.length + ' submissions';
+
+  // Most-common error across submitted students (weighted by weakest module fallback)
+  const errTally = { 'Did not know theory':0, 'Calculation error — knowledge':0, 'Terminology & detail':0, 'Did not address verb':0, 'Silly mistake':0 };
+  submitted.forEach(s => {
+    if(s.weakest==='M6') errTally['Did not know theory']++;
+    else if(s.weakest==='M5') errTally['Calculation error — knowledge']++;
+    else if(s.weakest==='M7') errTally['Did not address verb']++;
+    else errTally['Terminology & detail']++;
+  });
+  const topErr = Object.entries(errTally).sort((a,b)=>b[1]-a[1])[0];
+
+  const weakest = MODULES.reduce((a,b)=>a.avg<b.avg?a:b);
+  const belowAll = submitted.filter(s => s.score<60).length;
+  document.getElementById('callout').className = 'callout critical';
+  document.getElementById('callout').innerHTML =
+    `<span class="flag">⚠</span> <span><strong>${weakest.name} is the class’s biggest gap</strong> — cohort average ${weakest.avg}%, ${belowAll} students below 60%. Most common error: <strong>${topErr[0]}</strong> (${topErr[1]} students affected).</span>`;
+}
+renderCohort();
+
+/* -------------------- TABLE -------------------- */
+let sortKey = 'attention';
+let sortDir = 'desc';
+let query = '';
+
+function fmtLast(ts){
+  const diff = (Date.now()-ts)/1000;
+  if(diff<60) return 'just now';
+  if(diff<3600) return Math.floor(diff/60)+' min ago';
+  if(diff<86400) return Math.floor(diff/3600)+' hr ago';
+  const d = Math.floor(diff/86400);
+  if(d===1) return '1 day ago';
+  if(d<7) return d+' days ago';
+  return Math.floor(d/7)+' wk ago';
+}
+function scoreClass(s){ if(s===null) return 'dash'; if(s<55) return 'low'; if(s<70) return 'mid'; return ''; }
+function flagBadges(flags){
+  return flags.map(f => `<span class="flag-badge flag-${f}">${f}</span>`).join('');
+}
+function renderTable(){
+  const rows = [...ROSTER];
+  const q = query.trim().toLowerCase();
+  const filtered = q ? rows.filter(r => (r.name+' '+r.school).toLowerCase().includes(q)) : rows;
+  filtered.sort((a,b) => {
+    let av = a[sortKey], bv = b[sortKey];
+    if(sortKey==='score'){ av = av===null?-1:av; bv = bv===null?-1:bv; }
+    if(sortKey==='flags'){ av = a.flags.join(','); bv = b.flags.join(','); }
+    if(sortKey==='status'){ av = a.status; bv = b.status; }
+    if(sortKey==='attention'){
+      // higher = more attention needed
+      const attnScore = x => (x.flags.includes('struggling')?100:0) + (x.status==='pending'?50:0) + (x.score===null?30:(70-x.score));
+      av = attnScore(a); bv = attnScore(b);
+    }
+    if(av<bv) return sortDir==='asc'?-1:1;
+    if(av>bv) return sortDir==='asc'?1:-1;
+    return 0;
+  });
+  const body = document.getElementById('tbody');
+  if(filtered.length===0){
+    body.innerHTML = `<tr><td colspan="6" class="empty">No students match "${query}".</td></tr>`;
+    updateHeaderArrows(); return;
+  }
+  body.innerHTML = filtered.map(s => `
+    <tr class="row" data-id="${s.id}">
+      <td class="name-cell">${s.name}<span class="school">${s.school}</span></td>
+      <td>${s.status==='submitted'
+          ? '<span class="status sub"><span class="mark">✓</span>Submitted</span>'
+          : '<span class="status pen"><span class="mark">○</span>Pending</span>'}</td>
+      <td><span class="score ${scoreClass(s.score)}">${s.score===null?'—':s.score}</span></td>
+      <td><span class="tag tag-${s.weakest.toLowerCase()}">${s.weakest}</span></td>
+      <td><div class="flags">${flagBadges(s.flags)}</div></td>
+      <td class="last">${fmtLast(s.lastActive)}</td>
+    </tr>
+  `).join('');
+  updateHeaderArrows();
+  // Row navigation (target added in Phase 4)
+  document.querySelectorAll('tr.row').forEach(tr => {
+    tr.addEventListener('click', () => {
+      const id = tr.getAttribute('data-id');
+      window.location.href = `teacher-student.html?id=${id}`;
+    });
+  });
+}
+function updateHeaderArrows(){
+  document.querySelectorAll('#theadRow th').forEach(th => {
+    th.classList.remove('sorted');
+    const arr = th.querySelector('.arrow');
+    if(th.getAttribute('data-key')===sortKey){
+      th.classList.add('sorted');
+      arr.textContent = sortDir==='asc'?'▲':'▼';
+    }
+  });
+}
+document.querySelectorAll('#theadRow th').forEach(th => {
+  th.addEventListener('click', () => {
+    const k = th.getAttribute('data-key');
+    if(sortKey===k){ sortDir = sortDir==='asc'?'desc':'asc'; }
+    else { sortKey = k; sortDir = k==='name'?'asc':'desc'; }
+    renderTable();
+  });
+});
+document.getElementById('searchInput').addEventListener('input', e => {
+  query = e.target.value; renderTable();
+});
+renderTable();
+
+/* -------------------- COHORT VIEW -------------------- */
+const CLASSES = [
+  { id:'12A', teacher:'Ms. Chen',       students:15, avg:69, mine:true  },
+  { id:'12B', teacher:'Mr. Rodrigues',  students:14, avg:64, mine:false },
+  { id:'12C', teacher:'Dr. Patel',      students:16, avg:78, mine:false },
+  { id:'12D', teacher:'Ms. Osei',       students:15, avg:61, mine:false },
+  { id:'12E', teacher:'Mr. Nakamura',   students:14, avg:72, mine:false },
+  { id:'12F', teacher:'Ms. Whitfield',  students:16, avg:66, mine:false },
+];
+const COHORT_MODULES = [
+  { key:'M5', name:'Module 5', color:'var(--m5)', avg:71 },
+  { key:'M6', name:'Module 6', color:'var(--m6)', avg:62 },
+  { key:'M7', name:'Module 7', color:'var(--m7)', avg:69 },
+  { key:'M8', name:'Module 8', color:'var(--m8)', avg:73 },
+];
+const COHORT_ERRORS = [
+  { name:'Did not know theory',            pct:34, students:31 },
+  { name:'Did not address verb',           pct:26, students:23 },
+  { name:'Calculation error — knowledge', pct:18, students:16 },
+  { name:'Terminology & detail',           pct:14, students:13 },
+  { name:'Silly mistake',                  pct: 8, students: 7 },
+];
+function renderCohortView(){
+  const cohortAvg = Math.round(CLASSES.reduce((a,b)=>a+b.avg*b.students,0)/CLASSES.reduce((a,b)=>a+b.students,0));
+  const mine = CLASSES.find(c=>c.mine);
+  const ranked = [...CLASSES].sort((a,b)=>b.avg-a.avg);
+  const myRank = ranked.findIndex(c=>c.mine) + 1;
+  const totalSubs = CLASSES.reduce((a,b)=>a+b.students,0);
+
+  document.getElementById('benchMine').innerHTML = mine.avg + '<span class="pct">%</span>';
+  document.getElementById('benchCohort').innerHTML = cohortAvg + '<span class="pct">%</span>';
+  document.getElementById('benchRank').textContent = myRank + ' of ' + CLASSES.length;
+  document.getElementById('benchSubs').textContent = totalSubs;
+
+  document.getElementById('classesGrid').innerHTML = ranked.map(c => `
+    <div class="class-card ${c.mine?'mine':''}">
+      <div class="cc-name">${c.id}${c.mine?'<span class="cc-mine">Your class</span>':''}</div>
+      <div class="cc-avg">${c.avg}<span style="font-size:13px;color:var(--mut);margin-left:2px;font-family:'DM Sans',sans-serif">%</span></div>
+      <div class="cc-teacher">${c.teacher} · ${c.students} students</div>
+    </div>
+  `).join('');
+
+  document.getElementById('cohortMods').innerHTML = COHORT_MODULES.map(m => `
+    <div class="mod">
+      <div class="top">
+        <div class="name"><span class="dot" style="background:${m.color}"></span>${m.name}</div>
+        <div class="avg">${m.avg}<span class="pct">%</span></div>
+      </div>
+      <div class="bar"><span style="width:${m.avg}%;background:${bandColor(m.avg)}"></span></div>
+    </div>
+  `).join('');
+
+  const cWeakest = COHORT_MODULES.reduce((a,b)=>a.avg<b.avg?a:b);
+  document.getElementById('cohortCallout').className = 'callout critical';
+  document.getElementById('cohortCallout').innerHTML =
+    `<span class="flag">⚠</span> <span><strong>${cWeakest.name} is the cohort’s weakest area</strong> — grade-wide average ${cWeakest.avg}%. This mirrors your class’s pattern, suggesting a syllabus-wide teaching challenge, not just a class issue.</span>`;
+
+  document.getElementById('cohortErrGrid').innerHTML = COHORT_ERRORS.map(e => `
+    <div class="err-row">
+      <div class="err-name">${e.name}</div>
+      <div class="err-bar"><span style="width:${e.pct*2}%"></span></div>
+      <div class="err-count">${e.students} students · ${e.pct}%</div>
+    </div>
+  `).join('');
+}
+
+document.querySelectorAll('.scope-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.scope-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    const scope = tab.getAttribute('data-scope');
+    const classPanel = document.getElementById('classPanel');
+    const cohortPanel = document.getElementById('cohortPanel');
+    if(scope==='cohort'){
+      classPanel.classList.add('hidden');
+      cohortPanel.classList.add('active');
+      document.getElementById('pageTitle').textContent = 'Cohort dashboard';
+      document.getElementById('pageSub').textContent = '6 classes · 90 students · James Ruse 2024 Chemistry Trial';
+      renderCohortView();
+    } else {
+      classPanel.classList.remove('hidden');
+      cohortPanel.classList.remove('active');
+      document.getElementById('pageTitle').textContent = 'Class dashboard';
+      document.getElementById('pageSub').textContent = '15 students · James Ruse 2024 Chemistry Trial';
+    }
+  });
+});
+
+/* -------------------- STUBS FOR LATER PHASES -------------------- */
+/* -------------------- ASSIGN TASK MODAL -------------------- */
+const modal = document.getElementById('assignModal');
+const dueDateInput = document.getElementById('dueDate');
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const dzText = document.getElementById('dzText');
+let attachedFile = null;
+
+function openModal(){
+  // default due date = 7 days from now
+  const d = new Date(Date.now() + 7*24*3600*1000);
+  const iso = d.toISOString().slice(0,10);
+  if(!dueDateInput.value) dueDateInput.value = iso;
+  modal.classList.add('open');
+  document.getElementById('taskName').focus();
+}
+function closeModal(){
+  modal.classList.remove('open');
+  attachedFile = null;
+  dzText.textContent = 'Drop a PDF here, or click to browse';
+  dropzone.classList.remove('has-file');
+  fileInput.value = '';
+}
+document.getElementById('assignBtn').addEventListener('click', openModal);
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalCancel').addEventListener('click', closeModal);
+modal.addEventListener('click', e => { if(e.target === modal) closeModal(); });
+document.addEventListener('keydown', e => { if(e.key==='Escape' && modal.classList.contains('open')) closeModal(); });
+
+dropzone.addEventListener('click', () => fileInput.click());
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('has-file'); });
+dropzone.addEventListener('dragleave', () => { if(!attachedFile) dropzone.classList.remove('has-file'); });
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  if(e.dataTransfer.files.length){
+    attachedFile = e.dataTransfer.files[0];
+    dzText.textContent = '📎 ' + attachedFile.name;
+    dropzone.classList.add('has-file');
+  }
+});
+fileInput.addEventListener('change', e => {
+  if(e.target.files.length){
+    attachedFile = e.target.files[0];
+    dzText.textContent = '📎 ' + attachedFile.name;
+    dropzone.classList.add('has-file');
+  }
+});
+
+document.getElementById('modalAssign').addEventListener('click', () => {
+  const taskName = document.getElementById('taskName').value.trim() || 'Untitled task';
+  const paperId = document.getElementById('paperSelect').value;
+  const dueDate = dueDateInput.value;
+  const note = document.getElementById('taskNote').value.trim();
+  const assignment = {
+    taskName, paperId, dueDate, note,
+    fileName: attachedFile ? attachedFile.name : null,
+    assignedAt: Date.now()
+  };
+  try {
+    const prev = JSON.parse(localStorage.getItem('teacherAssignments') || '[]');
+    prev.unshift(assignment);
+    localStorage.setItem('teacherAssignments', JSON.stringify(prev));
+  } catch(_){}
+  closeModal();
+  showToast('Task assigned to Year 12 Chemistry — Period 3');
+});
+document.getElementById('signOut').addEventListener('click', e => {
+  e.preventDefault();
+  try { localStorage.removeItem('teacherSession'); } catch(_){}
+  window.location.href = 'teacher-login.html';
+});
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+</script>
+</body>
+</html>

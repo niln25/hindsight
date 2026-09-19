@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hindsight — Educator sign in</title>
+<style>
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/dm-serif-display@5.0.19/400.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5.0.19/400.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5.0.19/500.css');
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5.0.19/600.css');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--g:#2D5016;--g7:#3d6a22;--g50:#eef3e8;--ink:#1d211a;--mut:#74796d;--ln:#e6e3d8;--paper:#faf9f5;--card:#fff}
+html,body{height:100%}
+body{font-family:'DM Sans',system-ui,sans-serif;color:var(--ink);background:var(--paper);min-height:100vh;display:flex;flex-direction:column}
+.serif{font-family:'DM Serif Display',Georgia,serif;font-weight:400;letter-spacing:-.01em}
+
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 40px;border-bottom:0.5px solid var(--ln);background:var(--card)}
+.wm{font-family:'DM Serif Display',Georgia,serif;font-size:23px;color:var(--g);letter-spacing:-.01em;text-decoration:none}
+.nav-right a{font-size:13px;color:var(--mut);text-decoration:none;font-weight:500}
+
+.wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.card{width:100%;max-width:400px;background:var(--card);border:0.5px solid var(--ln);border-radius:12px;padding:36px 32px 32px}
+.brand{text-align:center;margin-bottom:28px}
+.brand .logo{font-family:'DM Serif Display',Georgia,serif;font-size:32px;color:var(--g);letter-spacing:-.01em;line-height:1}
+.brand .sub{margin-top:6px;font-size:13px;color:var(--mut);letter-spacing:.02em;text-transform:uppercase;font-weight:500}
+
+.h{font-family:'DM Serif Display',Georgia,serif;font-size:22px;color:var(--ink);text-align:center;margin-bottom:6px}
+.hint{text-align:center;font-size:13px;color:var(--mut);margin-bottom:24px}
+
+form{display:flex;flex-direction:column;gap:14px}
+label{font-size:12px;color:var(--mut);font-weight:500;letter-spacing:.02em;text-transform:uppercase;margin-bottom:6px;display:block}
+input{width:100%;padding:11px 13px;font-family:inherit;font-size:14px;color:var(--ink);background:var(--paper);border:0.5px solid var(--ln);border-radius:8px;outline:none;transition:border-color .15s}
+input:focus{border-color:var(--g)}
+.row{display:flex;flex-direction:column}
+.btn{margin-top:6px;padding:12px 16px;background:var(--g);color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s}
+.btn:hover{background:var(--g7)}
+
+.foot{margin-top:20px;text-align:center;font-size:12px;color:var(--mut)}
+.foot a{color:var(--g);text-decoration:none;font-weight:500}
+.app-fade{opacity:0;transform:translateY(6px);animation:appFadeIn .5s ease-out forwards}
+@keyframes appFadeIn{to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="index.html" class="wm">Hindsight</a>
+    <div class="nav-right"><a href="index.html">Back to student view</a></div>
+  </nav>
+
+  <div class="wrap app-fade">
+    <div class="card">
+      <div class="brand">
+        <div class="logo">Hindsight</div>
+        <div class="sub">Educator</div>
+      </div>
+
+      <div class="h">Sign in</div>
+      <div class="hint">Use any credentials — demo mode.</div>
+
+      <form id="loginForm" autocomplete="off">
+        <div class="row">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" placeholder="teacher@school.nsw.edu.au" required>
+        </div>
+        <div class="row">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn">Sign in</button>
+      </form>
+
+      <div class="foot">Not a teacher? <a href="index.html">Return to student library</a></div>
+    </div>
+  </div>
+
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var email = document.getElementById('email').value.trim() || 'ms.chen@school.nsw.edu.au';
+  try { localStorage.setItem('teacherSession', JSON.stringify({ email: email, name: 'Ms. Chen', signedInAt: Date.now() })); } catch(_){}
+  window.location.href = 'teacher-dashboard.html';
+});
+</script>
+</body>
+</html>
