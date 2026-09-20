@@ -1525,26 +1525,10 @@ window.hsReview=function(id){
 
   window.hsDemoFill = function(){
     const sid = activeScreenId();
-    if(sid === 's2'){
-      fillMCQ();
-      setTimeout(() => {
-        const go2 = document.getElementById('go2');
-        if(go2 && !go2.disabled) go2.click();
-      }, 300);
-    } else if(sid === 's3'){
-      fillSecII();
-      setTimeout(() => {
-        const go3 = document.getElementById('go3');
-        if(go3 && !go3.disabled) go3.click();
-      }, 300);
-    } else {
-      // Fallback: try MCQ then advance
-      fillMCQ();
-      setTimeout(() => {
-        const go2 = document.getElementById('go2');
-        if(go2 && !go2.disabled) go2.click();
-      }, 300);
-    }
+    if(sid === 's2') fillMCQ();
+    else if(sid === 's3') fillSecII();
+    else fillMCQ();
+    // No auto-advance — user clicks Continue themselves.
   };
 })();
 </script>
